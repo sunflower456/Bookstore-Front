@@ -1,6 +1,6 @@
 import React from 'react';
-import {Avatar, Box, Button, Container, CssBaseline, makeStyles, TextField, Typography} from '@material-ui/core';
-import {VpnKeyRounded, CreateRounded} from '@material-ui/icons'
+import {Avatar, Button, Container, CssBaseline, makeStyles, TextField, Typography} from '@material-ui/core';
+import {CreateRounded, VpnKeyRounded} from '@material-ui/icons'
 import HerbLogo from '../../static/images/herbLogo.png';
 import Copyright from '../copyright/Copyright';
 
