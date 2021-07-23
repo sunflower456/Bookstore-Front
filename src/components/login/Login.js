@@ -1,7 +1,8 @@
 import React from 'react';
 import {Avatar, Box, Button, Container, CssBaseline, makeStyles, TextField, Typography} from '@material-ui/core';
-import {VpnKeyRounded} from '@material-ui/icons'
+import {VpnKeyRounded, CreateRounded} from '@material-ui/icons'
 import HerbLogo from '../../static/images/herbLogo.png';
+import Copyright from '../copyright/Copyright';
 
 const useStyles = makeStyles((theme) => ({
     centerBox: {
@@ -22,7 +23,14 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(2),
     },
     submitButton: {
-        margin: theme.spacing(3, 0)
+        margin: theme.spacing(3, 0),
+    },
+    joinButton: {
+        backgroundColor: '#4CAF50',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#388E3C',
+        },
     }
 }));
 
@@ -38,30 +46,30 @@ function Login() {
                     Herb-Bookstore
                 </Typography>
                 <form className={classes.form}>
-                    <TextField className={classes.formTextField}
-                               variant='outlined'
-                               required
-                               fullWidth
-                               margin='dense'
-                               color='primary'
-                               id='id'
-                               label='ID'
-                               type='text'
-                               name='idField'
-                               placeholder='아이디를 입력하세요.'
-                               autoFocus
+                    <TextField
+                        variant='outlined'
+                        required
+                        fullWidth
+                        margin='dense'
+                        color='primary'
+                        id='id'
+                        label='ID'
+                        type='text'
+                        name='idField'
+                        placeholder='아이디를 입력하세요.'
+                        autoFocus
                     />
-                    <TextField className={classes.formTextField}
-                               variant='outlined'
-                               required
-                               fullWidth
-                               margin='dense'
-                               color='primary'
-                               id='pw'
-                               label='Password'
-                               type='password'
-                               name='passwordField'
-                               placeholder='비밀번호를 입력하세요.'
+                    <TextField
+                        variant='outlined'
+                        required
+                        fullWidth
+                        margin='dense'
+                        color='primary'
+                        id='pw'
+                        label='Password'
+                        type='password'
+                        name='passwordField'
+                        placeholder='비밀번호를 입력하세요.'
                     />
                     <Button
                         type='submit'
@@ -73,18 +81,18 @@ function Login() {
                     >
                         로그인
                     </Button>
+                    <Button
+                        type={'button'}
+                        className={classes.joinButton}
+                        fullWidth
+                        variant={'contained'}
+                        startIcon={<CreateRounded/>}
+                    >
+                        회원가입
+                    </Button>
                 </form>
             </div>
-            <Box mt={8}>
-                <Typography variant='body2' color='textPrimary' align='center'>
-                    {'Copyright © '}
-                    <a color='inherit' href='https://github.com/TeamHerb'>
-                        Team Herb
-                    </a>
-                    {' / '}
-                    {new Date().getFullYear()}
-                </Typography>
-            </Box>
+            <Copyright/>
         </Container>
     );
 }
