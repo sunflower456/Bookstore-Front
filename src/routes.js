@@ -4,6 +4,7 @@ import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 // pages
 // import Login from './pages/Login';
 import NotFound from './pages/Page404';
+import Login from './pages/Login';
 
 // ----------------------------------------------------------------------
 
@@ -14,6 +15,7 @@ export default function Router() {
       element: <LogoOnlyLayout />,
       children: [
         { path: '404', element: <NotFound /> },
+        { path: 'login', element: <Login /> },
       ]
     },
 
