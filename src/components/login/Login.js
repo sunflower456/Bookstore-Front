@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(2),
     },
     submitButton: {
-        margin: theme.spacing(3, 0),
+        margin: theme.spacing(3, 0, 0),
     },
     joinButton: {
         backgroundColor: '#4CAF50',
@@ -39,7 +39,6 @@ function Login() {
 
     return (
         <Container component={'main'} maxWidth={'xs'}>
-            <CssBaseline/>
             <div className={classes.centerBox}>
                 <Avatar className={classes.large} alt={'herbBookStore'} src={HerbLogo}/>
                 <Typography className={classes.title} component={'h1'} variant={'h4'}>
@@ -47,49 +46,52 @@ function Login() {
                 </Typography>
                 <form className={classes.form}>
                     <TextField
-                        variant='outlined'
+                        variant="outlined"
                         required
                         fullWidth
-                        margin='dense'
-                        color='primary'
-                        id='id'
-                        label='ID'
-                        type='text'
-                        name='idField'
-                        placeholder='아이디를 입력하세요.'
+                        margin="dense"
+                        color="primary"
+                        id="id"
+                        label="ID"
+                        type="text"
+                        name="idField"
+                        placeholder="아이디를 입력하세요."
                         autoFocus
                     />
                     <TextField
-                        variant='outlined'
+                        variant="outlined"
                         required
                         fullWidth
-                        margin='dense'
-                        color='primary'
-                        id='pw'
-                        label='Password'
-                        type='password'
-                        name='passwordField'
-                        placeholder='비밀번호를 입력하세요.'
+                        margin="dense"
+                        color="primary"
+                        id="pw"
+                        label="Password"
+                        type="password"
+                        name="passwordField"
+                        placeholder="비밀번호를 입력하세요."
                     />
-                    <Button
-                        type='submit'
-                        fullWidth
-                        variant='contained'
-                        color='primary'
-                        className={classes.submitButton}
-                        startIcon={<VpnKeyRounded/>}
-                    >
-                        로그인
-                    </Button>
-                    <Button
-                        type={'button'}
-                        className={classes.joinButton}
-                        fullWidth
-                        variant={'contained'}
-                        startIcon={<CreateRounded/>}
-                    >
-                        회원가입
-                    </Button>
+                    <div align={'center'}>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submitButton}
+                            startIcon={<VpnKeyRounded/>}
+                        >
+                            로그인
+                        </Button>
+                        <span>또는</span>
+                        <Button
+                            type={'button'}
+                            className={classes.joinButton}
+                            fullWidth
+                            variant={'contained'}
+                            startIcon={<CreateRounded/>}
+                        >
+                            회원가입
+                        </Button>
+                    </div>
                 </form>
             </div>
             <Copyright/>
