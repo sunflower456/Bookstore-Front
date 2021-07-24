@@ -1,16 +1,13 @@
-import React, { Component } from 'react';
-import TEST from './features/counter/TEST';
+import React from 'react';
+import {Switch, Route} from 'react-router-dom';
+import {LoginPage} from './features/Pages';
 
-import './App.css';
-
-class App extends Component {
-  render(){
-    return (
-      <div className="App">
-        <TEST />
-      </div>
-    );
-  }
+function App() {
+  return (
+      <Switch>
+          <Route exact path={'/'} component={LoginPage} />
+      </Switch>
+  );
 }
 
 export default App;
