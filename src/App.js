@@ -1,13 +1,13 @@
-import React from 'react';
-import {Switch, Route} from 'react-router-dom';
-import {LoginPage} from './features/Pages';
+// routes
+import Router from './routes';
+// theme
+import ThemeConfig from './theme';
 
-function App() {
+
+export default function App() {
   return (
-      <Switch>
-          <Route exact path={'/'} component={LoginPage} />
-      </Switch>
+      <ThemeConfig>
+        <Router />
+      </ThemeConfig>
   );
 }
-
-export default App;

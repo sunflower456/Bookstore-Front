@@ -1,8 +1,8 @@
-import React from 'react';
-import {Avatar, Button, Container, CssBaseline, makeStyles, TextField, Typography} from '@material-ui/core';
+import {Avatar, Button, Container, TextField, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/styles';
 import {CreateRounded, VpnKeyRounded} from '@material-ui/icons'
 import HerbLogo from '../../static/images/herbLogo.png';
-import Copyright from '../copyright/Copyright';
+import Copyright from '../common/Copyright';
 
 const useStyles = makeStyles((theme) => ({
     centerBox: {
