@@ -1,12 +1,11 @@
 import {Link as RouterLink} from 'react-router-dom';
 // material
 import {styled} from '@material-ui/core/styles';
-import {Box, Button, Container, Paper, Typography} from '@material-ui/core';
+import {Button, Container, Paper, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/styles';
 // components
 import Page from '../components/Page';
 // images
-import logo from '../static/images/herbLogo.png'
 
 // ----------------------------------------------------------------------
 
