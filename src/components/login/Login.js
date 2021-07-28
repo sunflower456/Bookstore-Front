@@ -1,6 +1,6 @@
 import {Avatar, Button, Container, TextField, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/styles';
-import {CreateRounded, VpnKeyRounded} from '@material-ui/icons'
+import {VpnKeyRounded} from '@material-ui/icons'
 import HerbLogo from '../../static/images/herbLogo.png';
 import Copyright from '../common/Copyright';
 
@@ -24,13 +24,6 @@ const useStyles = makeStyles((theme) => ({
     },
     submitButton: {
         margin: theme.spacing(3, 0, 0),
-    },
-    joinButton: {
-        backgroundColor: '#4CAF50',
-        color: '#fff',
-        '&:hover': {
-            backgroundColor: '#388E3C',
-        },
     }
 }));
 
@@ -80,16 +73,6 @@ function Login() {
                             startIcon={<VpnKeyRounded/>}
                         >
                             로그인
-                        </Button>
-                        <span>또는</span>
-                        <Button
-                            type={'button'}
-                            className={classes.joinButton}
-                            fullWidth
-                            variant={'contained'}
-                            startIcon={<CreateRounded/>}
-                        >
-                            회원가입
                         </Button>
                     </div>
                 </form>
