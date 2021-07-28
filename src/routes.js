@@ -6,6 +6,7 @@ import NotFound from './pages/Page404';
 import Login from './pages/Login';
 import DashboardLayout from './layouts/dashboard';
 import Products from './pages/Products';
+import SearchMain from './pages/SearchMain';
 
 // ----------------------------------------------------------------------
 
@@ -18,6 +19,7 @@ export default function Router() {
         { path: '404', element: <NotFound /> },
         { path: 'login', element: <Login /> },
         { path: 'products', element: <Products /> },
+        { path: 'search', element: <SearchMain /> },
       ]
     },
 
