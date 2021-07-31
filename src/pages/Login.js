@@ -21,20 +21,21 @@ const RootStyle = styled(Page)(({theme}) => ({
 const SectionStyle = styled(Card)(({theme}) => ({
     width: '100%',
     maxWidth: 464,
+    height: '80%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     margin: theme.spacing(2, 0, 2, 2)
 }));
 
-const ContentStyle = styled('div')(({theme}) => ({
+const ContentStyle = styled('div')(({ theme }) => ({
     maxWidth: 480,
     margin: 'auto',
     display: 'flex',
-    minHeight: '100vh',
+    minHeight: '80vh',
     flexDirection: 'column',
     justifyContent: 'center',
-    padding: theme.spacing(12, 0)
+    padding: theme.spacing(6, 0)
 }));
 
 // ----------------------------------------------------------------------
@@ -43,16 +44,16 @@ export default function Login() {
     return (
         <RootStyle title="Login | Herb Book Store">
             <Grid container spacing={2}>
-                <Grid item md={10}>
+                <Grid item md={9}>
                     &nbsp;
                 </Grid>
-                <Grid item md={2} xs={12} sx={{textAlign: 'right', pr: '1em'}}>
+                <Grid item md={3} xs={12} sx={{textAlign: 'right', pr: '1em'}}>
                     회원이 아니시라면?
                     <Link underline="none" variant="subtitle2" component={RouterLink} to="/register">
                         &nbsp; 회원가입
                     </Link>
                 </Grid>
-                <Grid item md={3} xs={0}>
+                <Grid item md={3}>
                     <MHidden width="mdDown">
                         <SectionStyle>
                             <Typography variant="h3" sx={{px: 5, mt: 10, mb: 5}}>
@@ -60,15 +61,16 @@ export default function Login() {
                             </Typography>
                             <img
                                 src={bookImage}
-                                alt={'책장에 책이 가득한 사진 - Photo by freddie marriage on Unsplash'}
+                                alt={'책장에 책이 가득한 사진 - by freddie marriage on Unsplash'}
                             />
                         </SectionStyle>
                     </MHidden>
                 </Grid>
                 <Grid item md={9} xs={12}>
-                    <Container maxWidth="sm">
+                    <ContentStyle>
+
                         <LoginPage/>
-                    </Container>
+                    </ContentStyle>
                 </Grid>
             </Grid>
         </RootStyle>
