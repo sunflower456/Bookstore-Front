@@ -1,13 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-import Dashboard from './components/Dashboard';
+// routes
+import Router from './routes';
+// theme
+import ThemeConfig from './theme';
 
-function App() {
+
+export default function App() {
   return (
-    <div className="App">
-      <Dashboard />
-    </div>
+      <ThemeConfig>
+        <Router />
+      </ThemeConfig>
   );
 }
-
-export default App;
