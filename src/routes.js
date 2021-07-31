@@ -1,12 +1,11 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import {Navigate, useRoutes} from 'react-router-dom';
 // layouts
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
 // pages
-// import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Login from './pages/Login';
-import {default as Login2} from './pages/LoginType2';
 import Products from './pages/Products';
+import Register from './pages/Register';
 
 // ----------------------------------------------------------------------
 
@@ -18,6 +17,7 @@ export default function Router() {
       children: [
         { path: '404', element: <NotFound /> },
         { path: 'login', element: <Login /> },
+        { path: 'register', element: <Register /> },
         { path: 'products', element: <Products /> },
       ]
     },
