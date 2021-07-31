@@ -3,7 +3,8 @@ import {Form, Formik} from 'formik';
 import {Navigate} from 'react-router-dom';
 import useStyles from './styles';
 // material
-import {Button, CircularProgress, Step, StepLabel, Stepper} from '@material-ui/core';
+import {Button, Step, StepLabel, Stepper} from '@material-ui/core';
+import {LoadingButton} from '@material-ui/lab';
 // components
 import MemberForm from './Forms/MemberForm';
 import BankAccountForm from './Forms/BankAccountForm';
@@ -12,7 +13,7 @@ import RegistrationReview from './Forms/RegistrationReview';
 import validationSchema from './FormModel/validationSchema'
 import registerFormModel from './FormModel/registerFormModel'
 import formInitialValues from './FormModel/formInitialValues'
-import Welcome from './Welcome';
+import Welcome from './Forms/Welcome';
 
 // 단계 설정
 const steps = ['회원정보 입력', '계좌정보 입력', '가입정보 확인'];
@@ -102,21 +103,15 @@ export default function RegisterForm() {
                                     )}
                                 </div>
                                 <div className={classes.wrapper}>
-                                    <Button
-                                        disabled={isSubmitting}
+                                    <LoadingButton
+                                        loading={isSubmitting}
                                         type="submit"
                                         variant="contained"
                                         color={isLastStep ? 'secondary' : 'primary'}
                                         className={classes.button}
                                     >
                                         {isLastStep ? '등록' : '다음'}
-                                    </Button>
-                                    {isSubmitting && (
-                                        <CircularProgress
-                                            size={18}
-                                            className={classes.buttonProgress}
-                                        />
-                                    )}
+                                    </LoadingButton>
                                 </div>
                             </div>
                         </Form>
