@@ -8,7 +8,6 @@ import {
   ProductList
 } from '../components/_dashboard/products';
 import PRODUCTS from '../_mocks_/products';
-import { Link } from 'react-router-dom' 
 
 // ----------------------------------------------------------------------
 
@@ -35,21 +34,6 @@ export default function EcommerceShop() {
         <Typography variant="h4" sx={{ mb: 15 }}>
           허브 중고 서점
         </Typography>
-        
-
-        <Stack
-          direction="row"
-          flexWrap="wrap-reverse"
-          alignItems="center"
-          justifyContent="flex-end"
-          sx={{ mb: 5 }}
-        >
-          <Link to="/search">
-            <Button variant="contained" size="large" >
-              더 보기
-            </Button>
-          </Link>
-        </Stack>
         <ProductList products={PRODUCTS} />
       </Container>
     </Page>
