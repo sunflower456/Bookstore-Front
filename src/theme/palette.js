@@ -29,21 +29,20 @@ const GREY = {
 };
 
 const PRIMARY = {
-  lighter: '#728cce',
+  lighter: '#728CCE',
   light: '#3D6CA7',
   main: '#405F9D',
   dark: '#3C4F89',
-  darker: '#00366e',
-  contrastText: '#fff'
-
+  darker: '#00366E',
+  contrastText: '#FFF'
 };
 const SECONDARY = {
-  lighter: '#9a67ea',
+  lighter: '#9A67EA',
   light: '#7E57C2',
   main: '#673AB7',
   dark: '#5E35B1',
-  darker: '#320b86',
-  contrastText: '#fff'
+  darker: '#320B86',
+  contrastText: '#FFF'
 };
 const INFO = {
   lighter: '#D6E4FF',
@@ -51,7 +50,7 @@ const INFO = {
   main: '#3366FF',
   dark: '#1939B7',
   darker: '#091A7A',
-  contrastText: '#fff'
+  contrastText: '#FFF'
 };
 const SUCCESS = {
   lighter: '#98EE99',
@@ -59,7 +58,7 @@ const SUCCESS = {
   main: '#66BB6A',
   dark: '#388E3C',
   darker: '#338A3E',
-  contrastText: '#fff'
+  contrastText: '#FFF'
 };
 const WARNING = {
   lighter: '#FFF7CD',
@@ -75,7 +74,7 @@ const ERROR = {
   main: '#FF4842',
   dark: '#B72136',
   darker: '#7A0C2E',
-  contrastText: '#fff'
+  contrastText: '#FFF'
 };
 
 const GRADIENTS = {
@@ -87,7 +86,7 @@ const GRADIENTS = {
 };
 
 const palette = {
-  common: { black: '#000', white: '#fff' },
+  common: { black: '#000', white: '#FFF' },
   primary: { ...PRIMARY },
   secondary: { ...SECONDARY },
   info: { ...INFO },
@@ -98,7 +97,7 @@ const palette = {
   gradients: GRADIENTS,
   divider: GREY[500_24],
   text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
-  background: { paper: '#fff', default: '#fff', neutral: GREY[200] },
+  background: { paper: '#FFF', default: '#FFF', neutral: GREY[200] },
   action: {
     active: GREY[600],
     hover: GREY[500_8],
