@@ -11,6 +11,7 @@ import validationSchema from './FormModel/validationSchema';
 import useStyles from './styles';
 import formInitialValues from './FormModel/formInitialValues';
 import BookSearchForm from './Forms/BookSearchForm';
+import PostForm from './Forms/PostForm';
 
 const steps = ['책정보 입력', '판매글 입력'];
 const {formId, formField} = PostFormModel;
@@ -21,11 +22,7 @@ function _renderStepContent(step) {
         case 0:
             return <BookSearchForm formField={formField}/>;
         case 1:
-            // return <BankAccountForm formField={formField}/>;
-            return <div/>;
-        case 2:
-            // return <RegistrationReview />;
-            return <div/>;
+            return <PostForm formField={formField}/>;
         default:
             return <Navigate to="/404" replace/>;
     }
@@ -90,7 +87,7 @@ export default function PostRegister() {
                                             variant={'contained'}
                                             onClick={_handleBack}
                                             className={classes.button}
-                                            color={'info'}
+                                            color={'inherit'}
                                         >
                                             이전
                                         </Button>
@@ -101,7 +98,7 @@ export default function PostRegister() {
                                         loading={isSubmitting}
                                         type="submit"
                                         variant="contained"
-                                        color={isLastStep ? 'secondary' : 'primary'}
+                                        color={isLastStep ? 'success' : 'primary'}
                                         className={classes.button}
                                     >
                                         {isLastStep ? '등록' : '다음'}
