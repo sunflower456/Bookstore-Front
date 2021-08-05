@@ -12,7 +12,10 @@ const {
         bookAuthor,
         bookPublisher,
         bookPublishingDate,
-        bookPrice
+        bookPrice,
+        bookPhoto,
+        bookStatus,
+        bookDesc
     }
 } = PostFormModel;
 
@@ -31,5 +34,13 @@ export default [
         [bookPublisher.name] : Yup.string().required(`${bookPublisher.requiredErrorMsg}`),
         [bookPublishingDate.name] : Yup.string().required(`${bookPublishingDate.requiredErrorMsg}`),
         [bookPrice.name] : Yup.string().required(`${bookPrice.requiredErrorMsg}`)
+    }),
+    Yup.object().shape({
+        [bookPhoto.name] : Yup.array()
+            .max(3, `${bookPhoto.invalidErrorMsg}`),
+        [bookStatus.name] : Yup.string()
+            .required(`${bookStatus.requiredErrorMsg}`),
+        [bookDesc.name] : Yup.string()
+            .max(500, `${bookDesc.invalidErrorMsg}`)
     })
 ];

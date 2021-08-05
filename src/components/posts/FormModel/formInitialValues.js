@@ -10,7 +10,10 @@ const {
         bookAuthor,
         bookPublisher,
         bookPublishingDate,
-        bookPrice
+        bookPrice,
+        bookPhoto,
+        bookStatus,
+        bookDesc
     }
 } = PostFormModel;
 
@@ -23,5 +26,8 @@ export default {
     [bookAuthor.name] : '토비',
     [bookPublisher.name] : '테스트출판사',
     [bookPublishingDate.name] : '2019.01.01',
-    [bookPrice.name] : '65000'
+    [bookPrice.name] : '65000',
+    [bookPhoto.name] : ['', '', ''],
+    [bookStatus.name] : '',
+    [bookDesc.name] : ''
 };

@@ -47,7 +47,20 @@ export default {
             label: '정가',
             requiredErrorMsg: '정가가 입력되지 않았습니다.'
         },
-
-
+        bookPhoto: {
+            name: 'bookPhoto',
+            label: '책 사진',
+            invalidErrorMsg: '사진은 최대 3장까지 업로드 가능합니다.'
+        },
+        bookStatus: {
+            name: 'bookStatus',
+            label: '책 상태',
+            requiredErrorMsg: '책 상태는 필수 입력 항목입니다.'
+        },
+        bookDesc: {
+            name: 'bookDesc',
+            label: '부가 설명',
+            invalidErrorMsg: '최대 500자까지 입력 가능합니다.'
+        }
     }
 }
