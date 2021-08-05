@@ -107,7 +107,7 @@ export default function BookSearchForm(props) {
                     <Grid item sm={2} textAlign={'center'}>
                         <LoadingButton
                             variant={'contained'}
-                            color={'success'}
+                            color={'info'}
                             sx={{height: 'inherit', marginTop: '16px'}}
                         >
                             검색
