@@ -12,7 +12,7 @@ import useStyles from './styles';
 import formInitialValues from './FormModel/formInitialValues';
 import BookSearchForm from './Forms/BookSearchForm';
 
-const steps = ['책정보 입력', '판매글 입력', '등록 전 확인'];
+const steps = ['책정보 입력', '판매글 입력'];
 const {formId, formField} = PostFormModel;
 
 // step render
@@ -63,7 +63,7 @@ export default function PostRegister() {
     return (
         <React.Fragment>
             <Paper variant={'elevation'} elevation={6}>
-                <Stepper activeStep={activeStep} className={classes.stepper}>
+                <Stepper activeStep={activeStep} className={classes.stepper} alternativeLabel>
                     {steps.map(label => (
                         <Step key={label}>
                             <StepLabel>{label}</StepLabel>

@@ -16,12 +16,12 @@ const {
 
 export default {
     [postTitle.name] : '',
-    [bookSearchType.name] : '',
-    [bookSearchKeyword.name] : '',
-    [bookISBN.name] : '',
-    [bookTitle.name] : '',
-    [bookAuthor.name] : '',
-    [bookPublisher.name] : '',
-    [bookPublishingDate.name] : '',
-    [bookPrice.name] : ''
+    [bookSearchType.name] : 'name',
+    [bookSearchKeyword.name] : '토비의',
+    [bookISBN.name] : '123456',
+    [bookTitle.name] : '토비의 스프링',
+    [bookAuthor.name] : '토비',
+    [bookPublisher.name] : '테스트출판사',
+    [bookPublishingDate.name] : '2019.01.01',
+    [bookPrice.name] : '65000'
 };
