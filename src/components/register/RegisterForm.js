@@ -77,7 +77,7 @@ export default function RegisterForm() {
                 ))}
             </Stepper>
             <React.Fragment>
-                {activeStep == steps.length ? (
+                {activeStep === steps.length ? (
                     <Welcome/>
                 ) : (<Formik
                     initialValues={formInitialValues}
