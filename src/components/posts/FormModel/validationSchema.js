@@ -14,6 +14,7 @@ const {
         bookPublishingDate,
         bookPrice,
         bookPhoto,
+        bookSellPrice,
         bookStatus,
         bookDesc
     }
@@ -37,7 +38,10 @@ export default [
     }),
     Yup.object().shape({
         [bookPhoto.name] : Yup.array()
-            .max(3, `${bookPhoto.invalidErrorMsg}`),
+            .max(5, `${bookPhoto.invalidErrorMsg}`),
+        [bookSellPrice.name] : Yup.number()
+            .required(`${bookSellPrice.requiredErrorMsg}`)
+            .min(1, `${bookSellPrice.invalidErrorMsg}`),
         [bookStatus.name] : Yup.string()
             .required(`${bookStatus.requiredErrorMsg}`),
         [bookDesc.name] : Yup.string()

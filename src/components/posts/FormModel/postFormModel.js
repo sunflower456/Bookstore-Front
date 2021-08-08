@@ -52,6 +52,13 @@ export default {
             label: '책 사진',
             invalidErrorMsg: '사진은 최대 3장까지 업로드 가능합니다.'
         },
+        bookSellPrice: {
+            name: 'bookSellPrice',
+            label: '판매 가격 *',
+            placeMsg: '판매 가격을 입력해주세요.',
+            requiredErrorMsg: '가격은 필수 입력입니다.',
+            invalidErrorMsg: '가격은 0원 이하로 설정할 수 없습니다.'
+        },
         bookStatus: {
             name: 'bookStatus',
             label: '책 상태',

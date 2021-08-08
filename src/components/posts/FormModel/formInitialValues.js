@@ -12,6 +12,7 @@ const {
         bookPublishingDate,
         bookPrice,
         bookPhoto,
+        bookSellPrice,
         bookStatus,
         bookDesc
     }
@@ -28,6 +29,7 @@ export default {
     [bookPublishingDate.name] : '2019.01.01',
     [bookPrice.name] : '65000',
     [bookPhoto.name] : ['', '', ''],
+    [bookSellPrice.name] : '50000',
     [bookStatus.name] : '',
     [bookDesc.name] : ''
 };
