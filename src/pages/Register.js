@@ -27,7 +27,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
-  margin: theme.spacing(8, 0, 2, 2)
+  margin: theme.spacing(10, 0, 2, 2)
 }));
 
 const ContentStyle = styled('div')(({ theme }) => ({
@@ -46,15 +46,6 @@ export default function Register() {
   return (
     <RootStyle title="회원가입 | Herb Book Store">
       <Grid container spacing={2}>
-        <Grid item md={9}>
-          &nbsp;
-        </Grid>
-        <Grid item md={3} xs={12} sx={{textAlign: 'right', pr: '1em'}}>
-          이미 회원이시라면? &nbsp;
-          <Link underline="none" variant="subtitle2" component={RouterLink} to="/login">
-            로그인
-          </Link>
-        </Grid>
         <Grid item md={3}>
           <MHidden width="mdDown">
             <SectionStyle>
@@ -96,6 +87,12 @@ export default function Register() {
                 .
               </Typography>
             </ContentStyle>
+            <Container sx={{textAlign: 'right', pr: '1em'}}>
+              이미 회원이시라면? &nbsp;
+              <Link underline="none" variant="subtitle2" component={RouterLink} to="/login">
+                로그인
+              </Link>
+            </Container>
           </Container>
         </Grid>
       </Grid>

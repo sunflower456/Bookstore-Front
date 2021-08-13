@@ -29,42 +29,36 @@ const GREY = {
 };
 
 const PRIMARY = {
-  // lighter: '#C8FACD',
-  // light: '#5BE584',
-  // main: '#00AB55',
-  // dark: '#007B55',
-  // darker: '#005249',
-  // contrastText: '#fff'
-  lighter: '#4dd0e1',
-  light: '#26c6da',
-  main: '#00BCD4',
-  dark: '#0097a7',
-  darker: '#00838f',
-  contrastText: '#fff'
+  lighter: '#728CCE',
+  light: '#3D6CA7',
+  main: '#405F9D',
+  dark: '#3C4F89',
+  darker: '#00366E',
+  contrastText: '#FFF'
 };
 const SECONDARY = {
+  lighter: '#9A67EA',
+  light: '#7E57C2',
+  main: '#673AB7',
+  dark: '#5E35B1',
+  darker: '#320B86',
+  contrastText: '#FFF'
+};
+const INFO = {
   lighter: '#D6E4FF',
   light: '#84A9FF',
   main: '#3366FF',
   dark: '#1939B7',
   darker: '#091A7A',
-  contrastText: '#fff'
-};
-const INFO = {
-  lighter: '#D0F2FF',
-  light: '#74CAFF',
-  main: '#1890FF',
-  dark: '#0C53B7',
-  darker: '#04297A',
-  contrastText: '#fff'
+  contrastText: '#FFF'
 };
 const SUCCESS = {
-  lighter: '#E9FCD4',
-  light: '#AAF27F',
-  main: '#54D62C',
-  dark: '#229A16',
-  darker: '#08660D',
-  contrastText: GREY[800]
+  lighter: '#98EE99',
+  light: '#81C784',
+  main: '#66BB6A',
+  dark: '#388E3C',
+  darker: '#338A3E',
+  contrastText: '#FFF'
 };
 const WARNING = {
   lighter: '#FFF7CD',
@@ -80,7 +74,7 @@ const ERROR = {
   main: '#FF4842',
   dark: '#B72136',
   darker: '#7A0C2E',
-  contrastText: '#fff'
+  contrastText: '#FFF'
 };
 
 const GRADIENTS = {
@@ -92,7 +86,7 @@ const GRADIENTS = {
 };
 
 const palette = {
-  common: { black: '#000', white: '#fff' },
+  common: { black: '#000', white: '#FFF' },
   primary: { ...PRIMARY },
   secondary: { ...SECONDARY },
   info: { ...INFO },
@@ -103,7 +97,7 @@ const palette = {
   gradients: GRADIENTS,
   divider: GREY[500_24],
   text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
-  background: { paper: '#fff', default: '#fff', neutral: GREY[200] },
+  background: { paper: '#FFF', default: '#FFF', neutral: GREY[200] },
   action: {
     active: GREY[600],
     hover: GREY[500_8],
