@@ -28,7 +28,7 @@ export default {
     [bookPublisher.name] : '테스트출판사',
     [bookPublishingDate.name] : '2019.01.01',
     [bookPrice.name] : '65000',
-    [bookPhoto.name] : ['', '', ''],
+    [bookPhoto.name] : [],
     [bookSellPrice.name] : '50000',
     [bookStatus.name] : '',
     [bookDesc.name] : ''
