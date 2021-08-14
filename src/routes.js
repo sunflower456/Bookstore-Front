@@ -9,6 +9,7 @@ import Products from './pages/Products';
 import Register from './pages/Register';
 import SearchMain from './pages/SearchMain';
 import Post from './pages/Post';
+import Detail from './pages/Detail';
 
 // ----------------------------------------------------------------------
 
@@ -29,10 +30,11 @@ export default function Router() {
       children: [
         { path: '/', element: <Products /> },
         { path: 'search', element: <SearchMain /> },
-        { path: 'addPost', element: <Post />}
+        { path: 'addPost', element: <Post />},
+        { path : ':id', element: <Detail />}
       ]
     },
 
-    { path: '*', element: <Navigate to="/404" replace /> }
+    // { path: '*', element: <Navigate to="/404" replace /> }
   ]);
 }
