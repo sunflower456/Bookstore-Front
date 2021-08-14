@@ -1,33 +1,30 @@
 import React, {useState} from 'react';
-import {Form, Formik} from 'formik';
 import {Navigate} from 'react-router-dom';
-import useStyles from './styles';
+import {Form, Formik} from 'formik';
 // material
-import {Button, Step, StepLabel, Stepper} from '@material-ui/core';
+import {Button, Paper, Step, StepLabel, Stepper} from '@material-ui/core';
 import {LoadingButton} from '@material-ui/lab';
 // components
-import MemberForm from './Forms/MemberForm';
-import BankAccountForm from './Forms/BankAccountForm';
-import RegistrationReview from './Forms/RegistrationReview';
-// formModels
-import validationSchema from './FormModel/validationSchema'
-import registerFormModel from './FormModel/registerFormModel'
-import formInitialValues from './FormModel/formInitialValues'
-import Welcome from './Forms/Welcome';
+import PostFormModel from './FormModel/postFormModel';
+import validationSchema from './FormModel/validationSchema';
+// style
+import useStyles from './styles';
+import formInitialValues from './FormModel/formInitialValues';
+import BookSearchForm from './Forms/BookSearchForm';
+import PostForm from './Forms/PostForm';
 
-// 단계 설정
-const steps = ['회원정보 입력', '계좌정보 입력', '가입정보 확인'];
-const {formId, formField} = registerFormModel;
+const steps = ['책정보 입력', '판매글 입력'];
+const {formId, formField} = PostFormModel;
 
 // step render
 function _renderStepContent(step) {
     switch (step) {
         case 0:
-            return <MemberForm formField={formField}/>;
+            return <BookSearchForm formField={formField}/>;
         case 1:
-            return <BankAccountForm formField={formField}/>;
+            return <PostForm formField={formField}/>;
         case 2:
-            return <RegistrationReview />;
+            return <Navigate to="/products" replace/>;
         default:
             return <Navigate to="/404" replace/>;
     }
@@ -35,18 +32,13 @@ function _renderStepContent(step) {
 
 // ----------------------------------------------------------------------
 
-export default function RegisterForm() {
+export default function PostRegister() {
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const currentValidationSchema = validationSchema[activeStep];
     const isLastStep = activeStep === steps.length - 1;
 
-    function _sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     async function _submitForm(values, actions) {
-        await _sleep(1000);
         alert(JSON.stringify(values, null, 2));
         actions.setSubmitting(false);
 
@@ -56,6 +48,7 @@ export default function RegisterForm() {
     function _handleSubmit(values, actions) {
         if (isLastStep) {
             _submitForm(values, actions);
+
         } else {
             setActiveStep(activeStep + 1);
             actions.setTouched({});
@@ -69,55 +62,52 @@ export default function RegisterForm() {
 
     return (
         <React.Fragment>
-            <Stepper activeStep={activeStep} className={classes.stepper}>
-                {steps.map(label => (
-                    <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
-                    </Step>
-                ))}
-            </Stepper>
+            <Paper variant={'elevation'} elevation={6}>
+                <Stepper activeStep={activeStep} className={classes.stepper} alternativeLabel>
+                    {steps.map(label => (
+                        <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                        </Step>
+                    ))}
+                </Stepper>
+            </Paper>
             <React.Fragment>
-                {activeStep === steps.length ? (
-                    <Welcome/>
-                ) : (<Formik
-                    initialValues={formInitialValues}
-                    validationSchema={currentValidationSchema}
-                    onSubmit={_handleSubmit}
-                >
-                    {({isSubmitting}) => (
-                        <Form id={formId}>
-                            {_renderStepContent(activeStep)}
+                <Formik
+                        initialValues={formInitialValues}
+                        validationSchema={currentValidationSchema}
+                        onSubmit={_handleSubmit}
+                    >
+                        {({isSubmitting}) => (
+                            <Form id={formId}>
+                                {_renderStepContent(activeStep)}
 
-                            <div className={classes.buttonArea}>
-                                <div className={classes.wrapper}>
+                                <div className={classes.buttonArea}>
                                     {activeStep !== 0 && (
                                         <Button
                                             type={'button'}
                                             variant={'contained'}
                                             onClick={_handleBack}
                                             className={classes.button}
-                                            color={'info'}
+                                            color={'inherit'}
                                         >
                                             이전
                                         </Button>
                                     )}
-                                </div>
-                                <div className={classes.wrapper}>
+
+
                                     <LoadingButton
                                         loading={isSubmitting}
                                         type="submit"
                                         variant="contained"
-                                        color={isLastStep ? 'secondary' : 'primary'}
+                                        color={isLastStep ? 'success' : 'primary'}
                                         className={classes.button}
                                     >
                                         {isLastStep ? '등록' : '다음'}
                                     </LoadingButton>
                                 </div>
-                            </div>
-                        </Form>
-                    )}
-                </Formik>
-                )}
+                            </Form>
+                        )}
+                    </Formik>
             </React.Fragment>
         </React.Fragment>
     );
