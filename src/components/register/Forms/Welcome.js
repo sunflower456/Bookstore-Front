@@ -1,7 +1,6 @@
 import {Button, Container, Typography} from '@material-ui/core';
 import {Link as RouterLink} from 'react-router-dom';
 import useStyles from '../styles';
-import palette from '../../../theme/palette';
 
 export default function Welcome() {
     const classes = useStyles();

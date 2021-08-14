@@ -37,14 +37,13 @@ export default [
         [bookPrice.name] : Yup.string().required(`${bookPrice.requiredErrorMsg}`)
     }),
     Yup.object().shape({
-        [bookPhoto.name] : Yup.array()
-            .max(5, `${bookPhoto.invalidErrorMsg}`),
         [bookSellPrice.name] : Yup.number()
             .required(`${bookSellPrice.requiredErrorMsg}`)
             .min(1, `${bookSellPrice.invalidErrorMsg}`),
         [bookStatus.name] : Yup.string()
             .required(`${bookStatus.requiredErrorMsg}`),
         [bookDesc.name] : Yup.string()
-            .max(500, `${bookDesc.invalidErrorMsg}`)
+            .max(500, `${bookDesc.invalidErrorMsg}`),
+        [bookPhoto.name] : Yup.array().max(5, `${bookPhoto.invalidErrorMsg}`)
     })
 ];

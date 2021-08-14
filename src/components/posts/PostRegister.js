@@ -23,6 +23,8 @@ function _renderStepContent(step) {
             return <BookSearchForm formField={formField}/>;
         case 1:
             return <PostForm formField={formField}/>;
+        case 2:
+            return <Navigate to="/products" replace/>;
         default:
             return <Navigate to="/404" replace/>;
     }
@@ -46,6 +48,7 @@ export default function PostRegister() {
     function _handleSubmit(values, actions) {
         if (isLastStep) {
             _submitForm(values, actions);
+
         } else {
             setActiveStep(activeStep + 1);
             actions.setTouched({});
@@ -69,9 +72,7 @@ export default function PostRegister() {
                 </Stepper>
             </Paper>
             <React.Fragment>
-                {activeStep === steps.length ? (
-                    <div>완료!</div>
-                ) : (<Formik
+                <Formik
                         initialValues={formInitialValues}
                         validationSchema={currentValidationSchema}
                         onSubmit={_handleSubmit}
@@ -107,7 +108,6 @@ export default function PostRegister() {
                             </Form>
                         )}
                     </Formik>
-                )}
             </React.Fragment>
         </React.Fragment>
     );

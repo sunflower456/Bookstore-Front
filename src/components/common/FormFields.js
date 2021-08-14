@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {
     Box,
-    Container,
     FormControl,
     FormHelperText,
     InputLabel,
     MenuItem,
-    Select, Stack,
+    Select,
+    Stack,
     TextField,
     Typography
 } from '@material-ui/core';
@@ -14,7 +14,8 @@ import PropTypes from 'prop-types';
 import {useDropzone} from 'react-dropzone';
 import {makeStyles} from '@material-ui/styles';
 
-const {useField} = require('formik');
+import {useField} from 'formik';
+
 
 const useStyles = makeStyles((theme) => ({
     thumbsContainer: {
@@ -146,11 +147,18 @@ function ImageUploadField(props) {
     } = useDropzone({
         accept: 'image/*',
         onDrop: acceptedFiles => {
-            console.log(`업로드 파일 확인 : ${acceptedFiles}`);
-            setFiles(acceptedFiles.map(file => Object.assign(file, {
-                preview: URL.createObjectURL(file),
-            })));
-            field.value = acceptedFiles;
+            if (field.value.length > 0) {
+                field.value.splice(0, field.value.length);
+            }
+            setFiles(acceptedFiles.map(file => {
+                    field.value.push(file.path);
+                    return Object.assign(file, {
+                            preview: URL.createObjectURL(file),
+                            value: file.path
+                        }
+                    );
+                }
+            ));
         },
         maxFiles: 5,
     });
@@ -177,9 +185,7 @@ function ImageUploadField(props) {
                     {...getRootProps()}
                     sx={{p: 2, border: '1px dashed gray', textAlign: 'center'}}
                 >
-                    <input {...getInputProps()}
-
-                    />
+                    <input {...getInputProps()} />
                     <Typography component={'p'} variant={'subtitle1'}>
                         책 상태를 확인할 수 있는 사진을 업로드해주세요.
                     </Typography>
