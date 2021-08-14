@@ -48,11 +48,12 @@ const products = [...Array(24)].map((_, index) => {
   const setIndex = index + 1;
 
   return {
+    index : index,
     id: faker.datatype.uuid(),
     cover: mockImgProduct(setIndex),
     name: PRODUCT_NAME[index],
-    price: faker.datatype.number({ min: 4, max: 99, precision: 0.01 }),
-    priceSale: setIndex % 3 ? null : faker.datatype.number({ min: 19, max: 29, precision: 0.01 }),
+    price: faker.datatype.number({ min: 10000, max: 50000, precision: 1000 }),
+    priceSale: faker.datatype.number({ min: 5000, max: 30000, precision: 1000 }),
     colors:
       (setIndex === 1 && PRODUCT_COLOR.slice(0, 2)) ||
       (setIndex === 2 && PRODUCT_COLOR.slice(1, 3)) ||

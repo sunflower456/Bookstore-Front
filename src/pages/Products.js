@@ -8,6 +8,7 @@ import {
   ProductList
 } from '../components/_dashboard/products';
 import PRODUCTS from '../_mocks_/products';
+import Searchbar from '../layouts/dashboard/Searchbar';
 import { Link } from 'react-router-dom' 
 
 // ----------------------------------------------------------------------
@@ -32,11 +33,11 @@ export default function EcommerceShop() {
   return (
     <Page title="허브중고서점">
       <Container>
-        <Typography variant="h4" sx={{ mb: 15 }}>
+        <Typography variant="h1" sx={{ mb: 15 }} >
           허브 중고 서점
         </Typography>
-        
-
+        <Button size="large" variant="contained" style={{marginBottom:"30px"}}>중고책 등록</Button>
+        <Searchbar />
         <Stack
           direction="row"
           flexWrap="wrap-reverse"
@@ -44,11 +45,6 @@ export default function EcommerceShop() {
           justifyContent="flex-end"
           sx={{ mb: 5 }}
         >
-          <Link to="/search">
-            <Button variant="contained" size="large" >
-              더 보기
-            </Button>
-          </Link>
         </Stack>
         <ProductList products={PRODUCTS} />
       </Container>
