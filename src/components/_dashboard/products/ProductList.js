@@ -14,7 +14,7 @@ ProductList.propTypes = {
   products: PropTypes.array.isRequired
 };
 export default function ProductList({ products, ...other }) {
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState(PRODUCTS)
   const [page, setPage] = useState(1)
 
 
@@ -25,6 +25,7 @@ export default function ProductList({ products, ...other }) {
 
     if (Math.round(scrollTop + innerHeight) >= scrollHeight) {
       setItems(items.concat(PRODUCTS));
+      console.log(items);
       setPage((prevPage) => prevPage + 1);
     }
   }, [page, items]);
@@ -40,8 +41,8 @@ export default function ProductList({ products, ...other }) {
 
   return (
     <Grid container spacing={3} {...other}>
-        {items.map((product) => (
-          <Grid key={product.id} item xs={12} sm={6} md={3}>
+        {items.map((product, idx) => (
+          <Grid key={idx} item xs={12} sm={6} md={3}>
             <ShopProductCard product={product} id={product.index} />
           </Grid>
         ))} 
