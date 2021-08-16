@@ -1,12 +1,10 @@
-import { Link as RouterLink } from 'react-router-dom';
+import {Link as RouterLink} from 'react-router-dom';
 // material
-import { styled } from '@material-ui/core/styles';
-import {Box, Card, Link, Container, Typography, Grid} from '@material-ui/core';
-// layouts
-import AuthLayout from '../layouts/AuthLayout';
+import {styled} from '@material-ui/core/styles';
+import {Box, Card, Container, Grid, Link, Typography} from '@material-ui/core';
 // components
 import Page from '../components/Page';
-import { MHidden } from '../components/@material-extend';
+import {MHidden} from '../components/@material-extend';
 import RegisterForm from '../components/register/RegisterForm';
 // images
 import registerImage from '../static/images/book_joinus.jpg'
