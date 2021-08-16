@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 // material
 import { Container, Typography, Button , Stack} from '@material-ui/core';
 // components
@@ -9,7 +9,6 @@ import {
 } from '../components/_dashboard/products';
 import PRODUCTS from '../_mocks_/products';
 import Searchbar from '../layouts/dashboard/Searchbar';
-import { Link } from 'react-router-dom' 
 
 // ----------------------------------------------------------------------
 

@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useCallback, forwardRef, useImperativeHandle }  from 'react';
-import { useInView } from "react-intersection-observer"
+import React, { useState, useEffect, useCallback }  from 'react';
 
 // material
 import { Grid } from '@material-ui/core';
-import PRODUCTS from '../../../_mocks_/products';
 import ShopProductCard from './ProductCard';
 // ----------------------------------------------------------------------
 
