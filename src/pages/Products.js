@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 // material
 import { Container, Typography, Button , Stack} from '@material-ui/core';
 // components
@@ -15,7 +15,10 @@ import { Link } from 'react-router-dom'
 
 export default function EcommerceShop() {
   const [openFilter, setOpenFilter] = useState(false);
+  const [products, setProducts] = useState(PRODUCTS);
+  const [input, setInput] = useState();
 
+  
   const formik = useFormik({
     initialValues: {
       gender: '',
@@ -30,6 +33,20 @@ export default function EcommerceShop() {
   });
 
 
+  const filterProducts = () => {
+
+    if(input.input == null || input.input == ''){
+      setProducts(PRODUCTS);
+    } else {
+      setProducts(PRODUCTS.filter(product => product.name.indexOf(input.input) > -1));
+    }
+    
+    
+  }
+
+  const searchInput = (e) => {
+    setInput({input : e.target.value});
+  };
   return (
     <Page title="허브중고서점">
       <Container>
@@ -37,7 +54,7 @@ export default function EcommerceShop() {
           허브 중고 서점
         </Typography>
         <Button size="large" variant="contained" style={{marginBottom:"30px"}}>중고책 등록</Button>
-        <Searchbar />
+        <Searchbar handleFilter={filterProducts} handleChange={searchInput} />
         <Stack
           direction="row"
           flexWrap="wrap-reverse"
@@ -46,7 +63,8 @@ export default function EcommerceShop() {
           sx={{ mb: 5 }}
         >
         </Stack>
-        <ProductList products={PRODUCTS} />
+        <ProductList products={products} />
+        
       </Container>
     </Page>
   );
