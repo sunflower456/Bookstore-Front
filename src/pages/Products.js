@@ -1,5 +1,4 @@
-import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 // material
 import { Container, Typography, Button , Stack} from '@material-ui/core';
 // components
@@ -16,31 +15,22 @@ export default function EcommerceShop() {
   const [openFilter, setOpenFilter] = useState(false);
   const [products, setProducts] = useState(PRODUCTS);
   const [input, setInput] = useState();
+  const childRef = useRef();
 
-  
-  const formik = useFormik({
-    initialValues: {
-      gender: '',
-      category: '',
-      colors: '',
-      priceRange: '',
-      rating: ''
-    },
-    onSubmit: () => {
-      setOpenFilter(false);
-    }
-  });
 
 
   const filterProducts = () => {
-
+    
     if(input.input == null || input.input == ''){
+      console.log('here');
       setProducts(PRODUCTS);
     } else {
-      setProducts(PRODUCTS.filter(product => product.name.indexOf(input.input) > -1));
+      console.log(input.input);
+      console.log(products.filter(product => product.name.indexOf(input.input) > -1));
+      setProducts(products.filter(product => product.name.indexOf(input.input) > -1));
+      console.log('parent', products);
     }
-    
-    
+    childRef.current.reload();
   }
 
   const searchInput = (e) => {
@@ -62,7 +52,7 @@ export default function EcommerceShop() {
           sx={{ mb: 5 }}
         >
         </Stack>
-        <ProductList products={products} />
+        <ProductList products={products} ref={childRef}/>
         
       </Container>
     </Page>
