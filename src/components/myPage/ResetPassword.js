@@ -62,7 +62,7 @@ export default function ResetPassword() {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={onClickClose}>취소</Button>
+                        <Button onClick={onClickClose} color={'inherit'}>취소</Button>
                         <Button onClick={onClickCloseAndOpenReset} autoFocus color={'error'}>
                             초기화
                         </Button>
@@ -95,8 +95,8 @@ export default function ResetPassword() {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleResetFormClose}>취소</Button>
-                        <Button onClick={handleResetFormClose} autoFocus color={'success'}>
+                        <Button onClick={handleResetFormClose} color={'inherit'}>취소</Button>
+                        <Button onClick={handleResetFormClose} autoFocus>
                             초기화
                         </Button>
                     </DialogActions>
