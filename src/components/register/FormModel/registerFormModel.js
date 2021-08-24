@@ -2,7 +2,7 @@ export default {
     formId: 'registerForm',
     formField: {
         id: {
-            name: 'id',
+            name: 'identity',
             label: '아이디 *',
             placeMsg: '사용할 아이디를 입력하세요.',
             requiredErrorMsg: '아이디는 필수 입력입니다.',
@@ -20,7 +20,7 @@ export default {
             requiredErrorMsg: '비밀번호는 빈 값이 허용되지 않습니다.'
         },
         memberName: {
-            name: 'memberName',
+            name: 'name',
             label: '이름 *',
             placeMsg: '이름을 입력해주세요.',
             requiredErrorMsg: '이름은 필수 입력입니다.'

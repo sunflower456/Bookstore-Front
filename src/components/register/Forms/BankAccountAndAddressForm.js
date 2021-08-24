@@ -4,23 +4,19 @@ import React from 'react';
 
 const banks = [
     {
-        value: undefined,
-        label: '선택없음'
-    },
-    {
-        value: 'K',
+        value: '국민은행',
         label: '국민은행'
     },
     {
-        value: 'U',
+        value: '우리은행',
         label: '우리은행'
     },
     {
-        value: 'H',
+        value: '하나은행',
         label: '하나은행'
     },
     {
-        value: 'S',
+        value: '신한은행',
         label: '신한은행'
     }
 ];
@@ -40,7 +36,7 @@ export default function BankAccountAndAddressForm(props) {
     return (
 
         <Grid container rowGap={2}>
-            <Grid xs={12} sm={12}>
+            <Grid item xs={12} sm={12}>
                 <Typography variant={'h6'}>
                     계좌정보
                 </Typography>
@@ -69,7 +65,7 @@ export default function BankAccountAndAddressForm(props) {
                     placeholder={bankAccountNumber.placeMsg}
                 />
             </Grid>
-            <Grid xs={12} sm={12}>
+            <Grid item xs={12} sm={12}>
                 <Typography variant={'h6'}>
                     주소
                 </Typography>

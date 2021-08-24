@@ -4,15 +4,16 @@ import {useFormikContext} from 'formik';
 export default function RegistrationReview() {
     const { values: formValues } = useFormikContext();
     const {
-        id,
-        password,
-        passwordCheck,
-        memberName,
+        identity,
+        name,
         phone,
         email,
         bankName,
         accountOwner,
-        accountNumber
+        accountNumber,
+        zipNo,
+        roadAddr,
+        roadAddrDetail
     } = formValues;
 
     /**
@@ -43,7 +44,7 @@ export default function RegistrationReview() {
                     <Typography>아이디 : </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography>{id}</Typography>
+                    <Typography>{identity}</Typography>
                 </Grid>
             </Grid>
             <Grid container>
@@ -51,7 +52,7 @@ export default function RegistrationReview() {
                     <Typography>이름 : </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography>{memberName}</Typography>
+                    <Typography>{name}</Typography>
                 </Grid>
             </Grid>
             <Grid container>
@@ -93,6 +94,23 @@ export default function RegistrationReview() {
                 </Grid>
                 <Grid item xs={6}>
                     <Typography>{accountNumber}</Typography>
+                </Grid>
+            </Grid>
+            <Typography variant={'h6'}>기본 주소</Typography>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Typography>우편번호 : </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography>{zipNo}</Typography>
+                </Grid>
+            </Grid>
+            <Grid container>
+                <Grid item xs={6}>
+                    <Typography>주소 : </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <Typography>{roadAddr + " " + roadAddrDetail}</Typography>
                 </Grid>
             </Grid>
         </Grid>
