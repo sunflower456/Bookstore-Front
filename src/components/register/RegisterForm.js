@@ -7,7 +7,7 @@ import {Button, Step, StepLabel, Stepper} from '@material-ui/core';
 import {LoadingButton} from '@material-ui/lab';
 // components
 import MemberForm from './Forms/MemberForm';
-import BankAccountForm from './Forms/BankAccountForm';
+import BankAccountAndAddressForm from './Forms/BankAccountAndAddressForm';
 import RegistrationReview from './Forms/RegistrationReview';
 // formModels
 import validationSchema from './FormModel/validationSchema'
@@ -16,7 +16,7 @@ import formInitialValues from './FormModel/formInitialValues'
 import Welcome from './Forms/Welcome';
 
 // 단계 설정
-const steps = ['회원정보 입력', '계좌정보 입력', '가입정보 확인'];
+const steps = ['회원정보 입력', '계좌정보 및 주소 입력', '가입정보 확인'];
 const {formId, formField} = registerFormModel;
 
 // step render
@@ -25,7 +25,7 @@ function _renderStepContent(step) {
         case 0:
             return <MemberForm formField={formField}/>;
         case 1:
-            return <BankAccountForm formField={formField}/>;
+            return <BankAccountAndAddressForm formField={formField}/>;
         case 2:
             return <RegistrationReview />;
         default:

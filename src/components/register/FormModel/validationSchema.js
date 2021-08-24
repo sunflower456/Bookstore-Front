@@ -11,12 +11,16 @@ const {
         email,
         bankName,
         bankAccountOwner,
-        bankAccountNumber
+        bankAccountNumber,
+        zipNumber,
+        roadAddress,
+        roadAddressDetail
     }
 } = registerFormModel;
 
 const emailRegEx = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/; // 이메일 형식
 const accountNumEx = /\d{12,14}/gm;
+const zipNoRegEx = /\d{5}/;
 
 export default [
     Yup.object().shape({
@@ -49,6 +53,10 @@ export default [
             .test('numberLengthCheck', `${bankAccountNumber.invalidErrorMsg}`,(accountNumber) => {
                 let length = accountNumber == null ? 0 : accountNumber.length;
                 return length >= 12 && length <= 14
-            })
+            }),
+        [zipNumber.name]: Yup.string().required(`${zipNumber.requiredErrorMsg}`)
+            .matches(zipNoRegEx, `${zipNumber.invalidErrorMsg}`),
+        [roadAddress.name]: Yup.string().required(`${roadAddress.requiredErrorMsg}`),
+        [roadAddressDetail.name]: Yup.string().required(`${roadAddressDetail.requiredErrorMsg}`),
     })
 ];
