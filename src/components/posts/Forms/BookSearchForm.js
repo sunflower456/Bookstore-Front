@@ -1,4 +1,5 @@
 import {
+    Avatar,
     Divider,
     Grid,
     ListItem,
@@ -36,15 +37,17 @@ export default function BookSearchForm(props) {
     const classes = useStyles();
     const {
         formField: {
-            postTitle,
-            bookSearchType,
-            bookSearchKeyword,
-            bookISBN,
+            title,
+            bookIsbn,
             bookTitle,
             bookAuthor,
             bookPublisher,
-            bookPublishingDate,
-            bookPrice
+            bookThumbnail,
+            bookListPrice,
+            bookPubDate,
+            bookSummary,
+            bookSearchType,
+            bookSearchKeyword
         }
     } = props;
 
@@ -56,7 +59,7 @@ export default function BookSearchForm(props) {
                 <ListItemButton>
                     <ListItemText
                         primary={`책 제목 ${index + 1}`}
-                        secondary={`${bookISBN.label} / ${bookAuthor.label} / ${new Date().toLocaleString()}`}
+                        secondary={`${bookIsbn.label} / ${bookAuthor.label} / ${new Date().toLocaleString()}`}
                     />
                 </ListItemButton>
             </ListItem>
@@ -68,8 +71,8 @@ export default function BookSearchForm(props) {
             <Paper className={classes.postTitle} elevation={6}>
                 <InputField
                     fullWidth
-                    name={postTitle.name}
-                    label={postTitle.label}
+                    name={title.name}
+                    label={title.label}
                     variant={'outlined'}
                 />
             </Paper>
@@ -144,42 +147,59 @@ export default function BookSearchForm(props) {
                     justifyContent={'center'}
                 >
                     <InputField
-                        name={bookISBN.name}
-                        label={bookISBN.label}
+                        name={bookIsbn.name}
+                        label={bookIsbn.label}
                         disabled
-                    >
-                    </InputField>
+                    />
+
                     <InputField
                         name={bookTitle.name}
                         label={bookTitle.label}
                         disabled
-                    >
-                    </InputField>
+                    />
+
                     <InputField
                         name={bookAuthor.name}
                         label={bookAuthor.label}
                         disabled
-                    >
-                    </InputField>
+                    />
+
                     <InputField
                         name={bookPublisher.name}
                         label={bookPublisher.label}
                         disabled
-                    >
-                    </InputField>
+                    />
+
                     <InputField
-                        name={bookPublishingDate.name}
-                        label={bookPublishingDate.label}
+                        name={bookPubDate.name}
+                        label={bookPubDate.label}
+                        disabled
+                    />
+
+                    <InputField
+                        name={bookListPrice.name}
+                        label={bookListPrice.label}
+                        disabled
+                    />
+
+                    <InputField
+                        name={bookThumbnail.name}
+                        label={bookThumbnail.label}
                         disabled
                     >
                     </InputField>
+
                     <InputField
-                        name={bookPrice.name}
-                        label={bookPrice.label}
+                        multiline
+                        maxRows={4}
+                        name={bookSummary.name}
+                        label={bookSummary.label}
                         disabled
-                    >
-                    </InputField>
+                    />
                 </Grid>
+                <div>
+                    {JSON.stringify(props, null, 2)}
+                </div>
             </Paper>
         </>
     );
