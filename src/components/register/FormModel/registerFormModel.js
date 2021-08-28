@@ -40,7 +40,7 @@ export default {
             invalidErrorMsg: '유효하지 않은 이메일입니다.',
         },
         bankName: {
-            name: 'bankName',
+            name: 'accountBank',
             label: '은행 *',
             requiredErrorMsg: '은행은 필수 입력입니다.'
         },

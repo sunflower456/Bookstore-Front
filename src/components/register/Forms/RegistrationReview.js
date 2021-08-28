@@ -8,7 +8,7 @@ export default function RegistrationReview() {
         name,
         phone,
         email,
-        bankName,
+        accountBank,
         accountOwner,
         accountNumber,
         zipNo,
@@ -77,7 +77,7 @@ export default function RegistrationReview() {
                     <Typography>은행 : </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography>{bankName}</Typography>
+                    <Typography>{accountBank}</Typography>
                 </Grid>
             </Grid>
             <Grid container>
