@@ -1,7 +1,6 @@
 import {Card, CardContent, CardHeader, Divider, Stack, Typography} from '@material-ui/core';
 import {useStyle} from './styles';
 import FormInitialValues from './FormModel/formInitialValues';
-import ReactBankCard from 'react-bank-card';
 
 export default function AccountsInfo() {
     const classes = useStyle();
@@ -20,45 +19,15 @@ export default function AccountsInfo() {
             <Divider variant={'middle'}/>
             <CardContent>
                 <Stack direction={'row'} columnGap={5}>
-                    <ReactBankCard
-                        cvc="123"
-                        number="1234123412341234"
-                        name="계좌1"
-
-                        highlighted={{
-                            number: true,
-                            name: false,
-                            cvc: true,
-                            expiryMonth: false,
-                            expiryYear: false,
-                        }}
-                    />
-                    <ReactBankCard
-                        cvc="123"
-                        number="1234123412341234"
-                        name="계좌1"
-
-                        highlighted={{
-                            number: true,
-                            name: false,
-                            cvc: true,
-                            expiryMonth: false,
-                            expiryYear: false,
-                        }}
-                    />
-                    <ReactBankCard
-                        cvc="123"
-                        number="1234123412341234"
-                        name="계좌1"
-
-                        highlighted={{
-                            number: true,
-                            name: false,
-                            cvc: true,
-                            expiryMonth: false,
-                            expiryYear: false,
-                        }}
-                    />
+                    <Card>
+                        계좌
+                    </Card>
+                    <Card>
+                        계좌
+                    </Card>
+                    <Card>
+                        계좌
+                    </Card>
                 </Stack>
             </CardContent>
         </Card>
