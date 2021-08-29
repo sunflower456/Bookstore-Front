@@ -1,23 +1,23 @@
-import {Grid, Typography} from '@material-ui/core';
-import {InputField, SelectField} from '../../common/FormFields';
-import React from 'react';
+import React from "react";
+import { Grid, Typography } from "@material-ui/core";
+import { InputField, SelectField } from "../../common/FormFields";
 
 const banks = [
     {
-        value: '국민은행',
-        label: '국민은행'
+        value: "국민은행",
+        label: "국민은행"
     },
     {
-        value: '우리은행',
-        label: '우리은행'
+        value: "우리은행",
+        label: "우리은행"
     },
     {
-        value: '하나은행',
-        label: '하나은행'
+        value: "하나은행",
+        label: "하나은행"
     },
     {
-        value: '신한은행',
-        label: '신한은행'
+        value: "신한은행",
+        label: "신한은행"
     }
 ];
 
@@ -34,14 +34,11 @@ export default function BankAccountAndAddressForm(props) {
     } = props;
 
     return (
-
         <Grid container rowGap={2}>
             <Grid item xs={12} sm={12}>
-                <Typography variant={'h6'}>
-                    계좌정보
-                </Typography>
+                <Typography variant={"h6"}>계좌정보</Typography>
             </Grid>
-            <Grid item xs={12} sm={3} sx={{pr:2}}>
+            <Grid item xs={12} sm={3} sx={{ pr: 2 }}>
                 <SelectField
                     fullWidth
                     name={bankName.name}
@@ -66,11 +63,9 @@ export default function BankAccountAndAddressForm(props) {
                 />
             </Grid>
             <Grid item xs={12} sm={12}>
-                <Typography variant={'h6'}>
-                    주소
-                </Typography>
+                <Typography variant={"h6"}>주소</Typography>
             </Grid>
-            <Grid item xs={12} sm={3} sx={{pr:2}}>
+            <Grid item xs={12} sm={3} sx={{ pr: 2 }}>
                 <InputField
                     fullWidth
                     name={zipNumber.name}

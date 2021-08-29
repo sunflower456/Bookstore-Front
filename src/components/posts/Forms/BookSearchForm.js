@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Divider,
     Grid,
     ListItem,
@@ -8,28 +7,28 @@ import {
     NativeSelect,
     Paper,
     Typography
-} from '@material-ui/core';
-import React from 'react';
-import {LoadingButton} from '@material-ui/lab';
-import {FixedSizeList} from 'react-window';
+} from "@material-ui/core";
+import React from "react";
+import { LoadingButton } from "@material-ui/lab";
+import { FixedSizeList } from "react-window";
 // components
-import {InputField} from '../../common/FormFields';
+import { InputField } from "../../common/FormFields";
 // styles
-import useStyles from '../styles';
-import palette from '../../../theme/palette';
+import useStyles from "../styles";
+import palette from "../../../theme/palette";
 
 const bookSearchTypes = [
     {
-        value: 'isbn',
-        label: 'ISBN'
+        value: "isbn",
+        label: "ISBN"
     },
     {
-        value: 'name',
-        label: '제목'
+        value: "name",
+        label: "제목"
     },
     {
-        value: 'author',
-        label: '저자'
+        value: "author",
+        label: "저자"
     }
 ];
 
@@ -51,15 +50,22 @@ export default function BookSearchForm(props) {
         }
     } = props;
 
-    function renderRow(props) {
-        const {index, style} = props;
+    function renderRow(rowProps) {
+        const { index, style } = rowProps;
 
         return (
-            <ListItem style={style} key={index} component={'div'} disablePadding>
+            <ListItem
+                style={style}
+                key={index}
+                component={"div"}
+                disablePadding
+            >
                 <ListItemButton>
                     <ListItemText
                         primary={`책 제목 ${index + 1}`}
-                        secondary={`${bookIsbn.label} / ${bookAuthor.label} / ${new Date().toLocaleString()}`}
+                        secondary={`${bookIsbn.label} / ${
+                            bookAuthor.label
+                        } / ${new Date().toLocaleString()}`}
                     />
                 </ListItemButton>
             </ListItem>
@@ -73,45 +79,45 @@ export default function BookSearchForm(props) {
                     fullWidth
                     name={title.name}
                     label={title.label}
-                    variant={'outlined'}
+                    variant={"outlined"}
                 />
             </Paper>
             <Paper className={classes.formArea} elevation={6}>
-                <Typography variant={'h6'}>
-                    도서 정보 검색
-                </Typography>
+                <Typography variant={"h6"}>도서 정보 검색</Typography>
                 <Grid container rowGap={2}>
-                    <Grid item sm={2} sx={{pr: 2}}>
+                    <Grid item sm={2} sx={{ pr: 2 }}>
                         <NativeSelect
                             fullWidth
-                            variant={'filled'}
+                            variant={"filled"}
                             defaultValue={bookSearchTypes[0].value}
                             label={bookSearchType.label}
                             inputProps={{
-                                name: 'bookSearchType',
-                                id: 'searchType-native'
+                                name: "bookSearchType",
+                                id: "searchType-native"
                             }}
-                            sx={{height: 'inherit', marginTop: '16px'}}
+                            sx={{ height: "inherit", marginTop: "16px" }}
                         >
                             {bookSearchTypes.map((item, index) => (
-                                <option key={index} value={item.value}>{item.label}</option>
+                                <option key={index} value={item.value}>
+                                    {item.label}
+                                </option>
                             ))}
                         </NativeSelect>
                     </Grid>
                     <Grid item sm={8}>
                         <InputField
                             fullWidth
-                            variant={'standard'}
+                            variant={"standard"}
                             name={bookSearchKeyword.name}
                             label={bookSearchKeyword.label}
                             placeholder={bookSearchKeyword.placeMsg}
                         />
                     </Grid>
-                    <Grid item sm={2} textAlign={'center'}>
+                    <Grid item sm={2} textAlign={"center"}>
                         <LoadingButton
-                            variant={'contained'}
-                            color={'info'}
-                            sx={{height: 'inherit', marginTop: '16px'}}
+                            variant={"contained"}
+                            color={"info"}
+                            sx={{ height: "inherit", marginTop: "16px" }}
                         >
                             검색
                         </LoadingButton>
@@ -120,17 +126,16 @@ export default function BookSearchForm(props) {
                 <Paper
                     elevation={6}
                     sx={{
-                        width: '80%',
-                        marginTop: '1em',
-                        marginLeft: '4vw',
-                        bgcolor: palette.grey[100],
+                        width: "80%",
+                        marginTop: "1em",
+                        marginLeft: "4vw",
+                        bgcolor: palette.grey[100]
                     }}
-
                 >
                     {/* https://github.com/bvaughn/react-window , https://codesandbox.io/s/5wqo7z2np4?file=/src/App.js 확인 필요 */}
                     <FixedSizeList
                         height={500}
-                        width={'100%'}
+                        width={"100%"}
                         itemSize={60}
                         itemCount={200}
                         overscanCount={5}
@@ -140,11 +145,11 @@ export default function BookSearchForm(props) {
                 </Paper>
                 <Grid
                     container
-                    direction={'row'}
+                    direction={"row"}
                     rowGap={3}
                     columnGap={3}
-                    divider={<Divider orientation="vertical" flexItem/>}
-                    justifyContent={'center'}
+                    divider={<Divider orientation="vertical" flexItem />}
+                    justifyContent={"center"}
                 >
                     <InputField
                         name={bookIsbn.name}
@@ -186,8 +191,7 @@ export default function BookSearchForm(props) {
                         name={bookThumbnail.name}
                         label={bookThumbnail.label}
                         disabled
-                    >
-                    </InputField>
+                    />
 
                     <InputField
                         multiline
@@ -197,9 +201,7 @@ export default function BookSearchForm(props) {
                         disabled
                     />
                 </Grid>
-                <div>
-                    {JSON.stringify(props, null, 2)}
-                </div>
+                <div>{JSON.stringify(props, null, 2)}</div>
             </Paper>
         </>
     );

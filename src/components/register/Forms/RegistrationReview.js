@@ -1,5 +1,5 @@
-import {Grid, Typography} from '@material-ui/core';
-import {useFormikContext} from 'formik';
+import { Grid, Typography } from "@material-ui/core";
+import { useFormikContext } from "formik";
 
 export default function RegistrationReview() {
     const { values: formValues } = useFormikContext();
@@ -18,27 +18,33 @@ export default function RegistrationReview() {
 
     /**
      *
-     * @param phone{string} 전화번호 11자리 또는 10자리
+     * @param thisPhoneNumber{string} 전화번호 11자리 또는 10자리
      * @returns {string} 대시(-)를 붙인 전화번호
      */
-    function replacePhoneNumber(phone) {
-        let length = phone.length;
+    function replacePhoneNumber(thisPhoneNumber) {
+        const length = thisPhoneNumber.length;
         // console.log(`값이 나오는지 확인 : ${phone}`);
         let result = "";
 
         if (length === 10) {
-            result = phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
+            result = thisPhoneNumber.replace(
+                /(\d{3})(\d{3})(\d{4})/,
+                "$1-$2-$3"
+            );
         } else if (length === 11) {
-            result = phone.replace(/-|_/g, '').replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+            result = thisPhoneNumber
+                .replace(/-|_/g, "")
+                .replace(/(\d{3})(\d{4})(\d{4})/, "$1-$2-$3");
         }
 
         return result;
     }
+
     const phoneNumber = replacePhoneNumber(phone);
 
     return (
         <Grid container rowGap={2}>
-            <Typography variant={'h6'}>회원정보</Typography>
+            <Typography variant={"h6"}>회원정보</Typography>
             <Grid container>
                 <Grid item xs={6}>
                     <Typography>아이디 : </Typography>
@@ -71,7 +77,7 @@ export default function RegistrationReview() {
                     <Typography>{phoneNumber}</Typography>
                 </Grid>
             </Grid>
-            <Typography variant={'h6'}>계좌정보</Typography>
+            <Typography variant={"h6"}>계좌정보</Typography>
             <Grid container>
                 <Grid item xs={6}>
                     <Typography>은행 : </Typography>
@@ -96,7 +102,7 @@ export default function RegistrationReview() {
                     <Typography>{accountNumber}</Typography>
                 </Grid>
             </Grid>
-            <Typography variant={'h6'}>기본 주소</Typography>
+            <Typography variant={"h6"}>기본 주소</Typography>
             <Grid container>
                 <Grid item xs={6}>
                     <Typography>우편번호 : </Typography>
@@ -110,7 +116,7 @@ export default function RegistrationReview() {
                     <Typography>주소 : </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography>{roadAddr + " " + roadAddrDetail}</Typography>
+                    <Typography>{`${roadAddr} ${roadAddrDetail}`}</Typography>
                 </Grid>
             </Grid>
         </Grid>
