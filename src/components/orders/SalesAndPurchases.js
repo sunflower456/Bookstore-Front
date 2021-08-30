@@ -8,7 +8,7 @@ import {
     TableSortLabel,
     Typography
 } from "@material-ui/core";
-import EnhancedTable from "../common/EnhancedTable";
+import EnhancedTable from "./table/EnhancedTable";
 
 export default function SalesAndPurchases() {
     return (

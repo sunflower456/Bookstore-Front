@@ -152,13 +152,13 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === "light"
             ? {
-                  color: theme.palette.secondary.main,
-                  backgroundColor: theme.palette.action.focus
-              }
+                color: theme.palette.secondary.main,
+                backgroundColor: theme.palette.action.focus
+            }
             : {
-                  color: theme.palette.text.primary,
-                  backgroundColor: theme.palette.secondary.dark
-              },
+                color: theme.palette.text.primary,
+                backgroundColor: theme.palette.secondary.dark
+            },
     spacer: {
         flex: "1 1 100%"
     },
@@ -186,9 +186,7 @@ const EnhancedTableToolbar = (props) => {
                         {numSelected} selected
                     </Typography>
                 ) : (
-                    <Typography variant="h6" id="tableTitle">
-                        Amdocs Programmers Orders
-                    </Typography>
+                    ""
                 )}
             </div>
             <div className={classes.spacer} />
@@ -387,7 +385,7 @@ export default function EnhancedTable() {
                         "aria-label": "Next Page"
                     }}
                     onPageChange={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
                 />
             </Paper>
         </div>
