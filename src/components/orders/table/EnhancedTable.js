@@ -1,5 +1,4 @@
 import React from "react";
-import clsx from "clsx";
 import PropTypes from "prop-types";
 
 // Material-UI, React UI framework
@@ -14,22 +13,148 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 
-function createData(name, hours, price, programmer, status) {
-    return { name, hours, price, programmer, status };
+/* 표기할 데이터
+- postId (행마다 고유의 key가 필요함)
+- 중고책 썸네일 (bookRequest.bookThumbnail)
+- 게시글 제목 (title)
+- 중고책 제목 (bookRequest.bookTitle)
+- 중고책 가격 (price)
+- 판매자 아이디 (postIdentity)
+- 주문 정보 상태 (postStatus)
+* */
+function createData(
+    postId,
+    bookThumbnail,
+    title,
+    bookTitle,
+    price,
+    postIdentity,
+    postStatus
+) {
+    return {
+        postId,
+        bookThumbnail,
+        title,
+        bookTitle,
+        price,
+        postIdentity,
+        postStatus
+    };
 }
 
 const rows = [
-    createData("JavaScript", 88, 30, 50, "Approved"),
-    createData("CSS3", 12, 40, 2, "Not Approved"),
-    createData("HTML5", 20, 50, 5, "Approved"),
-    createData("ReactJS", 120, 60, 10, "Approved"),
-    createData("Angular", 120, 60, 12, "Waiting"),
-    createData("Vue.js", 120, 70, 13, "Approved")
+    createData(
+        1,
+        "test.jpg",
+        "테스트책 팝니다.",
+        "테스트책",
+        5000,
+        "tester1",
+        "SALE"
+    ),
+    createData(
+        2,
+        "test2.jpg",
+        "테스트책 팝니다.2",
+        "테스트책2",
+        6000,
+        "tester2",
+        "SALE"
+    ),
+    createData(
+        3,
+        "test.jpg",
+        "테스트책 팝니다.",
+        "테스트책",
+        5000,
+        "tester1",
+        "SALE"
+    ),
+    createData(
+        4,
+        "test2.jpg",
+        "테스트책 팝니다.2",
+        "테스트책2",
+        6000,
+        "tester2",
+        "SALE"
+    ),
+    createData(
+        5,
+        "test.jpg",
+        "테스트책 팝니다.",
+        "테스트책",
+        5000,
+        "tester1",
+        "SALE"
+    ),
+    createData(
+        6,
+        "test2.jpg",
+        "테스트책 팝니다.2",
+        "테스트책2",
+        6000,
+        "tester2",
+        "SALE"
+    ),
+    createData(
+        7,
+        "test.jpg",
+        "테스트책 팝니다.",
+        "테스트책",
+        5000,
+        "tester1",
+        "SALE"
+    ),
+    createData(
+        8,
+        "test2.jpg",
+        "테스트책 팝니다.2",
+        "테스트책2",
+        6000,
+        "tester2",
+        "SALE"
+    ),
+    createData(
+        9,
+        "test.jpg",
+        "테스트책 팝니다.",
+        "테스트책",
+        5000,
+        "tester1",
+        "SALE"
+    ),
+    createData(
+        10,
+        "test2.jpg",
+        "테스트책 팝니다.2",
+        "테스트책2",
+        6000,
+        "tester2",
+        "SALE"
+    ),
+    createData(
+        11,
+        "test.jpg",
+        "테스트책 팝니다.",
+        "테스트책",
+        5000,
+        "tester1",
+        "SALE"
+    ),
+    createData(
+        12,
+        "test2.jpg",
+        "테스트책 팝니다.2",
+        "테스트책2",
+        6000,
+        "tester2",
+        "SALE"
+    )
 ];
 
 function desc(a, b, orderBy) {
@@ -62,41 +187,45 @@ function getSorting(order, orderBy) {
 
 const headRows = [
     {
-        id: "name",
+        id: "bookThumbnail",
         numeric: false,
-        disablePadding: true,
-        label: "Projects (By Language)"
+        disablePadding: false,
+        label: "사진"
     },
     {
-        id: "hours",
-        numeric: true,
+        id: "title",
+        numeric: false,
         disablePadding: false,
-        label: "Project Hour"
+        label: "제목"
+    },
+    {
+        id: "bookTitle",
+        numeric: false,
+        disablePadding: false,
+        label: "도서명"
     },
     {
         id: "price",
         numeric: true,
         disablePadding: false,
-        label: "Price Per Hour (NIS)"
+        label: "가격"
     },
     {
-        id: "programmer",
-        numeric: true,
+        id: "postIdentity",
+        numeric: false,
         disablePadding: false,
-        label: "Programmer needed"
+        label: "판매자"
     },
-    { id: "status", numeric: true, disablePadding: false, label: "Status" }
+    {
+        id: "postStatus",
+        numeric: false,
+        disablePadding: false,
+        label: "구매/판매"
+    }
 ];
 
 function EnhancedTableHead(props) {
-    const {
-        onSelectAllClick,
-        order,
-        orderBy,
-        numSelected,
-        rowCount,
-        onRequestSort
-    } = props;
+    const { order, orderBy, numSelected, rowCount, onRequestSort } = props;
     const createSortHandler = (property) => (event) => {
         onRequestSort(event, property);
     };
@@ -104,20 +233,10 @@ function EnhancedTableHead(props) {
     return (
         <TableHead>
             <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        indeterminate={
-                            numSelected > 0 && numSelected < rowCount
-                        }
-                        checked={numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ "aria-label": "Select all desserts" }}
-                    />
-                </TableCell>
                 {headRows.map((row) => (
                     <TableCell
                         key={row.id}
-                        align={row.numeric ? "right" : "left"}
+                        align={"center"}
                         padding={row.disablePadding ? "none" : "normal"}
                         sortDirection={orderBy === row.id ? order : false}
                     >
@@ -138,7 +257,6 @@ function EnhancedTableHead(props) {
 EnhancedTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired
@@ -152,13 +270,13 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === "light"
             ? {
-                color: theme.palette.secondary.main,
-                backgroundColor: theme.palette.action.focus
-            }
+                  color: theme.palette.secondary.main,
+                  backgroundColor: theme.palette.info.dark
+              }
             : {
-                color: theme.palette.text.primary,
-                backgroundColor: theme.palette.secondary.dark
-            },
+                  color: theme.palette.text.primary,
+                  backgroundColor: theme.palette.info.light
+              },
     spacer: {
         flex: "1 1 100%"
     },
@@ -172,18 +290,18 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
+    const { numSelected, titleSelected } = props;
 
     return (
         <Toolbar
-            className={clsx(classes.root, {
+            className={{
                 [classes.highlight]: numSelected > 0
-            })}
+            }}
         >
             <div className={classes.title}>
                 {numSelected > 0 ? (
                     <Typography color="inherit" variant="subtitle1">
-                        {numSelected} selected
+                        `${numSelected}개 / ${titleSelected} 선택됨.`
                     </Typography>
                 ) : (
                     ""
@@ -207,9 +325,9 @@ const EnhancedTableToolbar = (props) => {
     );
 };
 
-EnhancedTableToolbar.propTypes = {
-    numSelected: PropTypes.number.isRequired
-};
+// EnhancedTableToolbar.propTypes = {
+//
+// };
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -231,7 +349,7 @@ const useStyles = makeStyles((theme) => ({
 export default function EnhancedTable() {
     const classes = useStyles();
     const [order, setOrder] = React.useState("asc");
-    const [orderBy, setOrderBy] = React.useState("hours");
+    const [orderBy, setOrderBy] = React.useState("postId");
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
@@ -244,31 +362,13 @@ export default function EnhancedTable() {
         setOrderBy(property);
     }
 
-    function handleSelectAllClick(event) {
-        if (event.target.checked) {
-            const newSelecteds = rows.map((n) => n.name);
+    function handleClick(event, rowId) {
+        const selectedIndex = selected.indexOf(rowId);
+        const newSelected = [];
 
-            setSelected(newSelecteds);
-            return;
-        }
-        setSelected([]);
-    }
-
-    function handleClick(event, name) {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected = [];
-
-        if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-            newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-            newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelected = newSelected.concat(
-                selected.slice(0, selectedIndex),
-                selected.slice(selectedIndex + 1)
-            );
+        // 선택 배열이 비어있는 경우에는 새로 입력
+        if (selected.length === 0 || selectedIndex === -1) {
+            newSelected.push(rowId);
         }
 
         setSelected(newSelected);
@@ -295,7 +395,10 @@ export default function EnhancedTable() {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar
+                    numSelected={selected.length}
+                    titleSelected={selected}
+                />
                 <div className={classes.tableWrapper}>
                     <Table
                         className={classes.table}
@@ -306,7 +409,6 @@ export default function EnhancedTable() {
                             numSelected={selected.length}
                             order={order}
                             orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
                             rowCount={rows.length}
                         />
@@ -317,49 +419,62 @@ export default function EnhancedTable() {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.name);
-                                    const labelId = `enhanced-table-checkbox-${index}`;
+                                    const labelId = `${row.postId} / ${row.title}`;
+                                    const isItemSelected = isSelected(labelId);
 
                                     return (
                                         <TableRow
                                             hover
                                             onClick={(event) =>
-                                                handleClick(event, row.name)
+                                                handleClick(event, labelId)
                                             }
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.name}
+                                            key={row.postId}
                                             selected={isItemSelected}
                                         >
-                                            <TableCell padding="checkbox">
-                                                <Checkbox
-                                                    checked={isItemSelected}
-                                                    inputProps={{
-                                                        "aria-labelledby":
-                                                            labelId
-                                                    }}
-                                                />
+                                            <TableCell align="center">
+                                                {row.bookThumbnail}
                                             </TableCell>
                                             <TableCell
-                                                component="th"
-                                                id={labelId}
-                                                scope="row"
-                                                padding="none"
+                                                align={
+                                                    row.numeric
+                                                        ? "right"
+                                                        : "left"
+                                                }
                                             >
-                                                {row.name}
+                                                {row.title}
                                             </TableCell>
-                                            <TableCell align="right">
-                                                {row.hours}
+                                            <TableCell
+                                                align={
+                                                    row.numeric
+                                                        ? "right"
+                                                        : "left"
+                                                }
+                                            >
+                                                {row.bookTitle}
                                             </TableCell>
-                                            <TableCell align="right">
+                                            <TableCell
+                                                align={
+                                                    row.numeric
+                                                        ? "right"
+                                                        : "left"
+                                                }
+                                            >
                                                 {row.price}
                                             </TableCell>
-                                            <TableCell align="right">
-                                                {row.programmer}
+                                            <TableCell
+                                                align={
+                                                    row.numeric
+                                                        ? "right"
+                                                        : "left"
+                                                }
+                                            >
+                                                {row.postIdentity}
                                             </TableCell>
-                                            <TableCell align="right">
-                                                {row.status}
+                                            <TableCell align={"center"}>
+                                                {row.postStatus}
                                             </TableCell>
                                         </TableRow>
                                     );
@@ -376,6 +491,7 @@ export default function EnhancedTable() {
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
                     count={rows.length}
+                    labelRowsPerPage={"페이지 당 출력"}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{

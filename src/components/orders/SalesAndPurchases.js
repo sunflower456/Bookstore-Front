@@ -1,4 +1,5 @@
 import {
+    Grid,
     Paper,
     Table,
     TableCell,
@@ -12,9 +13,19 @@ import EnhancedTable from "./table/EnhancedTable";
 
 export default function SalesAndPurchases() {
     return (
-        <Paper>
-            <Typography variant={"h3"}>판매 정보</Typography>
-            <EnhancedTable />
-        </Paper>
+        <Grid direction={"column"}>
+            <Grid item md={6} xl={12}>
+                <Paper>
+                    <Typography variant={"h3"}>판매 정보</Typography>
+                    <EnhancedTable />
+                </Paper>
+            </Grid>
+            <Grid item md={6} xl={12}>
+                <Paper>
+                    <Typography variant={"h3"}>구매 정보</Typography>
+                    <EnhancedTable />
+                </Paper>
+            </Grid>
+        </Grid>
     );
 }
