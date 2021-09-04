@@ -17,7 +17,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { CheckCircle, RemoveShoppingCart, Shop } from "@material-ui/icons";
-import { Stack } from "@material-ui/core";
+import { Avatar, Stack } from "@material-ui/core";
 
 /* 표기할 데이터
 - postId (행마다 고유의 key가 필요함)
@@ -56,7 +56,7 @@ const rows = [
         "테스트책",
         5000,
         "tester1",
-        "SALE"
+        "판매중"
     ),
     createData(
         2,
@@ -65,7 +65,7 @@ const rows = [
         "테스트책2",
         6000,
         "tester2",
-        "SALE"
+        "예약중"
     ),
     createData(
         3,
@@ -74,7 +74,7 @@ const rows = [
         "테스트책",
         5000,
         "tester1",
-        "SALE"
+        "판매완료"
     ),
     createData(
         4,
@@ -222,7 +222,13 @@ const headRows = [
         id: "postStatus",
         numeric: false,
         disablePadding: false,
-        label: "구매/판매"
+        label: "상태"
+    },
+    {
+        id: "likePost",
+        numeric: false,
+        disablePadding: false,
+        label: ""
     }
 ];
 
@@ -272,13 +278,13 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === "light"
             ? {
-                  color: theme.palette.secondary.main,
-                  backgroundColor: theme.palette.info.dark
-              }
+                color: theme.palette.secondary.main,
+                backgroundColor: theme.palette.info.dark
+            }
             : {
-                  color: theme.palette.text.primary,
-                  backgroundColor: theme.palette.info.light
-              },
+                color: theme.palette.text.primary,
+                backgroundColor: theme.palette.info.light
+            },
     spacer: {
         flex: "1 1 100%"
     },
@@ -302,9 +308,13 @@ const EnhancedTableToolbar = (props) => {
         >
             <div className={classes.title}>
                 {rowSelectedNum > 0 ? (
-                    <Typography color="inherit" variant="subtitle1">
-                        {rowSelected}
-                    </Typography>
+                    <Stack direction={"column"}>
+                        <a href={"#"}>
+                            <Typography color="inherit" variant="h6">
+                                {rowSelected}
+                            </Typography>
+                        </a>
+                    </Stack>
                 ) : (
                     ""
                 )}
@@ -315,17 +325,17 @@ const EnhancedTableToolbar = (props) => {
                     <Stack direction={"row"}>
                         <Tooltip title="확정">
                             <IconButton aria-label="Confirm">
-                                <CheckCircle />
+                                확정 <CheckCircle />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="구매">
                             <IconButton aria-label="Delete">
-                                <Shop />
+                                구매 <Shop />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="취소">
                             <IconButton aria-label="Cancel">
-                                <RemoveShoppingCart />
+                                취소 <RemoveShoppingCart />
                             </IconButton>
                         </Tooltip>
                     </Stack>
@@ -409,10 +419,6 @@ export default function EnhancedTable() {
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
-                <EnhancedTableToolbar
-                    rowSelectedNum={selected.length}
-                    rowSelected={selected}
-                />
                 <div className={classes.tableWrapper}>
                     <Table
                         className={classes.table}
@@ -459,7 +465,7 @@ export default function EnhancedTable() {
                                                         : "left"
                                                 }
                                             >
-                                                {row.title}
+                                                <a href={"#"}>{row.title}</a>
                                             </TableCell>
                                             <TableCell
                                                 align={
@@ -486,7 +492,10 @@ export default function EnhancedTable() {
                                                         : "left"
                                                 }
                                             >
-                                                {row.postIdentity}
+                                                <Stack direction={"row"}>
+                                                    <Avatar />
+                                                    {row.postIdentity}
+                                                </Stack>
                                             </TableCell>
                                             <TableCell align={"center"}>
                                                 {row.postStatus}
