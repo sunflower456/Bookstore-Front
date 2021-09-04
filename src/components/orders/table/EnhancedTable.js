@@ -16,6 +16,8 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { CheckCircle, RemoveShoppingCart, Shop } from "@material-ui/icons";
+import { Stack } from "@material-ui/core";
 
 /* 표기할 데이터
 - postId (행마다 고유의 key가 필요함)
@@ -290,18 +292,18 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
     const classes = useToolbarStyles();
-    const { numSelected, titleSelected } = props;
+    const { rowSelectedNum, rowSelected } = props;
 
     return (
         <Toolbar
             className={{
-                [classes.highlight]: numSelected > 0
+                [classes.highlight]: rowSelectedNum > 0
             }}
         >
             <div className={classes.title}>
-                {numSelected > 0 ? (
+                {rowSelectedNum > 0 ? (
                     <Typography color="inherit" variant="subtitle1">
-                        `${numSelected}개 / ${titleSelected} 선택됨.`
+                        {rowSelected}
                     </Typography>
                 ) : (
                     ""
@@ -309,12 +311,24 @@ const EnhancedTableToolbar = (props) => {
             </div>
             <div className={classes.spacer} />
             <div className={classes.actions}>
-                {numSelected > 0 ? (
-                    <Tooltip title="Delete">
-                        <IconButton aria-label="Delete">
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
+                {rowSelectedNum > 0 ? (
+                    <Stack direction={"row"}>
+                        <Tooltip title="확정">
+                            <IconButton aria-label="Confirm">
+                                <CheckCircle />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="구매">
+                            <IconButton aria-label="Delete">
+                                <Shop />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="취소">
+                            <IconButton aria-label="Cancel">
+                                <RemoveShoppingCart />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
                 ) : (
                     <Tooltip title="Filter list">
                         <IconButton aria-label="Filter list" />
@@ -396,8 +410,8 @@ export default function EnhancedTable() {
         <div className={classes.root}>
             <Paper className={classes.paper}>
                 <EnhancedTableToolbar
-                    numSelected={selected.length}
-                    titleSelected={selected}
+                    rowSelectedNum={selected.length}
+                    rowSelected={selected}
                 />
                 <div className={classes.tableWrapper}>
                     <Table
