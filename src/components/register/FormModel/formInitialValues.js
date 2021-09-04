@@ -10,7 +10,10 @@ const {
         email,
         bankName,
         bankAccountOwner,
-        bankAccountNumber
+        bankAccountNumber,
+        zipNumber,
+        roadAddress,
+        roadAddressDetail
     }
 } = RegisterFormModel;
 
@@ -23,5 +26,8 @@ export default {
     [email.name]: '',
     [bankName.name]: '',
     [bankAccountOwner.name]: '',
-    [bankAccountNumber.name]: ''
+    [bankAccountNumber.name]: '',
+    [zipNumber.name]: '',
+    [roadAddress.name]: '',
+    [roadAddressDetail.name]: ''
 };

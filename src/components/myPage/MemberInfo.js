@@ -5,7 +5,7 @@ import {useStyle} from './styles'
 import FormInitialValues from './FormModel/formInitialValues';
 
 export default function MemberInfo() {
-    const [isEditable, setIsEditable] = useState(true);
+    const [isEditable, setIsEditable] = useState(false);
     const classes = useStyle();
 
     const {

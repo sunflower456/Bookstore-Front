@@ -1,35 +1,34 @@
-import React, {useState} from 'react';
-import {Form, Formik} from 'formik';
-import {Navigate} from 'react-router-dom';
-import useStyles from './styles';
-// material
-import {Button, Step, StepLabel, Stepper} from '@material-ui/core';
-import {LoadingButton} from '@material-ui/lab';
+import React, { useState } from "react";
+import { Form, Formik } from "formik";
+import { Navigate } from "react-router-dom";
+import { Button, Step, StepLabel, Stepper } from "@material-ui/core";
+import { LoadingButton } from "@material-ui/lab";
+import useStyles from "./styles";
 // components
-import MemberForm from './Forms/MemberForm';
-import BankAccountForm from './Forms/BankAccountForm';
-import RegistrationReview from './Forms/RegistrationReview';
+import MemberForm from "./Forms/MemberForm";
+import BankAccountAndAddressForm from "./Forms/BankAccountAndAddressForm";
+import RegistrationReview from "./Forms/RegistrationReview";
 // formModels
-import validationSchema from './FormModel/validationSchema'
-import registerFormModel from './FormModel/registerFormModel'
-import formInitialValues from './FormModel/formInitialValues'
-import Welcome from './Forms/Welcome';
+import validationSchema from "./FormModel/validationSchema";
+import registerFormModel from "./FormModel/registerFormModel";
+import formInitialValues from "./FormModel/formInitialValues";
+import Welcome from "./Forms/Welcome";
 
 // 단계 설정
-const steps = ['회원정보 입력', '계좌정보 입력', '가입정보 확인'];
-const {formId, formField} = registerFormModel;
+const steps = ["회원정보 입력", "계좌정보 및 주소 입력", "가입정보 확인"];
+const { formId, formField } = registerFormModel;
 
 // step render
 function _renderStepContent(step) {
     switch (step) {
         case 0:
-            return <MemberForm formField={formField}/>;
+            return <MemberForm formField={formField} />;
         case 1:
-            return <BankAccountForm formField={formField}/>;
+            return <BankAccountAndAddressForm formField={formField} />;
         case 2:
             return <RegistrationReview />;
         default:
-            return <Navigate to="/404" replace/>;
+            return <Navigate to="/404" replace />;
     }
 }
 
@@ -42,7 +41,7 @@ export default function RegisterForm() {
     const isLastStep = activeStep === steps.length - 1;
 
     function _sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+        return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     async function _submitForm(values, actions) {
@@ -70,7 +69,7 @@ export default function RegisterForm() {
     return (
         <React.Fragment>
             <Stepper activeStep={activeStep} className={classes.stepper}>
-                {steps.map(label => (
+                {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel>{label}</StepLabel>
                     </Step>
@@ -78,45 +77,50 @@ export default function RegisterForm() {
             </Stepper>
             <React.Fragment>
                 {activeStep === steps.length ? (
-                    <Welcome/>
-                ) : (<Formik
-                    initialValues={formInitialValues}
-                    validationSchema={currentValidationSchema}
-                    onSubmit={_handleSubmit}
-                >
-                    {({isSubmitting}) => (
-                        <Form id={formId}>
-                            {_renderStepContent(activeStep)}
+                    <Welcome />
+                ) : (
+                    <Formik
+                        initialValues={formInitialValues}
+                        validationSchema={currentValidationSchema}
+                        onSubmit={_handleSubmit}
+                    >
+                        {({ isSubmitting }) => (
+                            <Form id={formId}>
+                                {_renderStepContent(activeStep)}
 
-                            <div className={classes.buttonArea}>
-                                <div className={classes.wrapper}>
-                                    {activeStep !== 0 && (
-                                        <Button
-                                            type={'button'}
-                                            variant={'contained'}
-                                            onClick={_handleBack}
+                                <div className={classes.buttonArea}>
+                                    <div className={classes.wrapper}>
+                                        {activeStep !== 0 && (
+                                            <Button
+                                                type={"button"}
+                                                variant={"contained"}
+                                                onClick={_handleBack}
+                                                className={classes.button}
+                                                color={"info"}
+                                            >
+                                                이전
+                                            </Button>
+                                        )}
+                                    </div>
+                                    <div className={classes.wrapper}>
+                                        <LoadingButton
+                                            loading={isSubmitting}
+                                            type="submit"
+                                            variant="contained"
+                                            color={
+                                                isLastStep
+                                                    ? "secondary"
+                                                    : "primary"
+                                            }
                                             className={classes.button}
-                                            color={'info'}
                                         >
-                                            이전
-                                        </Button>
-                                    )}
+                                            {isLastStep ? "등록" : "다음"}
+                                        </LoadingButton>
+                                    </div>
                                 </div>
-                                <div className={classes.wrapper}>
-                                    <LoadingButton
-                                        loading={isSubmitting}
-                                        type="submit"
-                                        variant="contained"
-                                        color={isLastStep ? 'secondary' : 'primary'}
-                                        className={classes.button}
-                                    >
-                                        {isLastStep ? '등록' : '다음'}
-                                    </LoadingButton>
-                                </div>
-                            </div>
-                        </Form>
-                    )}
-                </Formik>
+                            </Form>
+                        )}
+                    </Formik>
                 )}
             </React.Fragment>
         </React.Fragment>

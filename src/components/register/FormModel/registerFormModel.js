@@ -2,7 +2,7 @@ export default {
     formId: 'registerForm',
     formField: {
         id: {
-            name: 'id',
+            name: 'identity',
             label: '아이디 *',
             placeMsg: '사용할 아이디를 입력하세요.',
             requiredErrorMsg: '아이디는 필수 입력입니다.',
@@ -20,7 +20,7 @@ export default {
             requiredErrorMsg: '비밀번호는 빈 값이 허용되지 않습니다.'
         },
         memberName: {
-            name: 'memberName',
+            name: 'name',
             label: '이름 *',
             placeMsg: '이름을 입력해주세요.',
             requiredErrorMsg: '이름은 필수 입력입니다.'
@@ -40,7 +40,7 @@ export default {
             invalidErrorMsg: '유효하지 않은 이메일입니다.',
         },
         bankName: {
-            name: 'bankName',
+            name: 'accountBank',
             label: '은행 *',
             requiredErrorMsg: '은행은 필수 입력입니다.'
         },
@@ -55,8 +55,25 @@ export default {
             label: '계좌번호 *',
             placeMsg: '거래에 사용될 계좌번호',
             requiredErrorMsg: '계좌번호는 필수 입력입니다.',
-            invalidErrorMsg: '숫자 12~14자리 번호를 입력해주세요.'
+            invalidErrorMsg: '숫자 12~14자리 번호를 입력해주세요.',
+        },
+        zipNumber: {
+            name: 'zipNo',
+            label: '우편번호 *',
+            requiredErrorMsg: '우편번호는 필수 입력입니다.',
+            invalidErrorMsg: '숫자 5자리의 우편번호를 입력해주세요.'
+        },
+        roadAddress: {
+            name: 'roadAddr',
+            label: '도로명주소 *',
+            placeMsg: '거래에 사용할 주소를 입력해주세요.',
+            requiredErrorMsg: '도로명주소는 필수 입력입니다.',
+        },
+        roadAddressDetail: {
+            name: 'roadAddrDetail',
+            label: '상세주소 *',
+            placeMsg: '세부 주소를 입력해주세요.',
+            requiredErrorMsg: '상세주소는 필수 입력입니다.',
         }
-
     }
 }

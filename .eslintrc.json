@@ -1,0 +1,47 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "naver",
+        "plugin:react/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": ["react", "prettier"],
+    "rules": {
+        // 함수형은 최상단에 render되므로 해당 룰이 불필요함
+        // https://stackoverflow.com/questions/42640636/react-must-be-in-scope-when-using-jsx-react-react-in-jsx-scope
+        "react/react-in-jsx-scope": "off",
+        // This rule extends the base eslint/no-use-before-define rule. It adds support for type, interface and enum declarations.
+        // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md
+        // https://stackoverflow.com/questions/63818415/react-was-used-before-it-was-defined
+        "no-use-before-define": "off",
+        // 모듈 export에 대한 에러 끄기
+        //https://stackoverflow.com/questions/52627477/eslint-prefer-default-export-import-prefer-default-export
+        "import/prefer-default-export": "off",
+        // 미사용 variable 체크하지 않도록 설정
+        "no-unused-vars": "off",
+        // property의 type에 대해 체크하지 않도록 설정
+        "react/prop-types": "off",
+        // default 로 export된 function을 사용할 수 없는 문제로 체크하지 않도록 설정
+        // https://stackoverflow.com/questions/44437203/how-do-i-resolve-eslint-import-no-named-as-default
+        "import/no-named-default": "off",
+        "indent": ["warn", 4, { "SwitchCase": 1 }],
+        "linebreak-style": ["warn", "unix"],
+        "quotes": ["warn", "double"],
+        "semi": ["warn", "always"],
+        //     console.log 사용 가능,
+        "no-console": "off",
+        //    마지막 item에는 comma 사용하지 않도록 설정,
+        "comma-dangle": ["warn", "never"],
+        "prettier/prettier": "warn"
+    }
+}

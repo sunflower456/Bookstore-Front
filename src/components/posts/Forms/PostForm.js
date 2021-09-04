@@ -1,21 +1,53 @@
 import React from 'react';
-import {FormControl, FormHelperText, FormLabel, Paper, Radio, RadioGroup, Stack, Typography} from '@material-ui/core';
+import {
+    Divider,
+    FormControl,
+    FormHelperText,
+    FormLabel, Grid,
+    Paper,
+    Radio,
+    RadioGroup,
+    Stack,
+    Typography
+} from '@material-ui/core';
 import {Field, useFormikContext} from 'formik'
 // components
-import {ImageUploadField, InputField} from '../../common/FormFields'
+import {ImageUploadField, InputField, SelectField} from '../../common/FormFields'
 // styles
 import UseStyles from '../styles';
 import palette from '../../../theme/palette';
+
+const banks = [
+    {
+        value: '국민은행',
+        label: '국민은행'
+    },
+    {
+        value: '우리은행',
+        label: '우리은행'
+    },
+    {
+        value: '하나은행',
+        label: '하나은행'
+    },
+    {
+        value: '신한은행',
+        label: '신한은행'
+    }
+];
 
 export default function PostForm(props) {
     const classes = UseStyles();
 
     const {
         formField: {
-            bookPhoto,
-            bookSellPrice,
+            price,
+            description,
             bookStatus,
-            bookDesc
+            bookPhoto,
+            accountBank,
+            accountNumber,
+            accountOwner
         }
     } = props;
 
@@ -37,9 +69,9 @@ export default function PostForm(props) {
                     <InputField
                         fullWidth
                         type={'number'}
-                        name={bookSellPrice.name}
-                        label={bookSellPrice.label}
-                        placeholder={bookSellPrice.placeMsg}
+                        name={price.name}
+                        label={price.label}
+                        placeholder={price.placeMsg}
                     />
                     <FormControl
                         fullWidth
@@ -101,9 +133,42 @@ export default function PostForm(props) {
                 <InputField
                     multiline
                     maxRows={4}
-                    name={bookDesc.name}
-                    label={bookDesc.label}
+                    name={description.name}
+                    label={description.label}
                 />
+
+                <Divider orientation="horizontal" flexItem/>
+                <Grid container rowGap={2}>
+                    <Grid item xs={12} sm={12}>
+                        <Typography variant={'h6'}>
+                            계좌정보
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={3} sx={{pr:2}}>
+                        <SelectField
+                            fullWidth
+                            name={accountBank.name}
+                            label={accountBank.label}
+                            data={banks}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={9}>
+                        <InputField
+                            fullWidth
+                            name={accountOwner.name}
+                            label={accountOwner.label}
+                            placeholder={accountOwner.placeMsg}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <InputField
+                            fullWidth
+                            name={accountNumber.name}
+                            label={accountNumber.label}
+                            placeholder={accountNumber.placeMsg}
+                        />
+                    </Grid>
+                </Grid>
             </Stack>
 
             <Typography variant="caption" display="block" gutterBottom>

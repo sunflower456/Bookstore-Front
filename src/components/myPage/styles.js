@@ -1,7 +1,7 @@
-import {makeStyles} from '@material-ui/styles';
+import { makeStyles } from "@material-ui/styles";
 
 export const useStyle = makeStyles((theme) => ({
-    cardArea : {
+    cardArea: {
         marginBottom: theme.spacing(4)
     }
 }));
