@@ -404,6 +404,7 @@ export default function EnhancedTable() {
                         className={classes.table}
                         aria-labelledby="tableTitle"
                         size={dense ? "small" : "medium"}
+                        stickyHeader
                     >
                         <EnhancedTableHead
                             numSelected={selected.length}
@@ -488,7 +489,7 @@ export default function EnhancedTable() {
                     </Table>
                 </div>
                 <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[5, 10]}
                     component="div"
                     count={rows.length}
                     labelRowsPerPage={"페이지 당 출력"}

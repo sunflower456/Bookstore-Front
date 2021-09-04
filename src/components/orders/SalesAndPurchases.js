@@ -1,14 +1,4 @@
-import {
-    Grid,
-    Paper,
-    Table,
-    TableCell,
-    TableHead,
-    TablePagination,
-    TableRow,
-    TableSortLabel,
-    Typography
-} from "@material-ui/core";
+import { Grid, Paper, Typography } from "@material-ui/core";
 import EnhancedTable from "./table/EnhancedTable";
 
 export default function SalesAndPurchases() {
