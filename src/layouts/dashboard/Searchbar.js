@@ -42,7 +42,7 @@ const SearchbarStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Searchbar() {
+export default function Searchbar(props) {
   const [isOpen, setOpen] = useState(false);
 
 
@@ -54,6 +54,17 @@ export default function Searchbar() {
   const handleChange = (event) => {
     setAge(event.target.value);
   };
+
+  const onChange = (e) => {
+    props.handleChange(e);
+  }
+
+  const onClick = () => {
+    props.handleFilter();
+  }
+
+
+
   return (
       <div>
         <FormControl style={{marginRight:'30px'}}>
@@ -85,8 +96,9 @@ export default function Searchbar() {
         }
         sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
         style={{width:'80%', paddingTop:'8px'}}
+        onChange={onChange}
       />
-      <Button variant="contained" onClick={handleClose} style={{float:"right"}} size="large">
+      <Button variant="contained" onClick={onClick} style={{float:"right"}} size="large">
         검색
       </Button>
         

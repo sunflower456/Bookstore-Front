@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import SearchMain from './pages/SearchMain';
 import Post from './pages/Post';
 import Detail from './pages/Detail';
+import MyPage from './pages/MyPage';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +23,7 @@ export default function Router() {
         { path: '404', element: <NotFound /> },
         { path: 'login', element: <Login /> },
         { path: 'register', element: <Register /> },
+        { path: 'myPage', element: <MyPage/> }
       ]
     },
     {
