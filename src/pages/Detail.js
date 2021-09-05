@@ -1,6 +1,13 @@
 import { useParams } from "react-router";
+import { useState } from "react";
 import { styled } from "@material-ui/core/styles";
-import { Button, ButtonGroup, Paper, Typography } from "@material-ui/core";
+import {
+    Button,
+    ButtonGroup,
+    Paper,
+    Typography,
+    Avatar
+} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -9,19 +16,37 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 import Page from "../components/Page";
 import PRODUCTS from "../_mocks_/products";
+import "./ImagesSlide.scss";
 
 // ----------------------------------------------------------------------
 
 export default function ProductDetail() {
     const { id } = useParams();
 
-    const product = PRODUCTS[id];
+    const [imageCurrentNo, setImageCurrentNo] = useState(0);
 
-    const ProductImgStyle = styled("img")({
-        top: 0,
-        width: "300px",
-        objectFit: "cover"
-    });
+    const product = PRODUCTS[id];
+    const product2 = PRODUCTS[id + 1];
+
+    const productImages = [
+        product.cover,
+        product2.cover,
+        product.cover,
+        product2.cover,
+        product.cover
+    ];
+
+    const onChangeImage = (index) => {
+        let currIndex = index;
+
+        if (productImages.length <= currIndex) {
+            currIndex = 0;
+        }
+        if (index < 0) {
+            currIndex = productImages.length - 1;
+        }
+        setImageCurrentNo(currIndex);
+    };
 
     return (
         <Page title="허브중고서점">
@@ -32,10 +57,75 @@ export default function ProductDetail() {
                 <Grid container>
                     <Grid item xs={4}>
                         <Paper>
-                            <ProductImgStyle
-                                alt={product.name}
-                                src={product.cover}
-                            />
+                            <div className="imageSlide">
+                                <div className="navBox">
+                                    <span>{imageCurrentNo + 1}</span>
+                                    <span>/</span>
+                                    <span>
+                                        {productImages && productImages.length}
+                                    </span>
+                                </div>
+                                <div className="slideBox">
+                                    <div
+                                        className="slideList"
+                                        style={{
+                                            transform: `translate3d(${
+                                                imageCurrentNo * -500
+                                            }px, 0px, 0px)`
+                                        }}
+                                    >
+                                        {productImages?.map((image, no) => (
+                                            <div
+                                                className="slideContent"
+                                                key={no}
+                                            >
+                                                <picture>
+                                                    <img
+                                                        src={image}
+                                                        style={{
+                                                            width: "50%"
+                                                        }}
+                                                    />
+                                                </picture>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div
+                                        className="buttonPrev"
+                                        onClick={() =>
+                                            onChangeImage(imageCurrentNo - 1)
+                                        }
+                                    >
+                                        <i className="fas fa-chevron-left"></i>
+                                    </div>
+                                    <div
+                                        className="buttonNext"
+                                        onClick={() =>
+                                            onChangeImage(imageCurrentNo + 1)
+                                        }
+                                    >
+                                        <i className="fas fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                                <div
+                                    className="paginationBox"
+                                    style={{ width: "50%" }}
+                                >
+                                    {productImages.map((image, no) => (
+                                        <div
+                                            key={no}
+                                            onClick={() => {
+                                                onChangeImage(no);
+                                            }}
+                                        >
+                                            <picture>
+                                                <img src={image} />
+                                            </picture>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </Paper>
                     </Grid>
                     <Grid item xs={8}>
