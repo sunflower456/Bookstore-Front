@@ -1,13 +1,21 @@
 import { useParams } from "react-router";
 import { useState } from "react";
-import { styled } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/styles";
 import {
     Button,
     ButtonGroup,
     Paper,
     Typography,
-    Avatar
+    Avatar,
+    Card,
+    CardContent,
+    Step,
+    Stepper,
+    StepLabel,
+    StepConnector
 } from "@material-ui/core";
+import clsx from "clsx";
+import Check from "@material-ui/icons/Check";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -20,9 +28,84 @@ import "./ImagesSlide.scss";
 
 // ----------------------------------------------------------------------
 
+function getSteps() {
+    return ["특상", "상", "중", "하"];
+}
+
+const QontoConnector = withStyles({
+    alternativeLabel: {
+        top: 10,
+        left: "calc(-50% + 16px)",
+        right: "calc(50% + 16px)"
+    },
+    active: {
+        "& $line": {
+            borderColor: "#784af4"
+        }
+    },
+    completed: {
+        "& $line": {
+            borderColor: "#784af4"
+        }
+    },
+    line: {
+        borderColor: "#eaeaf0",
+        borderTopWidth: 3,
+        borderRadius: 1
+    }
+})(StepConnector);
+const useQontoStepIconStyles = makeStyles({
+    root: {
+        color: "#eaeaf0",
+        display: "flex",
+        height: 22,
+        alignItems: "center"
+    },
+    active: {
+        color: "#784af4"
+    },
+    circle: {
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        backgroundColor: "currentColor"
+    },
+    completed: {
+        color: "#784af4",
+        zIndex: 1,
+        fontSize: 18
+    }
+});
+
+function QontoStepIcon(props) {
+    const classes = useQontoStepIconStyles();
+    const { active, completed, icon } = props;
+
+    let _active = active;
+
+    // 1: 특상 2: 상 3: 중 4: 하
+    if (icon === 2) {
+        _active = true;
+    } else {
+        _active = false;
+    }
+    return (
+        <div
+            className={clsx(classes.root, {
+                [classes.active]: _active
+            })}
+        >
+            {completed ? (
+                <Check className={classes.completed} />
+            ) : (
+                <div className={classes.circle} />
+            )}
+        </div>
+    );
+}
 export default function ProductDetail() {
     const { id } = useParams();
-
+    const steps = getSteps();
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
 
     const product = PRODUCTS[id];
@@ -126,6 +209,25 @@ export default function ProductDetail() {
                                     ))}
                                 </div>
                             </div>
+                            <Card style={{ width: "80%" }}>
+                                <CardContent>
+                                    <Avatar
+                                        src={product.cover}
+                                        style={{
+                                            float: "left",
+                                            marginTop: "-5px",
+                                            marginRight: "15px"
+                                        }}
+                                    />
+                                    <Typography
+                                        variant="body2"
+                                        component="p"
+                                        style={{ marginTop: "3px" }}
+                                    >
+                                        백선화 sunflower45
+                                    </Typography>
+                                </CardContent>
+                            </Card>
                         </Paper>
                     </Grid>
                     <Grid item xs={8}>
@@ -257,7 +359,27 @@ export default function ProductDetail() {
                                             scope="row"
                                             align="center"
                                         >
-                                            특상
+                                            <Stepper
+                                                alternativeLabel
+                                                connector={<QontoConnector />}
+                                            >
+                                                {steps.map((label) => (
+                                                    <Step key={label}>
+                                                        <StepLabel
+                                                            StepIconComponent={
+                                                                QontoStepIcon
+                                                            }
+                                                            style={{
+                                                                color: "#637381",
+                                                                fontWeight:
+                                                                    "400"
+                                                            }}
+                                                        >
+                                                            {label}
+                                                        </StepLabel>
+                                                    </Step>
+                                                ))}
+                                            </Stepper>
                                         </TableCell>
                                     </TableRow>
                                     <TableRow>
@@ -285,8 +407,8 @@ export default function ProductDetail() {
             <br />
             <br />
             <ButtonGroup variant="contained" color="primary">
-                <Button size="large">장바구니</Button>
-                <Button size="large">구매하기</Button>
+                <Button size="large">채팅하기</Button>
+                <Button size="large">관심목록 추가</Button>
             </ButtonGroup>
         </Page>
     );
