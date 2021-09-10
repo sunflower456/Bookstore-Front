@@ -32,6 +32,9 @@ function getSteps() {
     return ["특상", "상", "중", "하"];
 }
 
+function getPostSteps() {
+    return ["판매중", "거래중", "거래완료"];
+}
 const QontoConnector = withStyles({
     alternativeLabel: {
         top: 10,
@@ -103,14 +106,43 @@ function QontoStepIcon(props) {
         </div>
     );
 }
+
+function QontoPostStepIcon(props) {
+    const classes = useQontoStepIconStyles();
+    const { active, completed, icon } = props;
+
+    let _active = active;
+
+    // 1: 판매중 2: 거래중 3:거래완료
+    if (icon === 3) {
+        _active = true;
+    } else {
+        _active = false;
+    }
+    return (
+        <div
+            className={clsx(classes.root, {
+                [classes.active]: _active
+            })}
+        >
+            {completed ? (
+                <Check className={classes.completed} />
+            ) : (
+                <div className={classes.circle} />
+            )}
+        </div>
+    );
+}
 export default function ProductDetail() {
     const { id } = useParams();
     const steps = getSteps();
+    const postSteps = getPostSteps();
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
 
     const product = PRODUCTS[id];
     const product2 = PRODUCTS[id + 1];
 
+    // cover 수정하기
     const productImages = [
         product.cover,
         product2.cover,
@@ -370,9 +402,9 @@ export default function ProductDetail() {
                                                                 QontoStepIcon
                                                             }
                                                             style={{
-                                                                color: "#637381",
+                                                                color: "#212B36",
                                                                 fontWeight:
-                                                                    "400"
+                                                                    "500"
                                                             }}
                                                         >
                                                             {label}
@@ -396,6 +428,37 @@ export default function ProductDetail() {
                                             align="center"
                                         >
                                             부가 설명
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell
+                                            component="th"
+                                            scope="row"
+                                            align="center"
+                                        >
+                                            판매 상태
+                                        </TableCell>
+                                        <TableCell
+                                            component="th"
+                                            scope="row"
+                                            align="center"
+                                        >
+                                            <Stepper
+                                                alternativeLabel
+                                                connector={<QontoConnector />}
+                                            >
+                                                {postSteps.map((label) => (
+                                                    <Step key={label}>
+                                                        <StepLabel
+                                                            StepIconComponent={
+                                                                QontoPostStepIcon
+                                                            }
+                                                        >
+                                                            {label}
+                                                        </StepLabel>
+                                                    </Step>
+                                                ))}
+                                            </Stepper>
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>
