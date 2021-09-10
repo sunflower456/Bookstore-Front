@@ -241,7 +241,7 @@ export default function ProductDetail() {
                                     ))}
                                 </div>
                             </div>
-                            <Card style={{ width: "80%" }}>
+                            <Card style={{ width: "65%" }}>
                                 <CardContent>
                                     <Avatar
                                         src={product.cover}
@@ -401,13 +401,16 @@ export default function ProductDetail() {
                                                             StepIconComponent={
                                                                 QontoStepIcon
                                                             }
-                                                            style={{
-                                                                color: "#212B36",
-                                                                fontWeight:
-                                                                    "500"
-                                                            }}
                                                         >
-                                                            {label}
+                                                            <div
+                                                                style={{
+                                                                    color: "#637381",
+                                                                    fontWeight:
+                                                                        "400"
+                                                                }}
+                                                            >
+                                                                {label}
+                                                            </div>
                                                         </StepLabel>
                                                     </Step>
                                                 ))}
@@ -454,7 +457,15 @@ export default function ProductDetail() {
                                                                 QontoPostStepIcon
                                                             }
                                                         >
-                                                            {label}
+                                                            <div
+                                                                style={{
+                                                                    color: "#637381",
+                                                                    fontWeight:
+                                                                        "400"
+                                                                }}
+                                                            >
+                                                                {label}
+                                                            </div>
                                                         </StepLabel>
                                                     </Step>
                                                 ))}
