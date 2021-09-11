@@ -17,7 +17,7 @@ const sidebarConfig = [
     },
     {
         title: "내 관심목록",
-        path: "/myPage/myFavorites",
+        path: "/myPage/favorites",
         icon: getIcon(shoppingBagFill)
     },
     {
