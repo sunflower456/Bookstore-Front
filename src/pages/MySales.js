@@ -25,7 +25,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function MyPage() {
+export default function MySales() {
     return (
         <RootStyle title="주문정보 | Herb Book Store">
             <Grid container justifyContent={"center"}>

@@ -1,4 +1,4 @@
-import { Navigate, useRoutes } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
 // layouts
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 import DashboardLayout from "./layouts/dashboard";
@@ -11,7 +11,8 @@ import SearchMain from "./pages/SearchMain";
 import Post from "./pages/Post";
 import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage";
-import Orders from "./pages/Orders";
+import MySales from "./pages/MySales";
+import Favorites from "./pages/Favorites";
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,8 @@ export default function Router() {
             element: <DashboardLayout />,
             children: [
                 { path: "/", element: <MyPage /> },
-                { path: "orders", element: <Orders /> }
+                { path: "sales", element: <MySales /> },
+                { path: "favorites", element: <Favorites /> }
             ]
         },
         {
