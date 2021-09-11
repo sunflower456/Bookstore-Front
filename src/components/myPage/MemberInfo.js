@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
     Avatar,
     Card,
@@ -9,10 +10,8 @@ import {
     Typography
 } from "@material-ui/core";
 import { Close, Edit, Save } from "@material-ui/icons";
-import React, { useState } from "react";
 import { useStyle } from "./styles";
 import FormInitialValues from "./FormModel/formInitialValues";
-import { ImageUploadField } from "../common/FormFields";
 
 export default function MemberInfo() {
     const [isEditable, setIsEditable] = useState(false);
@@ -59,7 +58,7 @@ export default function MemberInfo() {
                     >
                         <Avatar
                             variant={"square"}
-                            sx={{ width: "56px", height: "56px" }}
+                            sx={{ width: "65px", height: "65px" }}
                         />
                         <Typography variant={"h6"}>ID : {id}</Typography>
                     </Grid>
