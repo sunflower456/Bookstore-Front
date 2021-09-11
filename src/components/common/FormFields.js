@@ -151,10 +151,10 @@ function ImageUploadField(props) {
 
     function _renderHelperText() {
         // if (meta.touched && meta.error) {
-        if (fileRejections.length <= 0) {
+        if (acceptedFiles.length >= 0 && acceptedFiles.length <= 5) {
             // 오류 발생된 이미지가 없는 경우 동작하지 않음
+            return "";
         }
-
         return (
             <FormHelperText className={classes.customError}>
                 오류 : 최대 5장의 사진까지 업로드 가능합니다.

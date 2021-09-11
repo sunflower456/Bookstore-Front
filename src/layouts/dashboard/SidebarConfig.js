@@ -16,24 +16,14 @@ const sidebarConfig = [
         icon: getIcon(peopleFill)
     },
     {
-        title: "구매 이력",
-        path: "/purchase",
+        title: "내 관심목록",
+        path: "/myPage/favorites",
         icon: getIcon(shoppingBagFill)
     },
     {
-        title: "판매 이력",
-        path: "/sale",
+        title: "내 판매글",
+        path: "/myPage/sales",
         icon: getIcon(fileTextFill)
-    },
-    {
-        title: "주문 정보",
-        path: "/mypage/orders",
-        icon: getIcon(lockFill)
-    },
-    {
-        title: "장바구니",
-        path: "/basket",
-        icon: getIcon(personAddFill)
     }
 ];
 

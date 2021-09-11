@@ -8,9 +8,6 @@ const {
         description,
         bookStatus,
         bookPhoto,
-        accountBank,
-        accountNumber,
-        accountOwner,
         bookIsbn,
         bookTitle,
         bookAuthor,
@@ -66,28 +63,6 @@ export default [
         [bookStatus.name]: Yup.string().required(
             `${bookStatus.requiredErrorMsg}`
         ),
-        [bookPhoto.name]: Yup.array().max(5, `${bookPhoto.invalidErrorMsg}`),
-        [accountBank.name]: Yup.string().required(
-            `${accountBank.requiredErrorMsg}`
-        ),
-        [accountOwner.name]: Yup.string().required(
-            `${accountOwner.requiredErrorMsg}`
-        ),
-        [accountNumber.name]: Yup.string()
-            .required(`${accountNumber.requiredErrorMsg}`)
-            .matches(accountNumEx, `${accountNumber.invalidErrorMsg}`)
-            .max(14, "최대 14자리까지 입력 가능합니다.")
-            .test(
-                "numberLengthCheck",
-                `${accountNumber.invalidErrorMsg}`,
-                (inputAccountNumber) => {
-                    const length =
-                        inputAccountNumber == null
-                            ? 0
-                            : inputAccountNumber.length;
-
-                    return length >= 12 && length <= 14;
-                }
-            )
+        [bookPhoto.name]: Yup.array().max(5, `${bookPhoto.invalidErrorMsg}`)
     })
 ];
