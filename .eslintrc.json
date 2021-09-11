@@ -37,6 +37,7 @@
         // display name을 갖지 않는 react 기능에 대해서 (익명함수) 오진되는 문제로 체크하지 않도록 설정
         // https://yonghyuc.wordpress.com/2021/04/23/react-display-name/
         "import/no-named-default": "off",
+        "react/display-name": "off",
         "indent": ["warn", 4, { "SwitchCase": 1 }],
         "linebreak-style": ["warn", "unix"],
         "quotes": ["warn", "double"],
