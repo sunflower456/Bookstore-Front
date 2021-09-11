@@ -2,7 +2,7 @@ import { styled } from "@material-ui/core/styles";
 import { Card, Grid } from "@material-ui/core";
 
 import Page from "../components/Page";
-import MyFavorites from "../components/favorites/MyFavorites";
+import MyFavorites from "../components/myFavorites/MyFavorites";
 
 // ----------------------------------------------------------------------
 
