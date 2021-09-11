@@ -2,7 +2,7 @@ import { styled } from "@material-ui/core/styles";
 import { Card, Grid } from "@material-ui/core";
 
 import Page from "../components/Page";
-import SalesAndPurchases from "../components/orders/SalesAndPurchases";
+import MyFavorites from "../components/myFavorites/MyFavorites";
 
 // ----------------------------------------------------------------------
 
@@ -18,19 +18,19 @@ const SectionStyle = styled(Card)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    border: "1px solid black",
     margin: theme.spacing(10, 0, 2, 2),
-    padding: theme.spacing(4)
+    padding: theme.spacing(4),
+    boxShadow: 10
 }));
 
 // ----------------------------------------------------------------------
 
-export default function MyPage() {
+export default function Favorites() {
     return (
-        <RootStyle title="주문정보 | Herb Book Store">
+        <RootStyle title="내 관심목록 | Herb Book Store">
             <Grid container justifyContent={"center"}>
                 <SectionStyle>
-                    <SalesAndPurchases />
+                    <MyFavorites />
                 </SectionStyle>
             </Grid>
         </RootStyle>

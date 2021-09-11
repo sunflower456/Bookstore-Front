@@ -1,19 +1,23 @@
+import React, { useRef, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-// material
 import { styled } from "@material-ui/core/styles";
 import {
     Box,
+    Button,
     Card,
     Container,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
     Grid,
     Link,
     Typography
 } from "@material-ui/core";
-// components
 import Page from "../components/Page";
 import { MHidden } from "../components/@material-extend";
 import RegisterForm from "../components/register/RegisterForm";
-// images
 import registerImage from "../static/images/book_joinus.jpg";
 
 // ----------------------------------------------------------------------
@@ -48,6 +52,11 @@ const ContentStyle = styled("div")(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Register() {
+    const [termsOpen, setTermsOpen] = useState(false);
+
+    const handleOpen = () => setTermsOpen(true);
+    const handleClose = () => setTermsOpen(false);
+
     return (
         <RootStyle title="회원가입 | Herb Book Store">
             <Grid container spacing={2}>
@@ -88,25 +97,23 @@ export default function Register() {
                             <RegisterForm />
 
                             <Typography
-                                variant="body2"
+                                variant={"caption"}
                                 align="center"
                                 sx={{ color: "text.secondary", mt: 3 }}
                             >
-                                By registering, I agree to Herb Book Store&nbsp;
+                                회원이 되시면, 허브 중고 서점(Herb Book Store)
+                                &nbsp;
                                 <Link
                                     underline="always"
-                                    sx={{ color: "text.primary" }}
+                                    sx={{
+                                        color: "text.primary",
+                                        cursor: "pointer"
+                                    }}
+                                    onClick={handleOpen}
                                 >
-                                    Terms of Service
+                                    회원약관
                                 </Link>
-                                &nbsp;and&nbsp;
-                                <Link
-                                    underline="always"
-                                    sx={{ color: "text.primary" }}
-                                >
-                                    Privacy Policy
-                                </Link>
-                                .
+                                에 동의한 것으로 간주합니다.
                             </Typography>
                         </ContentStyle>
                         <Container sx={{ textAlign: "right", pr: "1em" }}>
@@ -123,6 +130,31 @@ export default function Register() {
                     </Container>
                 </Grid>
             </Grid>
+            <Dialog
+                open={termsOpen}
+                scroll={"paper"}
+                aria-labelledby="이용약관 팝업"
+                aria-describedby="Herb Book Store 이용약관에 대해 알려드립니다."
+            >
+                <DialogTitle id="termsOfServiceTitle">이용약관</DialogTitle>
+                <DialogContent dividers={true}>
+                    <DialogContentText
+                        id="termsOfServiceDescription"
+                        tabIndex={-1}
+                    >
+                        제1조(목적) 이 약관은 Team Herb.(전자상거래 사업자)가
+                        운영하는 허브 중고 서점 (이하 “몰”이라 한다)에서
+                        제공하는 인터넷 관련 서비스(이하 “서비스”라 한다)를
+                        이용함에 있어 사이버 몰과 이용자의 권리, 의무 및
+                        책임사항을 규정함을 목적으로 합니다. ※「PC통신, 무선
+                        등을 이용하는 전자상거래에 대해서도 그 성질에 반하지
+                        않는 한 이 약관을 준용합니다.」
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>닫기</Button>
+                </DialogActions>
+            </Dialog>
         </RootStyle>
     );
 }

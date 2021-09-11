@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Divider,
     Grid,
@@ -8,12 +9,9 @@ import {
     Paper,
     Typography
 } from "@material-ui/core";
-import React from "react";
 import { LoadingButton } from "@material-ui/lab";
 import { FixedSizeList } from "react-window";
-// components
 import { InputField } from "../../common/FormFields";
-// styles
 import useStyles from "../styles";
 import palette from "../../../theme/palette";
 
@@ -93,7 +91,7 @@ export default function BookSearchForm(props) {
                             label={bookSearchType.label}
                             inputProps={{
                                 name: "bookSearchType",
-                                id: "searchType-native"
+                                identity: "searchType-native"
                             }}
                             sx={{ height: "inherit", marginTop: "16px" }}
                         >

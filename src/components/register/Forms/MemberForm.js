@@ -1,24 +1,29 @@
 import React, { useState } from "react";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { IconButton, InputAdornment, Stack, SvgIcon } from "@material-ui/core";
-// components
 import { InputField, PhoneNumberField } from "../../common/FormFields";
-// icons
 
 export default function MemberForm(props) {
     const [showPassword, setShowPassword] = useState(false);
 
     const {
-        formField: { id, password, passwordCheck, memberName, phone, email }
+        formField: {
+            identity,
+            password,
+            passwordCheck,
+            name,
+            email,
+            phoneNumber
+        }
     } = props;
 
     return (
         <Stack spacing={2}>
             <InputField
                 fullWidth
-                name={id.name}
-                label={id.label}
-                placeholder={id.placeMsg}
+                name={identity.name}
+                label={identity.label}
+                placeholder={identity.placeMsg}
             />
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <InputField
@@ -60,9 +65,9 @@ export default function MemberForm(props) {
             </Stack>
             <InputField
                 fullWidth
-                name={memberName.name}
-                label={memberName.label}
-                placeholder={memberName.placeMsg}
+                name={name.name}
+                label={name.label}
+                placeholder={name.placeMsg}
                 autoComplete="memberName"
             />
             <InputField
@@ -74,9 +79,9 @@ export default function MemberForm(props) {
             />
             <PhoneNumberField
                 fullWidth
-                name={phone.name}
-                label={phone.label}
-                placeholder={phone.placeMsg}
+                name={phoneNumber.name}
+                label={phoneNumber.label}
+                placeholder={phoneNumber.placeMsg}
                 autoComplete="phoneNumber"
             />
         </Stack>

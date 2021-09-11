@@ -3,27 +3,15 @@ import { useFormikContext } from "formik";
 
 export default function RegistrationReview() {
     const { values: formValues } = useFormikContext();
-    const {
-        identity,
-        name,
-        phone,
-        email,
-        accountBank,
-        accountOwner,
-        accountNumber,
-        zipNo,
-        roadAddr,
-        roadAddrDetail
-    } = formValues;
+    const { identity, password, passwordCheck, name, email, phoneNumber } =
+        formValues;
 
     /**
-     *
      * @param thisPhoneNumber{string} 전화번호 11자리 또는 10자리
      * @returns {string} 대시(-)를 붙인 전화번호
      */
     function replacePhoneNumber(thisPhoneNumber) {
         const length = thisPhoneNumber.length;
-        // console.log(`값이 나오는지 확인 : ${phone}`);
         let result = "";
 
         if (length === 10) {
@@ -40,7 +28,7 @@ export default function RegistrationReview() {
         return result;
     }
 
-    const phoneNumber = replacePhoneNumber(phone);
+    const replacedPhoneNum = replacePhoneNumber(phoneNumber);
 
     return (
         <Grid container rowGap={2}>
@@ -74,49 +62,7 @@ export default function RegistrationReview() {
                     <Typography>전화번호 : </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                    <Typography>{phoneNumber}</Typography>
-                </Grid>
-            </Grid>
-            <Typography variant={"h6"}>계좌정보</Typography>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Typography>은행 : </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography>{accountBank}</Typography>
-                </Grid>
-            </Grid>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Typography>예금주 : </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography>{accountOwner}</Typography>
-                </Grid>
-            </Grid>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Typography>계좌번호 : </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography>{accountNumber}</Typography>
-                </Grid>
-            </Grid>
-            <Typography variant={"h6"}>기본 주소</Typography>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Typography>우편번호 : </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography>{zipNo}</Typography>
-                </Grid>
-            </Grid>
-            <Grid container>
-                <Grid item xs={6}>
-                    <Typography>주소 : </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                    <Typography>{`${roadAddr} ${roadAddrDetail}`}</Typography>
+                    <Typography>{replacedPhoneNum}</Typography>
                 </Grid>
             </Grid>
         </Grid>
