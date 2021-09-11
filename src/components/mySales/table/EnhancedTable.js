@@ -17,7 +17,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { CheckCircle, RemoveShoppingCart, Shop } from "@material-ui/icons";
-import { Avatar, Stack } from "@material-ui/core";
+import { Avatar, Link, Stack } from "@material-ui/core";
 
 /* 표기할 데이터
 - postId (행마다 고유의 key가 필요함)
@@ -25,7 +25,6 @@ import { Avatar, Stack } from "@material-ui/core";
 - 게시글 제목 (title)
 - 중고책 제목 (bookRequest.bookTitle)
 - 중고책 가격 (price)
-- 판매자 아이디 (postIdentity)
 - 주문 정보 상태 (postStatus)
 * */
 function createData(
@@ -34,7 +33,6 @@ function createData(
     title,
     bookTitle,
     price,
-    postIdentity,
     postStatus
 ) {
     return {
@@ -43,119 +41,82 @@ function createData(
         title,
         bookTitle,
         price,
-        postIdentity,
         postStatus
     };
 }
 
 const rows = [
     createData(
-        1,
-        "test.jpg",
-        "테스트책 팝니다.",
-        "테스트책",
-        5000,
-        "tester1",
-        "판매중"
-    ),
-    createData(
-        2,
-        "test2.jpg",
-        "테스트책 팝니다.2",
-        "테스트책2",
-        6000,
-        "tester2",
-        "예약중"
-    ),
-    createData(
-        3,
-        "test.jpg",
-        "테스트책 팝니다.",
-        "테스트책",
-        5000,
-        "tester1",
-        "판매완료"
-    ),
-    createData(
-        4,
-        "test2.jpg",
-        "테스트책 팝니다.2",
-        "테스트책2",
-        6000,
-        "tester2",
-        "SALE"
-    ),
-    createData(
         5,
         "test.jpg",
-        "테스트책 팝니다.",
+        "테스트책 팝니다.(1)",
         "테스트책",
         5000,
-        "tester1",
-        "SALE"
+        "판매중"
     ),
     createData(
         6,
         "test2.jpg",
-        "테스트책 팝니다.2",
+        "테스트책 팝니다.(2)",
         "테스트책2",
-        6000,
-        "tester2",
-        "SALE"
+        5000,
+        "판매중"
     ),
     createData(
         7,
-        "test.jpg",
-        "테스트책 팝니다.",
-        "테스트책",
+        "test3.jpg",
+        "테스트책 팝니다.(3)",
+        "테스트책3",
         5000,
-        "tester1",
-        "SALE"
+        "판매중"
     ),
     createData(
         8,
-        "test2.jpg",
-        "테스트책 팝니다.2",
-        "테스트책2",
-        6000,
-        "tester2",
-        "SALE"
+        "test4.jpg",
+        "테스트책 팝니다.(4)",
+        "테스트책4",
+        5000,
+        "판매중"
     ),
     createData(
         9,
-        "test.jpg",
-        "테스트책 팝니다.",
-        "테스트책",
+        "test5.jpg",
+        "테스트책 팝니다.(5)",
+        "테스트책5",
         5000,
-        "tester1",
-        "SALE"
+        "판매중"
     ),
     createData(
         10,
-        "test2.jpg",
-        "테스트책 팝니다.2",
-        "테스트책2",
-        6000,
-        "tester2",
-        "SALE"
+        "test6.jpg",
+        "테스트책 팝니다.(6)",
+        "테스트책6",
+        5000,
+        "판매중"
     ),
     createData(
         11,
-        "test.jpg",
-        "테스트책 팝니다.",
-        "테스트책",
+        "test7.jpg",
+        "테스트책 팝니다.(7)",
+        "테스트책7",
         5000,
-        "tester1",
-        "SALE"
+        "판매중"
     ),
     createData(
         12,
-        "test2.jpg",
-        "테스트책 팝니다.2",
-        "테스트책2",
-        6000,
-        "tester2",
-        "SALE"
+        "test8.jpg",
+        "테스트책 팝니다.(8)",
+        "테스트책8",
+        5000,
+        "판매중"
+    ),
+    createData(
+        13,
+        "test9.jpg",
+        "테스트책 팝니다.(9)",
+        "테스트책9",
+        5000,
+        "판매중"
     )
 ];
 
@@ -211,12 +172,6 @@ const headRows = [
         numeric: true,
         disablePadding: false,
         label: "가격"
-    },
-    {
-        id: "postIdentity",
-        numeric: false,
-        disablePadding: false,
-        label: "판매자"
     },
     {
         id: "postStatus",
@@ -278,13 +233,13 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === "light"
             ? {
-                color: theme.palette.secondary.main,
-                backgroundColor: theme.palette.info.dark
-            }
+                  color: theme.palette.secondary.main,
+                  backgroundColor: theme.palette.info.dark
+              }
             : {
-                color: theme.palette.text.primary,
-                backgroundColor: theme.palette.info.light
-            },
+                  color: theme.palette.text.primary,
+                  backgroundColor: theme.palette.info.light
+              },
     spacer: {
         flex: "1 1 100%"
     },
@@ -295,63 +250,6 @@ const useToolbarStyles = makeStyles((theme) => ({
         flex: "0 0 auto"
     }
 }));
-
-const EnhancedTableToolbar = (props) => {
-    const classes = useToolbarStyles();
-    const { rowSelectedNum, rowSelected } = props;
-
-    return (
-        <Toolbar
-            className={{
-                [classes.highlight]: rowSelectedNum > 0
-            }}
-        >
-            <div className={classes.title}>
-                {rowSelectedNum > 0 ? (
-                    <Stack direction={"column"}>
-                        <a href={"#"}>
-                            <Typography color="inherit" variant="h6">
-                                {rowSelected}
-                            </Typography>
-                        </a>
-                    </Stack>
-                ) : (
-                    ""
-                )}
-            </div>
-            <div className={classes.spacer} />
-            <div className={classes.actions}>
-                {rowSelectedNum > 0 ? (
-                    <Stack direction={"row"}>
-                        <Tooltip title="확정">
-                            <IconButton aria-label="Confirm">
-                                확정 <CheckCircle />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="구매">
-                            <IconButton aria-label="Delete">
-                                구매 <Shop />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="취소">
-                            <IconButton aria-label="Cancel">
-                                취소 <RemoveShoppingCart />
-                            </IconButton>
-                        </Tooltip>
-                    </Stack>
-                ) : (
-                    <Tooltip title="Filter list">
-                        <IconButton aria-label="Filter list" />
-                    </Tooltip>
-                )}
-            </div>
-        </Toolbar>
-    );
-};
-
-// EnhancedTableToolbar.propTypes = {
-//
-// };
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -465,7 +363,12 @@ export default function EnhancedTable() {
                                                         : "left"
                                                 }
                                             >
-                                                <a href={"#"}>{row.title}</a>
+                                                <Link
+                                                    href={`/products/${row.postId}`}
+                                                    underline={"hover"}
+                                                >
+                                                    {row.title}
+                                                </Link>
                                             </TableCell>
                                             <TableCell
                                                 align={
@@ -484,18 +387,6 @@ export default function EnhancedTable() {
                                                 }
                                             >
                                                 {row.price}
-                                            </TableCell>
-                                            <TableCell
-                                                align={
-                                                    row.numeric
-                                                        ? "right"
-                                                        : "left"
-                                                }
-                                            >
-                                                <Stack direction={"row"}>
-                                                    <Avatar />
-                                                    {row.postIdentity}
-                                                </Stack>
                                             </TableCell>
                                             <TableCell align={"center"}>
                                                 {row.postStatus}
