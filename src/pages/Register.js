@@ -58,7 +58,7 @@ export default function Register() {
     const handleClose = () => setTermsOpen(false);
 
     return (
-        <RootStyle title="회원가입 | Herb Book Store">
+        <RootStyle title="회원가입 | 허브 중고 서점">
             <Grid container spacing={2}>
                 <Grid item md={3}>
                     <MHidden width="mdDown">

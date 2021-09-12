@@ -42,7 +42,7 @@ const ContentStyle = styled("div")(({ theme }) => ({
 
 export default function Login() {
     return (
-        <RootStyle title="Login | Herb Book Store">
+        <RootStyle title="로그인 | 허브 중고 서점">
             <Grid container spacing={2}>
                 <Grid item md={3}>
                     <MHidden width="mdDown">
