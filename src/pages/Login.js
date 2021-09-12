@@ -51,7 +51,7 @@ export default function Login() {
                                 variant="h3"
                                 sx={{ px: 5, mt: 10, mb: 5 }}
                             >
-                                원하는 중고책? <br /> Herb Book Store!
+                                원하는 중고책? <br /> 허브 중고 서점!
                             </Typography>
                             <img
                                 src={bookImage}
