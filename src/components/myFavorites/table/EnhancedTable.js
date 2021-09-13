@@ -218,13 +218,13 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === "light"
             ? {
-                color: theme.palette.secondary.main,
-                backgroundColor: theme.palette.info.dark
-            }
+                  color: theme.palette.secondary.main,
+                  backgroundColor: theme.palette.info.dark
+              }
             : {
-                color: theme.palette.text.primary,
-                backgroundColor: theme.palette.info.light
-            },
+                  color: theme.palette.text.primary,
+                  backgroundColor: theme.palette.info.light
+              },
     spacer: {
         flex: "1 1 100%"
     },
@@ -380,10 +380,7 @@ export default function EnhancedTable() {
                                                         : "left"
                                                 }
                                             >
-                                                <Stack direction={"row"}>
-                                                    <Avatar />
-                                                    {row.postIdentity}
-                                                </Stack>
+                                                {row.postIdentity}
                                             </TableCell>
                                             <TableCell align={"center"}>
                                                 {row.postStatus}
