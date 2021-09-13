@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import {
     Avatar,
+    Badge,
     Card,
     CardContent,
     CardHeader,
     Divider,
     Grid,
     IconButton,
+    Input,
     Typography
 } from "@material-ui/core";
-import { Close, Edit, Save } from "@material-ui/icons";
+import {
+    AddPhotoAlternateRounded,
+    Close,
+    Edit,
+    Save
+} from "@material-ui/icons";
 import { useStyle } from "./styles";
 import FormInitialValues from "./FormModel/formInitialValues";
 
@@ -56,10 +63,39 @@ export default function MemberInfo() {
                         direction={"column"}
                         alignContent={"center"}
                     >
-                        <Avatar
-                            variant={"square"}
-                            sx={{ width: "65px", height: "65px" }}
-                        />
+                        <Badge
+                            overlap="circular"
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "right"
+                            }}
+                            badgeContent={
+                                <>
+                                    <Input
+                                        accept="image/*"
+                                        id="icon-button-file"
+                                        name="icon-button-file"
+                                        type="file"
+                                        sx={{ display: "none" }}
+                                    />
+                                    <label htmlFor="icon-button-file">
+                                        <IconButton
+                                            component="span"
+                                            color="primary"
+                                        >
+                                            <AddPhotoAlternateRounded
+                                                color={"info"}
+                                            />
+                                        </IconButton>
+                                    </label>
+                                </>
+                            }
+                        >
+                            <Avatar
+                                variant={"square"}
+                                sx={{ width: "65px", height: "65px" }}
+                            />
+                        </Badge>
                         <Typography variant={"h6"}>ID : {id}</Typography>
                     </Grid>
                     <Grid container>
