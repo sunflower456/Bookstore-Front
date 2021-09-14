@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { Container, Typography, Button, Stack } from "@material-ui/core";
 import Page from "../components/Page";
@@ -10,6 +10,8 @@ import Searchbar from "../layouts/dashboard/Searchbar";
 
 export default function EcommerceShop() {
     const [openFilter, setOpenFilter] = useState(false);
+    const [content, setContent] = useState("");
+    const [products, setProducts] = useState(PRODUCTS);
 
     const formik = useFormik({
         initialValues: {
@@ -24,6 +26,17 @@ export default function EcommerceShop() {
         }
     });
 
+    const handleInputChange = (value) => {
+        setContent({ content: value });
+    };
+    const handleInputClick = () => {
+        setProducts({
+            products: PRODUCTS.filter((product) => {
+                return product.name.includes(content.content);
+            })
+        });
+    };
+
     return (
         <Page title="허브중고서점">
             <Container>
@@ -37,7 +50,10 @@ export default function EcommerceShop() {
                 >
                     중고책 등록
                 </Button>
-                <Searchbar />
+                <Searchbar
+                    onChange={handleInputChange}
+                    onClick={handleInputClick}
+                />
                 <Stack
                     direction="row"
                     flexWrap="wrap-reverse"
@@ -45,7 +61,7 @@ export default function EcommerceShop() {
                     justifyContent="flex-end"
                     sx={{ mb: 5 }}
                 ></Stack>
-                <ProductList products={PRODUCTS} />
+                <ProductList products={products} />
             </Container>
         </Page>
     );

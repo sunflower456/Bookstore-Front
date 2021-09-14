@@ -35,7 +35,6 @@ export default function ShopProductCard({ product, id }) {
         // priceSale
     } = product;
 
-    console.log(status);
     return (
         <Card>
             <Box sx={{ pt: "100%", position: "relative" }}>
