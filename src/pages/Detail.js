@@ -36,7 +36,7 @@ export default function ProductDetail() {
     return (
         <Page title="허브중고서점">
             <Typography variant="h2" sx={{ mb: 15 }}>
-                중고책 상세 보기
+                허브 중고 서점
             </Typography>
             <SectionStyle>
                 <DetailTable />

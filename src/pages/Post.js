@@ -52,7 +52,7 @@ export default function Register() {
                                 variant={"contained"}
                                 color={"secondary"}
                                 startIcon={<ArrowBackRounded />}
-                                to="/products/search"
+                                to="/"
                                 component={Link}
                             >
                                 {" "}

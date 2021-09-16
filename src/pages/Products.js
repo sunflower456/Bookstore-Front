@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import { Container, Typography, Button, Stack } from "@material-ui/core";
 import Page from "../components/Page";
@@ -37,6 +37,10 @@ export default function EcommerceShop() {
         });
     };
 
+    const onPageChange = () => {
+        window.location.href = "/products/addPost";
+    };
+
     return (
         <Page title="허브중고서점">
             <Container>
@@ -47,6 +51,7 @@ export default function EcommerceShop() {
                     size="large"
                     variant="contained"
                     style={{ marginBottom: "30px" }}
+                    onClick={onPageChange}
                 >
                     중고책 등록
                 </Button>

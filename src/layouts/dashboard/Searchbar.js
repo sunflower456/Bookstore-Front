@@ -86,8 +86,8 @@ export default function Searchbar({ onChange, onClick }) {
                 }
                 onChange={handleInputChangeChild}
                 sx={{ mr: 1, fontWeight: "fontWeightBold" }}
-                style={{ width: "80%", paddingTop: "8px" }}
-            />
+                style={{ width: "70%", paddingTop: "8px" }}
+            ></Input>
             <Button
                 variant="contained"
                 style={{ float: "right" }}

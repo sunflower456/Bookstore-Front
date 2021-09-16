@@ -1,9 +1,8 @@
 import { useParams } from "react-router";
 import { useState } from "react";
+import StarIcon from "@material-ui/icons/Star";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import {
-    Button,
-    ButtonGroup,
     Paper,
     Typography,
     Avatar,
@@ -139,14 +138,13 @@ export default function ProductDetail() {
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
 
     const product = PRODUCTS[id];
-    const product2 = PRODUCTS[id + 1];
 
     // cover 수정하기
     const productImages = [
         product.cover,
-        product2.cover,
         product.cover,
-        product2.cover,
+        product.cover,
+        product.cover,
         product.cover
     ];
 
@@ -187,6 +185,23 @@ export default function ProductDetail() {
                                     {productImages?.map((image, no) => (
                                         <div className="slideContent" key={no}>
                                             <picture>
+                                                {product.status ? (
+                                                    <StarIcon
+                                                        style={{
+                                                            color: "yellow",
+                                                            position:
+                                                                "absolute",
+                                                            left: "1px"
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <StarIcon
+                                                        style={{
+                                                            color: "blue",
+                                                            visibility: "hidden"
+                                                        }}
+                                                    />
+                                                )}
                                                 <img
                                                     src={image}
                                                     style={{
@@ -248,7 +263,7 @@ export default function ProductDetail() {
                                     component="p"
                                     style={{ marginTop: "3px" }}
                                 >
-                                    <b>백선화 sunflower45</b>
+                                    <b>sunflower45</b>
                                 </Typography>
                             </CardContent>
                         </Card>
