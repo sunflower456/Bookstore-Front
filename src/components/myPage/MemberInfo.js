@@ -2,29 +2,47 @@ import React, { useState } from "react";
 import {
     Avatar,
     Badge,
+    Box,
     Card,
     CardContent,
     CardHeader,
+    Container,
     Divider,
     Grid,
     IconButton,
     Input,
     Typography
 } from "@material-ui/core";
-import {
-    AddPhotoAlternateRounded,
-    Close,
-    Edit,
-    Save
-} from "@material-ui/icons";
+import { AddPhotoAlternateRounded, Close, Edit } from "@material-ui/icons";
+import { LoadingButton } from "@material-ui/lab";
+import { Form, Formik } from "formik";
 import { useStyle } from "./styles";
 import FormInitialValues from "./FormModel/formInitialValues";
+import palette from "../../theme/palette";
+import ValidationSchema from "./FormModel/validationSchema";
+import RegisterFormModel from "./FormModel/registerFormModel";
+import MyInfoForm from "./Forms/MyInfoForm";
 
 export default function MemberInfo() {
     const [isEditable, setIsEditable] = useState(false);
     const classes = useStyle();
 
-    const { id, memberName, phone, email } = FormInitialValues;
+    const { identity, memberName, phoneNumber, email } = FormInitialValues;
+    const { formId, formField } = RegisterFormModel;
+
+    function _sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function _handleSubmit(values, actions) {
+        await _sleep(1000);
+        alert(JSON.stringify(values, null, 2));
+        actions.setSubmitting(false);
+
+        setIsEditable(!isEditable);
+    }
+
+    const validationSchema = ValidationSchema[0];
 
     return (
         <Card className={classes.cardArea}>
@@ -45,13 +63,6 @@ export default function MemberInfo() {
                         >
                             {!isEditable ? <Edit /> : <Close />}
                         </IconButton>
-                        {isEditable ? (
-                            <IconButton aria-label={"save"}>
-                                <Save />
-                            </IconButton>
-                        ) : (
-                            <></>
-                        )}
                     </>
                 }
             />
@@ -93,35 +104,80 @@ export default function MemberInfo() {
                         >
                             <Avatar
                                 variant={"square"}
-                                sx={{ width: "65px", height: "65px" }}
+                                sx={{ width: "80px", height: "80px" }}
                             />
                         </Badge>
-                        <Typography variant={"h6"}>ID : {id}</Typography>
+                        <Typography variant={"h6"}>ID : {identity}</Typography>
                     </Grid>
-                    <Grid container>
-                        <Grid item xs={6}>
-                            <Typography>이름 : </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography>{memberName}</Typography>
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item xs={6}>
-                            <Typography>이메일 : </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography>{email}</Typography>
-                        </Grid>
-                    </Grid>
-                    <Grid container>
-                        <Grid item xs={6}>
-                            <Typography>전화번호 : </Typography>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Typography>{phone}</Typography>
-                        </Grid>
-                    </Grid>
+                    <React.Fragment>
+                        {isEditable ? (
+                            <Formik
+                                initialValues={FormInitialValues}
+                                validationSchema={validationSchema}
+                                onSubmit={_handleSubmit}
+                            >
+                                {({ isSubmitting }) => (
+                                    <Form id={formId} style={{ width: "100%" }}>
+                                        <MyInfoForm formField={formField} />
+                                        <Box
+                                            sx={{
+                                                margin: "1vh 0",
+                                                textAlign: "right"
+                                            }}
+                                        >
+                                            <LoadingButton
+                                                loading={isSubmitting}
+                                                type="submit"
+                                                variant="contained"
+                                                color={"primary"}
+                                            >
+                                                저장
+                                            </LoadingButton>
+                                        </Box>
+                                    </Form>
+                                )}
+                            </Formik>
+                        ) : (
+                            <React.Fragment>
+                                <Grid container>
+                                    <Grid item xs={6}>
+                                        <Typography color={palette.grey["500"]}>
+                                            이름 :
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography>{memberName}</Typography>
+                                    </Grid>
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <Typography
+                                                color={palette.grey["500"]}
+                                            >
+                                                이메일 :
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Typography>{email}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container>
+                                        <Grid item xs={6}>
+                                            <Typography
+                                                color={palette.grey["500"]}
+                                            >
+                                                전화번호 :
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <Typography>
+                                                {phoneNumber}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </React.Fragment>
+                        )}
+                    </React.Fragment>
                 </Grid>
             </CardContent>
         </Card>
