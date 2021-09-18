@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import palette from "../../theme/palette";
 
 export default makeStyles((theme) => ({
     stepper: {
@@ -23,5 +24,14 @@ export default makeStyles((theme) => ({
         minHeight: "80vh",
         margin: theme.spacing(2, 0, 4),
         padding: theme.spacing(6)
+    },
+    bookSearchDisplayArea: {
+        width: "80%",
+        marginTop: "1em",
+        marginLeft: "4vw",
+        bgcolor: palette.grey[100]
+    },
+    setHidden: {
+        display: "none"
     }
 }));

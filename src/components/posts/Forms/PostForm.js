@@ -1,10 +1,8 @@
 import React from "react";
 import {
-    Divider,
     FormControl,
     FormHelperText,
     FormLabel,
-    Grid,
     Paper,
     Radio,
     RadioGroup,
@@ -13,33 +11,10 @@ import {
 } from "@material-ui/core";
 import { Field, useFormikContext } from "formik";
 // components
-import {
-    ImageUploadField,
-    InputField,
-    SelectField
-} from "../../common/FormFields";
+import { ImageUploadField, InputField } from "../../common/FormFields";
 // styles
 import UseStyles from "../styles";
 import palette from "../../../theme/palette";
-
-const banks = [
-    {
-        value: "국민은행",
-        label: "국민은행"
-    },
-    {
-        value: "우리은행",
-        label: "우리은행"
-    },
-    {
-        value: "하나은행",
-        label: "하나은행"
-    },
-    {
-        value: "신한은행",
-        label: "신한은행"
-    }
-];
 
 export default function PostForm(props) {
     const classes = UseStyles();
@@ -141,14 +116,15 @@ export default function PostForm(props) {
                 />
             </Stack>
 
-            <Typography variant="caption" display="block" gutterBottom>
-                Errors
-            </Typography>
-            <pre>{JSON.stringify(meta.errors, null, 2)}</pre>
-            <Typography variant="caption" display="block" gutterBottom>
-                Values
-            </Typography>
-            <pre>{JSON.stringify(meta.values, null, 2)}</pre>
+            {/* 입력값 확인을 위한 임시 영역 설정 */}
+            {/* <Typography variant="caption" display="block" gutterBottom>*/}
+            {/*    Errors*/}
+            {/* </Typography>*/}
+            {/* <pre>{JSON.stringify(meta.errors, null, 2)}</pre>*/}
+            {/* <Typography variant="caption" display="block" gutterBottom>*/}
+            {/*    Values*/}
+            {/* </Typography>*/}
+            {/* <pre>{JSON.stringify(meta.values, null, 2)}</pre>*/}
         </Paper>
     );
 }

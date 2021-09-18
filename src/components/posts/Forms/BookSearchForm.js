@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import {
     Box,
+    Button,
     Card,
     CardContent,
     CardMedia,
@@ -12,13 +13,12 @@ import {
     NativeSelect,
     Paper,
     Stack,
+    TextField,
     Typography
 } from "@material-ui/core";
-import { LoadingButton } from "@material-ui/lab";
 import { FixedSizeList } from "react-window";
 import { InputField } from "../../common/FormFields";
 import useStyles from "../styles";
-import palette from "../../../theme/palette";
 import dummyImage from "../../../static/images/herbLogo.png";
 
 const bookSearchTypes = [
@@ -37,6 +37,8 @@ const bookSearchTypes = [
 ];
 
 export default function BookSearchForm(props) {
+    const [keyword, setKeyword] = useState("");
+
     const classes = useStyles();
     const {
         formField: {
@@ -53,6 +55,8 @@ export default function BookSearchForm(props) {
             bookSearchKeyword
         }
     } = props;
+
+    const searchKeywordArea = useRef();
 
     function renderRow(rowProps) {
         const { index, style } = rowProps;
@@ -161,36 +165,44 @@ export default function BookSearchForm(props) {
                         </NativeSelect>
                     </Grid>
                     <Grid item sm={8}>
-                        <InputField
+                        {/* <InputField>*/}
+                        <TextField
                             fullWidth
                             variant={"standard"}
-                            name={bookSearchKeyword.name}
-                            label={bookSearchKeyword.label}
-                            placeholder={bookSearchKeyword.placeMsg}
+                            label={"검색어"}
+                            placeholder={"검색어를 입력해주세요."}
+                            onChange={(input) => {
+                                const inputValue = input.currentTarget.value;
+
+                                setKeyword(inputValue);
+                                if (inputValue.length > 0) {
+                                    searchKeywordArea.current.className =
+                                        classes.bookSearchDisplayArea;
+                                } else {
+                                    searchKeywordArea.current.className =
+                                        classes.setHidden;
+                                }
+                            }}
                         />
                     </Grid>
                     <Grid item sm={2} textAlign={"center"}>
-                        <LoadingButton
+                        <Button
                             variant={"contained"}
                             color={"info"}
                             sx={{ height: "inherit", marginTop: "16px" }}
                         >
                             검색
-                        </LoadingButton>
+                        </Button>
                     </Grid>
                 </Grid>
                 <Paper
                     elevation={6}
-                    sx={{
-                        width: "80%",
-                        marginTop: "1em",
-                        marginLeft: "4vw",
-                        bgcolor: palette.grey[100]
-                    }}
+                    ref={searchKeywordArea}
+                    className={classes.setHidden}
                 >
                     {/* https://github.com/bvaughn/react-window , https://codesandbox.io/s/5wqo7z2np4?file=/src/App.js 확인 필요 */}
                     <FixedSizeList
-                        height={600}
+                        height={500}
                         width={"100%"}
                         itemSize={104}
                         itemCount={200}

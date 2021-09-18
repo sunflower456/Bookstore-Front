@@ -70,12 +70,6 @@ export default {
         bookSearchType: {
             name: "searchType",
             label: "분류"
-        },
-        bookSearchKeyword: {
-            name: "searchKeyword",
-            label: "검색어",
-            placeMsg: "검색을 위한 키워드를 입력해주세요.",
-            requiredErrorMsg: "빈 값은 입력할 수 없습니다."
         }
     }
 };
