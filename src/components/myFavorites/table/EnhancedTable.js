@@ -132,42 +132,49 @@ const headRows = [
         id: "bookThumbnail",
         numeric: false,
         disablePadding: false,
+        sortable: false,
         label: "사진"
     },
     {
         id: "title",
         numeric: false,
         disablePadding: false,
+        sortable: true,
         label: "제목"
     },
     {
         id: "bookTitle",
         numeric: false,
         disablePadding: false,
+        sortable: true,
         label: "도서명"
     },
     {
         id: "price",
         numeric: true,
         disablePadding: false,
+        sortable: true,
         label: "가격"
     },
     {
         id: "postIdentity",
         numeric: false,
         disablePadding: false,
+        sortable: true,
         label: "판매자"
     },
     {
         id: "postStatus",
         numeric: false,
         disablePadding: false,
+        sortable: false,
         label: "상태"
     },
     {
         id: "postLike",
         numeric: false,
         disablePadding: false,
+        sortable: false,
         label: "관심상태"
     }
 ];
@@ -191,7 +198,10 @@ function EnhancedTableHead(props) {
                         <TableSortLabel
                             active={orderBy === row.id}
                             direction={order}
-                            onClick={createSortHandler(row.id)}
+                            onClick={
+                                row.sortable ? createSortHandler(row.id) : null
+                            }
+                            hideSortIcon={!row.sortable}
                         >
                             {row.label}
                         </TableSortLabel>
@@ -218,13 +228,13 @@ const useToolbarStyles = makeStyles((theme) => ({
     highlight:
         theme.palette.type === "light"
             ? {
-                color: theme.palette.secondary.main,
-                backgroundColor: theme.palette.info.dark
-            }
+                  color: theme.palette.secondary.main,
+                  backgroundColor: theme.palette.info.dark
+              }
             : {
-                color: theme.palette.text.primary,
-                backgroundColor: theme.palette.info.light
-            },
+                  color: theme.palette.text.primary,
+                  backgroundColor: theme.palette.info.light
+              },
     spacer: {
         flex: "1 1 100%"
     },
@@ -380,10 +390,7 @@ export default function EnhancedTable() {
                                                         : "left"
                                                 }
                                             >
-                                                <Stack direction={"row"}>
-                                                    <Avatar />
-                                                    {row.postIdentity}
-                                                </Stack>
+                                                {row.postIdentity}
                                             </TableCell>
                                             <TableCell align={"center"}>
                                                 {row.postStatus}

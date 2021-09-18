@@ -41,7 +41,7 @@ function Login() {
             <div className={classes.centerBox}>
                 <Avatar
                     className={classes.large}
-                    alt={"herbBookStore"}
+                    alt={"Herb Book Store"}
                     src={HerbLogo}
                 />
                 <Typography
@@ -49,7 +49,7 @@ function Login() {
                     component={"h1"}
                     variant={"h4"}
                 >
-                    Herb-Bookstore
+                    허브 중고 서점
                 </Typography>
                 <form className={classes.form}>
                     <TextField
@@ -59,7 +59,7 @@ function Login() {
                         margin="dense"
                         color="primary"
                         id="id"
-                        label="ID"
+                        label="아이디"
                         type="text"
                         name="idField"
                         placeholder="아이디를 입력하세요."
@@ -72,7 +72,7 @@ function Login() {
                         margin="dense"
                         color="primary"
                         id="pw"
-                        label="Password"
+                        label="비밀번호"
                         type="password"
                         name="passwordField"
                         placeholder="비밀번호를 입력하세요."

@@ -1,27 +1,12 @@
-import RegisterFormModel from './registerFormModel';
+import RegisterFormModel from "./registerFormModel";
 
 const {
-    formField: {
-        id,
-        password,
-        passwordCheck,
-        memberName,
-        phone,
-        email,
-        bankName,
-        bankAccountOwner,
-        bankAccountNumber
-    }
+    formField: { identity, name, email, phoneNumber }
 } = RegisterFormModel;
 
 export default {
-    [id.name]: '',
-    [password.name]: '',
-    [passwordCheck.name]: '',
-    [memberName.name]: '',
-    [phone.name]: '',
-    [email.name]: '',
-    [bankName.name]: '',
-    [bankAccountOwner.name]: '',
-    [bankAccountNumber.name]: ''
+    [identity.name]: "테스터1",
+    [name.name]: "",
+    [email.name]: "",
+    [phoneNumber.name]: ""
 };

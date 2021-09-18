@@ -32,7 +32,7 @@ export default function Page404() {
     const classes = pageStyle();
 
     return (
-        <RootStyle title="Page Not Found | Herb Book Store">
+        <RootStyle title="페이지를 찾을 수 없습니다. | 허브 중고 서점">
             <Container maxWidth="xs" fixed>
                 <Paper className={classes.errorPaper} elevation={3}>
                     <Typography variant="h1" color="secondary">

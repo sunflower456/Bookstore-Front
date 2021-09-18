@@ -15,15 +15,13 @@ const {
         bookListPrice,
         bookPubDate,
         bookSummary,
-        bookSearchType,
-        bookSearchKeyword
+        bookSearchType
     }
 } = PostFormModel;
 
 export default {
     [title.name]: "",
     [bookSearchType.name]: "name",
-    [bookSearchKeyword.name]: "토비의",
     [bookIsbn.name]: "123456",
     [bookTitle.name]: "토비의 스프링",
     [bookAuthor.name]: "토비",

@@ -153,37 +153,36 @@ const headRows = [
         id: "bookThumbnail",
         numeric: false,
         disablePadding: false,
+        sortable: false,
         label: "사진"
     },
     {
         id: "title",
         numeric: false,
         disablePadding: false,
+        sortable: true,
         label: "제목"
     },
     {
         id: "bookTitle",
         numeric: false,
         disablePadding: false,
+        sortable: true,
         label: "도서명"
     },
     {
         id: "price",
         numeric: true,
         disablePadding: false,
+        sortable: true,
         label: "가격"
     },
     {
         id: "postStatus",
         numeric: false,
         disablePadding: false,
+        sortable: false,
         label: "상태"
-    },
-    {
-        id: "likePost",
-        numeric: false,
-        disablePadding: false,
-        label: ""
     }
 ];
 
@@ -206,7 +205,10 @@ function EnhancedTableHead(props) {
                         <TableSortLabel
                             active={orderBy === row.id}
                             direction={order}
-                            onClick={createSortHandler(row.id)}
+                            onClick={
+                                row.sortable ? createSortHandler(row.id) : null
+                            }
+                            hideSortIcon={!row.sortable}
                         >
                             {row.label}
                         </TableSortLabel>
