@@ -27,7 +27,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
 
 export default function Favorites() {
     return (
-        <RootStyle title="내 관심목록 | Herb Book Store">
+        <RootStyle title="내 관심목록 | 허브 중고 서점">
             <Grid container justifyContent={"center"}>
                 <SectionStyle>
                     <MyFavorites />

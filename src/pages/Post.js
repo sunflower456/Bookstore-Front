@@ -31,7 +31,7 @@ const ContentStyle = styled(Paper)(({ theme }) => ({
 
 export default function Register() {
     return (
-        <RootStyle title="판매글 등록 | Herb Book Store">
+        <RootStyle title="판매글 등록 | 허브 중고 서점">
             <Container maxWidth={"md"}>
                 <Stack spacing={2}>
                     <Stack direction={"row"} justifyContent={"space-between"}>
@@ -55,8 +55,7 @@ export default function Register() {
                                 to="/"
                                 component={Link}
                             >
-                                {" "}
-                                목록으로{" "}
+                                메인화면으로
                             </Button>
                         </div>
                     </Stack>

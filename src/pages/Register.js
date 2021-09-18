@@ -58,13 +58,13 @@ export default function Register() {
     const handleClose = () => setTermsOpen(false);
 
     return (
-        <RootStyle title="회원가입 | Herb Book Store">
+        <RootStyle title="회원가입 | 허브 중고 서점">
             <Grid container spacing={2}>
                 <Grid item md={3}>
                     <MHidden width="mdDown">
                         <SectionStyle>
                             <Typography variant="h3" sx={{ px: 5, mb: 5 }}>
-                                Herb Book Store에 <br />
+                                허브 중고 서점에 <br />
                                 중고책을 등록해보세요.
                             </Typography>
                             <img alt="register" src={registerImage} />
@@ -101,8 +101,7 @@ export default function Register() {
                                 align="center"
                                 sx={{ color: "text.secondary", mt: 3 }}
                             >
-                                회원이 되시면, 허브 중고 서점(Herb Book Store)
-                                &nbsp;
+                                회원이 되시면, 허브 중고 서점&nbsp;
                                 <Link
                                     underline="always"
                                     sx={{
