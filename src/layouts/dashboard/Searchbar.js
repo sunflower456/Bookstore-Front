@@ -36,16 +36,19 @@ const SearchbarStyle = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Searchbar() {
-    const [isOpen, setOpen] = useState(false);
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
+export default function Searchbar({ onChange, onClick }) {
     const [age, setAge] = React.useState("");
     const handleChange = (event) => {
         setAge(event.target.value);
+    };
+
+    const handleInputChangeChild = (event) => {
+        onChange(event.target.value);
+    };
+
+    const handleInputClickChild = () => {
+        console.log("child");
+        onClick();
     };
 
     return (
@@ -81,14 +84,15 @@ export default function Searchbar() {
                         />
                     </InputAdornment>
                 }
+                onChange={handleInputChangeChild}
                 sx={{ mr: 1, fontWeight: "fontWeightBold" }}
-                style={{ width: "80%", paddingTop: "8px" }}
-            />
+                style={{ width: "70%", paddingTop: "8px" }}
+            ></Input>
             <Button
                 variant="contained"
-                onClick={handleClose}
                 style={{ float: "right" }}
                 size="large"
+                onClick={handleInputClickChild}
             >
                 검색
             </Button>

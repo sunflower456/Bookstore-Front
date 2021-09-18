@@ -38,9 +38,17 @@ const ProductList = forwardRef((props, ref) => {
     useEffect(() => {
         window.addEventListener("scroll", handleScroll, true);
         return () => {
-            window.removeEventListener("scroll", handleScroll, true);
+            window.removeEventListener("scroll", handleScroll, false);
         };
     }, [handleScroll]);
+
+    useEffect(() => {
+        if (props.products.products) {
+            setItems(props.products.products);
+        } else {
+            setItems(props.products);
+        }
+    }, [props.products]);
 
     return (
         <Grid container spacing={3}>

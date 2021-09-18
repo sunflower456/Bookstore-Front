@@ -8712,11 +8712,6 @@
   "resolved" "https://registry.npmjs.org/natural-compare/-/natural-compare-1.4.0.tgz"
   "version" "1.4.0"
 
-"naver@^0.0.1":
-  "integrity" "sha1-JQX8GcK4xjA1pEzNgGtnuZsCSys="
-  "resolved" "https://registry.npmjs.org/naver/-/naver-0.0.1.tgz"
-  "version" "0.0.1"
-
 "negotiator@0.6.2":
   "integrity" "sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw=="
   "resolved" "https://registry.npmjs.org/negotiator/-/negotiator-0.6.2.tgz"
