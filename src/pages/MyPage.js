@@ -1,12 +1,5 @@
 import { styled } from "@material-ui/core/styles";
-import {
-    Button,
-    Card,
-    CardHeader,
-    Divider,
-    Grid,
-    Typography
-} from "@material-ui/core";
+import { Card, Grid } from "@material-ui/core";
 import Page from "../components/Page";
 import MemberInfo from "../components/myPage/MemberInfo";
 import ResetPassword from "../components/myPage/ResetPassword";
@@ -34,7 +27,7 @@ const SectionStyle = styled(Card)(({ theme }) => ({
 
 export default function MyPage() {
     return (
-        <RootStyle title="회원정보 | Herb Book Store">
+        <RootStyle title="내 정보 | 허브 중고 서점">
             <Grid container justifyContent={"center"}>
                 <SectionStyle>
                     <MemberInfo />

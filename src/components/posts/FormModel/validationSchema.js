@@ -15,8 +15,7 @@ const {
         bookThumbnail,
         bookListPrice,
         bookPubDate,
-        bookSummary,
-        bookSearchKeyword
+        bookSummary
     }
 } = PostFormModel;
 
@@ -25,10 +24,6 @@ const accountNumEx = /\d{12,14}/gm;
 export default [
     Yup.object().shape({
         [title.name]: Yup.string().required(`${title.requiredErrorMsg}`),
-        [bookSearchKeyword.name]: Yup.string()
-            .min(1, "최소 2자리이상 입력해야 합니다.")
-            .max(50, "최대 50자리까지 입력 가능합니다.")
-            .required(`${bookSearchKeyword.requiredErrorMsg}`),
         [bookIsbn.name]: Yup.string().required(`${bookIsbn.requiredErrorMsg}`),
         [bookTitle.name]: Yup.string().required(
             `${bookTitle.requiredErrorMsg}`
