@@ -19,38 +19,28 @@ import Favorites from "./pages/Favorites";
 export default function Router() {
     return useRoutes([
         {
-            path: "/404",
-            element: <LogoOnlyLayout />,
-            children: [{ path: "/", element: <NotFound /> }]
-        },
-        {
-            path: "/login",
-            element: <LogoOnlyLayout />,
-            children: [{ path: "/", element: <Login /> }]
-        },
-        {
-            path: "/register",
-            element: <LogoOnlyLayout />,
-            children: [{ path: "/", element: <Register /> }]
-        },
-        {
             path: "/",
-            element: <DashboardLayout />,
+            element: <LogoOnlyLayout />,
             children: [
-                { path: "/", element: <Products /> },
-                { path: "sales", element: <MySales /> },
-                { path: "favorites", element: <Favorites /> }
+                { path: "404", element: <NotFound /> },
+                { path: "login", element: <Login /> },
+                { path: "register", element: <Register /> }
             ]
         },
         {
             path: "/mypage",
             element: <DashboardLayout />,
-            children: [{ path: "/", element: <MyPage /> }]
+            children: [
+                { path: "/", element: <MyPage /> },
+                { path: "sales", element: <MySales /> },
+                { path: "favorites", element: <Favorites /> }
+            ]
         },
         {
             path: "/products",
             element: <DashboardLayout />,
             children: [
+                { path: "/", element: <Products /> },
                 { path: "search", element: <SearchMain /> },
                 { path: "addPost", element: <Post /> },
                 { path: ":id", element: <Detail /> }
