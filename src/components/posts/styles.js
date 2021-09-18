@@ -21,7 +21,7 @@ export default makeStyles((theme) => ({
     formArea: {
         width: "100%",
         height: "100%",
-        minHeight: "80vh",
+        minHeight: "20vh",
         margin: theme.spacing(2, 0, 4),
         padding: theme.spacing(6)
     },
