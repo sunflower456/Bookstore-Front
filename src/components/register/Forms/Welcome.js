@@ -13,7 +13,7 @@ export default function Welcome() {
             <div align={"center"}>
                 <Button
                     component={RouterLink}
-                    to="/products"
+                    to="/"
                     size="large"
                     variant={"contained"}
                     color={"success"}
