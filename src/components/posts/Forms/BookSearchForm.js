@@ -51,8 +51,7 @@ export default function BookSearchForm(props) {
             bookListPrice,
             bookPubDate,
             bookSummary,
-            bookSearchType,
-            bookSearchKeyword
+            bookSearchType
         }
     } = props;
 
