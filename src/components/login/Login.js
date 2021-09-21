@@ -14,7 +14,7 @@ import { makeStyles } from "@material-ui/styles";
 import { VpnKeyRounded } from "@material-ui/icons";
 import HerbLogo from "../../static/images/herbLogo.png";
 import Copyright from "../common/Copyright";
-import { login } from "../../modules/auth";
+import { checkMyInfo, login } from "../../modules/auth";
 
 const useStyles = makeStyles((theme) => ({
     centerBox: {
@@ -53,8 +53,9 @@ function Login() {
     const dispatch = useDispatch();
 
     // store 상태 조회
-    const { accessToken } = useSelector(({ auth }) => ({
-        accessToken: auth.accessToken
+    const { accessToken, myInfo } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken,
+        myInfo: auth.myInfo
     }));
 
     // accessToken 확인
@@ -63,9 +64,16 @@ function Login() {
             setLoginFail(true);
         } else if (accessToken) {
             setLoginFail(false);
+            dispatch(checkMyInfo());
+        }
+    }, [accessToken, dispatch]);
+
+    // 내 정보 확인
+    useEffect(() => {
+        if (myInfo) {
             navigate("/");
         }
-    }, [accessToken, dispatch, navigate]);
+    }, [myInfo, navigate]);
 
     // login 처리
     const onSignIn = (inputIdentity, inputPassword) => {

@@ -20,3 +20,6 @@ export const login = (identity, password) =>
             password
         }
     );
+
+/* 내 정보 조회 */
+export const getMyInfo = () => client.get("/api/user/me");

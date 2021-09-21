@@ -1,9 +1,17 @@
 import PropTypes from "prop-types";
-import { useEffect } from "react";
+import React from "react";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 // material
 import { styled } from "@material-ui/core/styles";
-import { Box, Drawer } from "@material-ui/core";
+import {
+    Avatar,
+    Box,
+    Button,
+    Drawer,
+    Stack,
+    Typography
+} from "@material-ui/core";
+import { VpnKeyRounded } from "@material-ui/icons";
 // components
 import Logo from "../../components/Logo";
 import Scrollbar from "../../components/Scrollbar";
@@ -38,14 +46,13 @@ DashboardSidebar.propTypes = {
     onCloseSidebar: PropTypes.func
 };
 
-export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+export default function DashboardSidebar({
+    isOpenSidebar,
+    onCloseSidebar,
+    isAuthorized,
+    myInfo
+}) {
     const { pathname } = useLocation();
-
-    useEffect(() => {
-        if (isOpenSidebar) {
-            onCloseSidebar();
-        }
-    }, [pathname]);
 
     const renderContent = (
         <Scrollbar
@@ -68,9 +75,50 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                 </Box>
             </Box>
 
-            <NavSection navConfig={sidebarConfig} />
+            {isAuthorized && myInfo && <NavSection navConfig={sidebarConfig} />}
 
-            <Box sx={{ px: 2.5, pb: 3, mt: 10 }}></Box>
+            <Box
+                sx={{
+                    px: 2.5,
+                    pb: 3,
+                    mt: "10vh"
+                }}
+            >
+                {
+                    <Stack direction={"column"}>
+                        {isAuthorized && myInfo && (
+                            <Stack direction={"row"}>
+                                <Avatar
+                                    variant={"rounded"}
+                                    alt={myInfo.identity}
+                                    src={myInfo.profileImage}
+                                />
+                                <Typography
+                                    variant={"subtitle1"}
+                                    sx={{
+                                        lineHeight: "38px",
+                                        ml: 1
+                                    }}
+                                >
+                                    {myInfo.identity}
+                                </Typography>
+                            </Stack>
+                        )}
+                        {!isAuthorized && !myInfo && (
+                            <Button
+                                component={RouterLink}
+                                variant={"contained"}
+                                color={"primary"}
+                                to="/login"
+                                sx={{ mt: 3 }}
+                                startIcon={<VpnKeyRounded />}
+                            >
+                                로그인
+                            </Button>
+                        )}
+                    </Stack>
+                }
+            </Box>
         </Scrollbar>
     );
 
