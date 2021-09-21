@@ -1,7 +1,12 @@
+import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
+    Alert,
     Avatar,
     Button,
     Container,
+    Stack,
     TextField,
     Typography
 } from "@material-ui/core";
@@ -9,6 +14,7 @@ import { makeStyles } from "@material-ui/styles";
 import { VpnKeyRounded } from "@material-ui/icons";
 import HerbLogo from "../../static/images/herbLogo.png";
 import Copyright from "../common/Copyright";
+import { login } from "../../modules/auth";
 
 const useStyles = makeStyles((theme) => ({
     centerBox: {
@@ -34,7 +40,76 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Login() {
+    // 상태값 설정
+    const [identity, setIdentity] = useState("");
+    const [password, setPassword] = useState("");
+    const [loginFail, setLoginFail] = useState(false);
+
+    // react-router v6 에서 history 접근 방식 변경
+    // https://reacttraining.com/blog/react-router-v6-pre/
+    const navigate = useNavigate();
+
+    // store dispatch 사용
+    const dispatch = useDispatch();
+
+    // store 상태 조회
+    const { accessToken } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken
+    }));
+
+    // accessToken 확인
+    useEffect(() => {
+        if (accessToken != null && accessToken instanceof Error) {
+            setLoginFail(true);
+        } else if (accessToken) {
+            setLoginFail(false);
+            navigate("/");
+        }
+    }, [accessToken, dispatch, navigate]);
+
+    // login 처리
+    const onSignIn = (inputIdentity, inputPassword) => {
+        try {
+            dispatch(
+                login({ identity: inputIdentity, password: inputPassword })
+            );
+        } catch (e) {
+            console.log(`onSignIn 로그인 오류 : ${e}`);
+        }
+    };
+
     const classes = useStyles();
+
+    // id, password 입력 설정
+    const handleChangeIdentity = useCallback((e) => {
+        setIdentity(e.target.value);
+    }, []);
+    const handleChangePassword = useCallback((e) => {
+        setPassword(e.target.value);
+    }, []);
+
+    // submit 기능 처리
+    const handleSubmit = useCallback(
+        (event) => {
+            event.preventDefault();
+            if (identity != null && password != null) {
+                onSignIn(identity, password);
+            }
+        },
+        [identity, password, onSignIn]
+    );
+
+    // 오류 메시지 표시
+    function displayErrorAlert() {
+        return (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+                <Alert severity={"error"} onClose={() => setLoginFail(false)}>
+                    로그인에 실패하였습니다. <br /> 입력정보를 다시 확인 후
+                    시도해주세요.
+                </Alert>
+            </Stack>
+        );
+    }
 
     return (
         <Container component={"main"} maxWidth={"xs"}>
@@ -51,7 +126,8 @@ function Login() {
                 >
                     허브 중고 서점
                 </Typography>
-                <form className={classes.form}>
+                {loginFail ? displayErrorAlert() : <div />}
+                <form className={classes.form} onSubmit={handleSubmit}>
                     <TextField
                         variant="outlined"
                         required
@@ -61,9 +137,10 @@ function Login() {
                         id="id"
                         label="아이디"
                         type="text"
-                        name="idField"
+                        name="identity"
                         placeholder="아이디를 입력하세요."
                         autoFocus
+                        onChange={handleChangeIdentity}
                     />
                     <TextField
                         variant="outlined"
@@ -74,8 +151,9 @@ function Login() {
                         id="pw"
                         label="비밀번호"
                         type="password"
-                        name="passwordField"
+                        name="password"
                         placeholder="비밀번호를 입력하세요."
+                        onChange={handleChangePassword}
                     />
                     <div align={"center"}>
                         <Button
