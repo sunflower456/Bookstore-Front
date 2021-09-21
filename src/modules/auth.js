@@ -1,6 +1,7 @@
 /* action type */
 import { createAction, handleActions } from "redux-actions";
 import { call, put, takeLatest } from "redux-saga/effects";
+import Cookies from "js-cookie";
 import * as api from "../lib/api";
 import client from "../lib/client";
 
@@ -28,6 +29,7 @@ export const setMyInfo = createAction(SET_MY_INFO, (myInfo) => myInfo);
 export const checkMyInfo = createAction(CHECK_MY_INFO);
 
 /* Asynchronous task */
+
 // 로그인 처리
 function* loginSaga(action) {
     try {
@@ -42,6 +44,10 @@ function* loginSaga(action) {
         yield put(setAccessToken(accessToken));
 
         client.defaults.headers.common.Authorization = authToken;
+
+        // cookie에 전달받은 token 정보 저장
+        Cookies.set("tokenType", tokenType, { expires: 1 });
+        Cookies.set("accessToken", accessToken, { expires: 1 });
     } catch (e) {
         console.log(`loginSaga 에러 : ${e}`);
         yield put(setAccessToken(new Error(`loginSaga 에러 : ${e}`)));
