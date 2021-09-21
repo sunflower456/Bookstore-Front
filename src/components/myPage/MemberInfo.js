@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
     Avatar,
     Badge,
@@ -6,7 +8,6 @@ import {
     Card,
     CardContent,
     CardHeader,
-    Container,
     Divider,
     Grid,
     IconButton,
@@ -17,29 +18,80 @@ import { AddPhotoAlternateRounded, Close, Edit } from "@material-ui/icons";
 import { LoadingButton } from "@material-ui/lab";
 import { Form, Formik } from "formik";
 import { useStyle } from "./styles";
-import FormInitialValues from "./FormModel/formInitialValues";
 import palette from "../../theme/palette";
 import ValidationSchema from "./FormModel/validationSchema";
 import RegisterFormModel from "./FormModel/registerFormModel";
 import MyInfoForm from "./Forms/MyInfoForm";
+import { updateMyInfo } from "../../lib/api";
+import { checkMyInfo } from "../../modules/auth";
 
 export default function MemberInfo() {
     const [isEditable, setIsEditable] = useState(false);
     const classes = useStyle();
 
-    const { identity, memberName, phoneNumber, email } = FormInitialValues;
     const { formId, formField } = RegisterFormModel;
+
+    const navigate = useNavigate();
+
+    // store dispatch 사용
+    const dispatch = useDispatch();
+
+    // store에서 내 정보 가져오기
+    const { myInfo } = useSelector(({ auth }) => ({
+        myInfo: auth.myInfo
+    }));
+
+    // myInfo 변경 시 최신화처리 (checkMyInfo)
+    useEffect(() => {
+        dispatch(checkMyInfo());
+    }, [isEditable]);
+
+    let userId = "";
+    let userName = "";
+    let userEmail = "";
+    let userPhone = "";
+
+    let myInfoFormValues = {
+        [formField.identity.name]: "",
+        [formField.name.name]: "",
+        [formField.email.name]: "",
+        [formField.phoneNumber.name]: ""
+    };
+
+    if (myInfo != null) {
+        userId = myInfo.identity;
+        userName = myInfo.name;
+        userEmail = myInfo.email;
+        userPhone = myInfo.phoneNumber;
+        myInfoFormValues = {
+            [formField.identity.name]: userId,
+            [formField.name.name]: userName,
+            [formField.email.name]: userEmail,
+            [formField.phoneNumber.name]: userPhone
+        };
+    }
+
+    const FormInitialValue = myInfoFormValues;
 
     function _sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     async function _handleSubmit(values, actions) {
-        await _sleep(1000);
-        alert(JSON.stringify(values, null, 2));
-        actions.setSubmitting(false);
+        const name = values.name;
+        const phoneNumber = values.phoneNumber;
+        const email = values.email;
 
-        setIsEditable(!isEditable);
+        try {
+            await updateMyInfo(name, phoneNumber, email);
+
+            actions.setSubmitting(false);
+            setIsEditable(!isEditable);
+        } catch (e) {
+            console.log(e.response.data);
+            // eslint-disable-next-line no-alert
+            alert("서버 오류가 발생하였습니다.");
+        }
     }
 
     const validationSchema = ValidationSchema[0];
@@ -107,18 +159,21 @@ export default function MemberInfo() {
                                 sx={{ width: "80px", height: "80px" }}
                             />
                         </Badge>
-                        <Typography variant={"h6"}>ID : {identity}</Typography>
+                        <Typography variant={"h6"}>ID : {userId}</Typography>
                     </Grid>
                     <React.Fragment>
                         {isEditable ? (
                             <Formik
-                                initialValues={FormInitialValues}
+                                initialValues={FormInitialValue}
                                 validationSchema={validationSchema}
                                 onSubmit={_handleSubmit}
                             >
                                 {({ isSubmitting }) => (
                                     <Form id={formId} style={{ width: "100%" }}>
-                                        <MyInfoForm formField={formField} />
+                                        <MyInfoForm
+                                            formField={formField}
+                                            information={myInfo}
+                                        />
                                         <Box
                                             sx={{
                                                 margin: "1vh 0",
@@ -140,39 +195,47 @@ export default function MemberInfo() {
                         ) : (
                             <React.Fragment>
                                 <Grid container>
-                                    <Grid item xs={6}>
-                                        <Typography color={palette.grey["500"]}>
-                                            이름 :
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <Typography>{memberName}</Typography>
+                                    <Grid container>
+                                        <Grid item xs />
+                                        <Grid item xs={3}>
+                                            <Typography
+                                                color={palette.grey["500"]}
+                                            >
+                                                이름 :
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={1}>
+                                            <Typography>{userName}</Typography>
+                                        </Grid>
+                                        <Grid item xs />
                                     </Grid>
                                     <Grid container>
-                                        <Grid item xs={6}>
+                                        <Grid item xs />
+                                        <Grid item xs={3}>
                                             <Typography
                                                 color={palette.grey["500"]}
                                             >
                                                 이메일 :
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <Typography>{email}</Typography>
+                                        <Grid item xs={1}>
+                                            <Typography>{userEmail}</Typography>
                                         </Grid>
+                                        <Grid item xs />
                                     </Grid>
                                     <Grid container>
-                                        <Grid item xs={6}>
+                                        <Grid item xs />
+                                        <Grid item xs={3}>
                                             <Typography
                                                 color={palette.grey["500"]}
                                             >
                                                 전화번호 :
                                             </Typography>
                                         </Grid>
-                                        <Grid item xs={6}>
-                                            <Typography>
-                                                {phoneNumber}
-                                            </Typography>
+                                        <Grid item xs={1}>
+                                            <Typography>{userPhone}</Typography>
                                         </Grid>
+                                        <Grid item xs />
                                     </Grid>
                                 </Grid>
                             </React.Fragment>

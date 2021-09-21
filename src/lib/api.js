@@ -23,3 +23,11 @@ export const login = (identity, password) =>
 
 /* 내 정보 조회 */
 export const getMyInfo = () => client.get("/api/user/me");
+
+/* 내 정보 수정(업데이트) */
+export const updateMyInfo = (name, phoneNumber, email) =>
+    client.patch("/api/user/me", {
+        name,
+        phoneNumber,
+        email
+    });
