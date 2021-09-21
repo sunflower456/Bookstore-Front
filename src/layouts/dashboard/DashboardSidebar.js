@@ -11,7 +11,7 @@ import {
     Stack,
     Typography
 } from "@material-ui/core";
-import { VpnKeyRounded } from "@material-ui/icons";
+import { LogoutRounded, VpnKeyRounded } from "@material-ui/icons";
 // components
 import Logo from "../../components/Logo";
 import Scrollbar from "../../components/Scrollbar";
@@ -50,7 +50,8 @@ export default function DashboardSidebar({
     isOpenSidebar,
     onCloseSidebar,
     isAuthorized,
-    myInfo
+    myInfo,
+    onLogout
 }) {
     const { pathname } = useLocation();
 
@@ -87,25 +88,38 @@ export default function DashboardSidebar({
                 {
                     <Stack direction={"column"}>
                         {isAuthorized && myInfo && (
-                            <Stack direction={"row"}>
-                                <Avatar
-                                    variant={"rounded"}
-                                    alt={myInfo.identity}
-                                    src={myInfo.profileImage}
-                                />
-                                <Typography
-                                    variant={"subtitle1"}
-                                    sx={{
-                                        lineHeight: "38px",
-                                        ml: 1
-                                    }}
+                            <>
+                                <Stack direction={"row"}>
+                                    <Avatar
+                                        variant={"rounded"}
+                                        alt={myInfo.identity}
+                                        src={myInfo.profileImage}
+                                    />
+                                    <Typography
+                                        variant={"subtitle1"}
+                                        sx={{
+                                            lineHeight: "38px",
+                                            ml: 2
+                                        }}
+                                    >
+                                        {myInfo.identity}
+                                    </Typography>
+                                </Stack>
+                                <Button
+                                    fullWidth
+                                    onClick={onLogout}
+                                    variant={"contained"}
+                                    color={"error"}
+                                    sx={{ mt: 3 }}
+                                    startIcon={<LogoutRounded />}
                                 >
-                                    {myInfo.identity}
-                                </Typography>
-                            </Stack>
+                                    로그아웃
+                                </Button>
+                            </>
                         )}
                         {!isAuthorized && !myInfo && (
                             <Button
+                                fullWidth
                                 component={RouterLink}
                                 variant={"contained"}
                                 color={"primary"}
