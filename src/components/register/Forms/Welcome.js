@@ -13,12 +13,12 @@ export default function Welcome() {
             <div align={"center"}>
                 <Button
                     component={RouterLink}
-                    to="/"
+                    to="/login"
                     size="large"
                     variant={"contained"}
                     color={"success"}
                 >
-                    메인으로
+                    로그인 페이지로 이동
                 </Button>
             </div>
         </Container>
