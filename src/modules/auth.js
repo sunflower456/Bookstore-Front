@@ -9,7 +9,7 @@ import client from "../lib/client";
 // 로그인 관련
 const SET_ACCESS_TOKEN = "auth/SET_ACCESS_TOKEN";
 const LOGIN = "auth/LOGIN";
-// 사용자 정보 관
+// 사용자 정보 관련
 const SET_MY_INFO = "auth/SET_MY_INFO";
 const CHECK_MY_INFO = "auth/CHECK_MY_INFO";
 
@@ -39,7 +39,7 @@ function* loginSaga(action) {
 
         const authToken = `${tokenType} ${accessToken}`;
 
-        console.log(`token 확인 : ${authToken}`);
+        // console.log(`token 확인 : ${authToken}`);
 
         yield put(setAccessToken(accessToken));
 
@@ -59,7 +59,7 @@ function* checkMyInfoSaga() {
     try {
         const response = yield call(api.getMyInfo);
 
-        console.log(`내 정보 확인 - ID : ${response.data.identity}`);
+        // console.log(`내 정보 확인 - ID : ${response.data.identity}`);
 
         yield put(setMyInfo(response.data));
     } catch (e) {

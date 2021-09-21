@@ -95,15 +95,14 @@ export default function DashboardSidebar({
                                         alt={myInfo.identity}
                                         src={myInfo.profileImage}
                                     />
-                                    <Typography
-                                        variant={"subtitle1"}
-                                        sx={{
-                                            lineHeight: "38px",
-                                            ml: 2
-                                        }}
-                                    >
-                                        {myInfo.identity}
-                                    </Typography>
+                                    <Stack direction={"column"} sx={{ ml: 2 }}>
+                                        <Typography variant={"subtitle1"}>
+                                            {myInfo.identity}
+                                        </Typography>
+                                        <Typography variant={"subtitle2"}>
+                                            ({myInfo.name} 님)
+                                        </Typography>
+                                    </Stack>
                                 </Stack>
                                 <Button
                                     fullWidth
