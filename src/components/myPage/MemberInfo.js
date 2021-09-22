@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
+    Alert,
     Avatar,
     Badge,
     Box,
@@ -12,6 +13,7 @@ import {
     Grid,
     IconButton,
     Input,
+    Stack,
     Typography
 } from "@material-ui/core";
 import { AddPhotoAlternateRounded, Close, Edit } from "@material-ui/icons";
@@ -22,11 +24,15 @@ import palette from "../../theme/palette";
 import ValidationSchema from "./FormModel/validationSchema";
 import RegisterFormModel from "./FormModel/registerFormModel";
 import MyInfoForm from "./Forms/MyInfoForm";
-import { updateMyInfo } from "../../lib/api";
+import { profileUpload, updateMyInfo } from "../../lib/api";
 import { checkMyInfo } from "../../modules/auth";
+import * as api from "../../lib/api";
 
 export default function MemberInfo() {
     const [isEditable, setIsEditable] = useState(false);
+    const [isUploadImageFail, setIsUploadImageFail] = useState(false);
+    const [uploadFailMessage, setUploadFailMessage] = useState("");
+
     const classes = useStyle();
 
     const { formId, formField } = RegisterFormModel;
@@ -44,12 +50,13 @@ export default function MemberInfo() {
     // myInfo 변경 시 최신화처리 (checkMyInfo)
     useEffect(() => {
         dispatch(checkMyInfo());
-    }, [isEditable]);
+    }, [isEditable, isUploadImageFail]);
 
     let userId = "";
     let userName = "";
     let userEmail = "";
     let userPhone = "";
+    let userImage = "";
 
     let myInfoFormValues = {
         [formField.identity.name]: "",
@@ -63,6 +70,7 @@ export default function MemberInfo() {
         userName = myInfo.name;
         userEmail = myInfo.email;
         userPhone = myInfo.phoneNumber;
+        userImage = myInfo.profileImage;
         myInfoFormValues = {
             [formField.identity.name]: userId,
             [formField.name.name]: userName,
@@ -95,6 +103,79 @@ export default function MemberInfo() {
     }
 
     const validationSchema = ValidationSchema[0];
+
+    const handleUserImage = useCallback((element) => {
+        try {
+            // 허용되는 파일은 하나만 처리 가능
+            if (
+                element.target.files == null ||
+                element.target.files.length > 1
+            ) {
+                throw new Error("이미지는 하나만 선택 가능합니다.");
+            }
+
+            const files = element.target.files;
+            const inputImage = files[0];
+            const typeCheckRegEx = /^image/i;
+
+            const type = inputImage.type;
+
+            // image/* 타입만 허용하도록 설정
+            if (!type.match(typeCheckRegEx)) {
+                throw new Error("이미지 이외에는 허용되지 않습니다.");
+            }
+            // 이미지 용량 제한 설정 (<=2mb)
+            if (inputImage.size > 2_097_152) {
+                throw new Error("이미지는 최대 2mb까지 업로드 가능합니다.");
+            }
+
+            // 이미지 업로드 처리
+            onUserImageUpload(inputImage);
+        } catch (e) {
+            console.log(e);
+            setIsUploadImageFail(true);
+            setUploadFailMessage(e.message);
+        }
+    }, []);
+
+    // 사용자 이미지 업로드 오류 메시지 표시
+    function displayErrorAlert() {
+        return (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+                <Alert
+                    severity={"error"}
+                    onClose={() => {
+                        setIsUploadImageFail(false);
+                        setUploadFailMessage("");
+                    }}
+                >
+                    {uploadFailMessage}
+                </Alert>
+            </Stack>
+        );
+    }
+
+    // 사용자 이미지 업로드 처리
+    const onUserImageUpload = async (image) => {
+        const formData = new FormData();
+
+        formData.append("profileImage", image);
+        try {
+            await api.profileUpload(formData);
+            setIsUploadImageFail(false);
+        } catch (e) {
+            setIsUploadImageFail(true);
+            if (e.response.status === 400) {
+                setUploadFailMessage("잘못된 요청입니다.");
+            } else if (e.response.status === 401) {
+                setUploadFailMessage("로그인이 필요합니다.");
+            } else if (e.response.status === 403) {
+                setUploadFailMessage("접근 권한이 없습니다.");
+            } else {
+                setUploadFailMessage(e.response.data.message);
+            }
+        }
+    };
 
     return (
         <Card className={classes.cardArea}>
@@ -140,6 +221,7 @@ export default function MemberInfo() {
                                         name="icon-button-file"
                                         type="file"
                                         sx={{ display: "none" }}
+                                        onChange={handleUserImage}
                                     />
                                     <label htmlFor="icon-button-file">
                                         <IconButton
@@ -157,10 +239,13 @@ export default function MemberInfo() {
                             <Avatar
                                 variant={"square"}
                                 sx={{ width: "80px", height: "80px" }}
+                                alt={userId}
+                                src={userImage}
                             />
                         </Badge>
                         <Typography variant={"h6"}>ID : {userId}</Typography>
                     </Grid>
+                    {isUploadImageFail && displayErrorAlert()}
                     <React.Fragment>
                         {isEditable ? (
                             <Formik

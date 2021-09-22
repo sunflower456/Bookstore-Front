@@ -31,3 +31,11 @@ export const updateMyInfo = (name, phoneNumber, email) =>
         phoneNumber,
         email
     });
+
+/* 사용자 프로필 업로드 (upload image) */
+export const profileUpload = (formData) =>
+    client.patch("/api/user/profile", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
