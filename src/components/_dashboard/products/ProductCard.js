@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 
-import StarIcon from "@material-ui/icons/Star";
 import { Link as RouterLink } from "react-router-dom";
 // material
 import { Box, Card, Link, Typography, Stack } from "@material-ui/core";
@@ -15,7 +14,8 @@ const ProductImgStyle = styled("img")({
     width: "100%",
     height: "100%",
     objectFit: "cover",
-    position: "absolute"
+    position: "absolute",
+    cursor: "pointer"
 });
 
 // ----------------------------------------------------------------------
@@ -28,24 +28,21 @@ export default function ShopProductCard({ product, id }) {
     const {
         name,
         cover,
-        price,
-        status
+        price
         // priceSale
     } = product;
 
+    const imageLinkTo = () => {
+        window.location.href = `/products/${id}`;
+    };
+
     return (
         <Card>
-            <Box sx={{ pt: "100%", position: "relative" }}>
-                {status ? (
-                    <StarIcon style={{ color: "yellow" }} />
-                ) : (
-                    <StarIcon style={{ color: "blue", visibility: "hidden" }} />
-                )}
-                <ProductImgStyle
-                    alt={name}
-                    src={cover}
-                    style={{ zIndex: "-1" }}
-                />
+            <Box
+                sx={{ pt: "100%", position: "relative" }}
+                style={{ height: "350px" }}
+            >
+                <ProductImgStyle alt={name} src={cover} onClick={imageLinkTo} />
             </Box>
 
             <Stack spacing={2} sx={{ p: 3 }}>
