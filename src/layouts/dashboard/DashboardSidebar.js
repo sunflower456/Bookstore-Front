@@ -68,7 +68,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
                 </Box>
             </Box>
 
-            <NavSection navConfig={sidebarConfig} />
+            <NavSection navConfig={sidebarConfig} style={{ height: "100%" }} />
 
             <Box sx={{ px: 2.5, pb: 3, mt: 10 }}></Box>
         </Scrollbar>

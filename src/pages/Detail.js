@@ -12,8 +12,6 @@ import {
     StepLabel,
     StepConnector
 } from "@material-ui/core";
-import clsx from "clsx";
-import Check from "@material-ui/icons/Check";
 import Page from "../components/Page";
 import "./ImagesSlide.scss";
 import DetailTable from "../components/detail/DetailTable";
