@@ -20,6 +20,11 @@ export default function Router() {
     return useRoutes([
         {
             path: "/",
+            element: <DashboardLayout />,
+            children: [{ path: "/", element: <Products /> }]
+        },
+        {
+            path: "/",
             element: <LogoOnlyLayout />,
             children: [
                 { path: "404", element: <NotFound /> },
@@ -40,7 +45,6 @@ export default function Router() {
             path: "/products",
             element: <DashboardLayout />,
             children: [
-                { path: "/", element: <Products /> },
                 { path: "search", element: <SearchMain /> },
                 { path: "addPost", element: <Post /> },
                 { path: ":id", element: <Detail /> }

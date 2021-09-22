@@ -7,8 +7,6 @@ import { Box, Card, Link, Typography, Stack } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 // utils
 import { fCurrency } from "../../../utils/formatNumber";
-//
-import Label from "../../Label";
 
 // ----------------------------------------------------------------------
 
@@ -56,12 +54,38 @@ export default function ShopProductCard({ product, id }) {
                     color="inherit"
                     underline="hover"
                     component={RouterLink}
+                    style={{ marginBottom: "16px" }}
                 >
-                    <Typography variant="subtitle2" noWrap>
+                    <Typography variant="subtitle1" noWrap>
                         {name}
                     </Typography>
                 </Link>
-
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    style={{ marginTop: "0px" }}
+                >
+                    <Typography variant="body2" noWrap>
+                        {name}
+                    </Typography>
+                </Stack>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    style={{ marginTop: "0px" }}
+                >
+                    <Typography variant="body2">박준</Typography>
+                </Stack>
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    style={{ marginTop: "0px" }}
+                    justifyContent="space-between"
+                >
+                    <Typography variant="body2">문학동네</Typography>
+                </Stack>
                 <Stack
                     direction="row"
                     alignItems="center"
