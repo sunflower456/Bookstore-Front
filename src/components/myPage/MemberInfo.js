@@ -165,7 +165,9 @@ export default function MemberInfo() {
             setIsUploadImageFail(false);
         } catch (e) {
             setIsUploadImageFail(true);
-            if (e.response.status === 400) {
+            if (e.response == null) {
+                setUploadFailMessage(e.message);
+            } else if (e.response.status === 400) {
                 setUploadFailMessage("잘못된 요청입니다.");
             } else if (e.response.status === 401) {
                 setUploadFailMessage("로그인이 필요합니다.");

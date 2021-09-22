@@ -39,3 +39,10 @@ export const profileUpload = (formData) =>
             "Content-Type": "multipart/form-data"
         }
     });
+
+/* 비밀번호 수정 (초기화) 처리 */
+export const modifyPassword = (oldPassword, newPassword) =>
+    client.patch("/api/user/password", {
+        oldPassword,
+        newPassword
+    });
