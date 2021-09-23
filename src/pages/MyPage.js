@@ -18,7 +18,6 @@ const SectionStyle = styled(Card)(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    border: "1px solid black",
     // margin: theme.spacing(10, 0, 2, 2),
     padding: theme.spacing(4)
 }));
