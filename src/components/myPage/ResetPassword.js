@@ -7,12 +7,10 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     Divider,
     IconButton,
     InputAdornment,
-    Paper,
     Stack,
     SvgIcon,
     Typography
