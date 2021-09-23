@@ -46,3 +46,8 @@ export const modifyPassword = (oldPassword, newPassword) =>
         oldPassword,
         newPassword
     });
+
+/* 네이버 책 검색 API 요청 처리 */
+export const searchBookInfo = (searchType, searchKeyword) => {
+    return client.get(`/api/post/naverBookAPI?${searchType}=${searchKeyword}`);
+};

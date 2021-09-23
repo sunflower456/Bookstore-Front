@@ -26,10 +26,16 @@ export default makeStyles((theme) => ({
         padding: theme.spacing(6)
     },
     bookSearchDisplayArea: {
-        width: "80%",
+        width: "100%",
         marginTop: "1em",
-        marginLeft: "4vw",
         bgcolor: palette.grey[100]
+    },
+    bookItemThumbnail: {
+        width: "80px",
+        height: "80px",
+        objectFit: "cover",
+        borderRadius: "1em",
+        alignSelf: "center"
     },
     setHidden: {
         display: "none"

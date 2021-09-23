@@ -1,12 +1,14 @@
 import React, { useRef, useState } from "react";
+import InfiniteLoader from "react-window-infinite-loader";
 import {
+    Avatar,
     Box,
-    Button,
     Card,
     CardContent,
     CardMedia,
     Divider,
     Grid,
+    InputAdornment,
     ListItem,
     ListItemButton,
     ListItemText,
@@ -16,19 +18,21 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
+import { MenuBookTwoTone, SearchOutlined } from "@material-ui/icons";
 import { FixedSizeList } from "react-window";
 import { InputField } from "../../common/FormFields";
 import useStyles from "../styles";
 import dummyImage from "../../../static/images/herbLogo.png";
+import { searchBookInfo } from "../../../lib/api";
 
 const bookSearchTypes = [
     {
-        value: "isbn",
-        label: "ISBN"
+        value: "title",
+        label: "제목"
     },
     {
-        value: "name",
-        label: "제목"
+        value: "isbn",
+        label: "ISBN"
     },
     {
         value: "author",
@@ -38,6 +42,8 @@ const bookSearchTypes = [
 
 export default function BookSearchForm(props) {
     const [keyword, setKeyword] = useState("");
+    const [searchType, setSearchType] = useState("title");
+    const [bookInformation, setBookInformation] = useState([]);
 
     const classes = useStyles();
     const {
@@ -59,77 +65,174 @@ export default function BookSearchForm(props) {
 
     function renderRow(rowProps) {
         const { index, style } = rowProps;
+        let itemIsbn;
+        let itemTitle;
+        let itemAuthor;
+        let itemPublisher;
+        let itemThumbnail;
+        let itemPrice;
+        let itemPubDate;
+        let itemSummary;
 
-        return (
-            <ListItem
-                style={style}
-                key={index}
-                component={"div"}
-                disablePadding
-            >
-                <ListItemButton>
-                    <ListItemText
-                        primary={
-                            <Card sx={{ display: "flex" }}>
-                                <CardMedia
-                                    component="img"
-                                    sx={{
-                                        width: "80px",
-                                        height: "80px",
-                                        objectFit: "cover",
-                                        borderRadius: "1em",
-                                        backgroundColor: "orangered",
-                                        alignSelf: "center"
-                                    }}
-                                    image={dummyImage}
-                                    alt="책 이미지 영역"
-                                />
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "column"
-                                    }}
-                                >
-                                    <CardContent sx={{ flex: "1 0 auto" }}>
-                                        <Typography variant={"h5"}>
-                                            책 제목 {index + 1}
-                                        </Typography>
-                                        <Stack
-                                            direction={"row"}
-                                            divider={
-                                                <Divider
-                                                    orientation={"vertical"}
-                                                    flexItem
-                                                />
+        // 데이터 로딩 확인
+        const isEmptyItem = !isItemLoaded(index);
+
+        if (isEmptyItem) {
+            itemIsbn = "";
+            itemTitle = "";
+            itemAuthor = "";
+            itemPublisher = "";
+            itemThumbnail = "";
+            itemPrice = "";
+            itemPubDate = "";
+            itemSummary = "";
+        } else {
+            // .replace(/(<([^>]+)>)/ig,""); : 데이터 중 <b> 등의 엘리먼트가 섞여있어 이를 제거하고자함
+            itemIsbn = bookInformation[index].bookIsbn;
+            itemTitle = bookInformation[index].bookTitle.replace(
+                /(<([^>]+)>)/gi,
+                ""
+            );
+            itemAuthor = bookInformation[index].bookAuthor.replace(
+                /(<([^>]+)>)/gi,
+                ""
+            );
+            itemPublisher = bookInformation[index].bookPublisher.replace(
+                /(<([^>]+)>)/gi,
+                ""
+            );
+            itemThumbnail = bookInformation[index].bookThumbnail;
+            itemPrice = bookInformation[index].bookListPrice;
+            itemPrice = Number.parseInt(itemPrice, 10).toLocaleString();
+            itemPubDate = bookInformation[index].bookPubDate;
+            itemSummary = bookInformation[index].bookSummary.replace(
+                /(<([^>]+)>)/gi,
+                ""
+            );
+        }
+
+        const displayItems = (
+            <>
+                <ListItem
+                    style={style}
+                    key={`book-${index}`}
+                    value={bookInformation[index]}
+                    component={"div"}
+                    disablePadding
+                >
+                    <ListItemButton>
+                        <ListItemText
+                            sx={{ width: "100%", maxWidth: "33vw" }}
+                            primary={
+                                <Card sx={{ display: "flex" }}>
+                                    {itemThumbnail === "" ? (
+                                        <Avatar
+                                            className={
+                                                classes.bookItemThumbnail
                                             }
-                                            spacing={2}
-                                            sx={{ alignItems: "center" }}
+                                            variant={"square"}
                                         >
-                                            <Typography variant={"subtitle1"}>
-                                                작가
-                                            </Typography>
-                                            <Typography variant={"subtitle1"}>
-                                                출판사
-                                            </Typography>
+                                            <MenuBookTwoTone />
+                                        </Avatar>
+                                    ) : (
+                                        <CardMedia
+                                            component="img"
+                                            className={
+                                                classes.bookItemThumbnail
+                                            }
+                                            image={itemThumbnail}
+                                            alt="책 이미지"
+                                        />
+                                    )}
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: "column"
+                                        }}
+                                    >
+                                        <CardContent
+                                            sx={{
+                                                flex: "1 0 auto"
+                                            }}
+                                        >
                                             <Typography
-                                                variant={"subtitle2"}
-                                                sx={{ fontWeight: "bold" }}
+                                                variant={"button"}
+                                                noWrap
                                             >
-                                                정가
+                                                {itemTitle}
                                             </Typography>
-                                            <Typography variant={"caption"}>
-                                                출간일
-                                            </Typography>
-                                        </Stack>
-                                    </CardContent>
-                                </Box>
-                            </Card>
-                        }
-                    />
-                </ListItemButton>
-            </ListItem>
+                                            <Stack
+                                                direction={"row"}
+                                                divider={
+                                                    <Divider
+                                                        orientation={"vertical"}
+                                                        flexItem
+                                                    />
+                                                }
+                                                spacing={2}
+                                                sx={{ alignItems: "center" }}
+                                            >
+                                                <Typography
+                                                    variant={"subtitle2"}
+                                                >
+                                                    {itemAuthor}
+                                                </Typography>
+                                                <Typography
+                                                    variant={"subtitle2"}
+                                                >
+                                                    {itemPublisher}
+                                                </Typography>
+                                                <Typography
+                                                    variant={"subtitle2"}
+                                                    sx={{ fontWeight: "bold" }}
+                                                >
+                                                    {`${itemPrice} 원`}
+                                                </Typography>
+                                                <Typography variant={"caption"}>
+                                                    {itemPubDate}
+                                                </Typography>
+                                            </Stack>
+                                        </CardContent>
+                                    </Box>
+                                </Card>
+                            }
+                        />
+                    </ListItemButton>
+                </ListItem>
+            </>
         );
+
+        return isItemLoaded(index) && displayItems;
     }
+
+    // 검색어 입력 시 상세 검색 페이지가 나타나도록 설정
+    const handleBookSearchArea = (element) => {
+        const inputValue = element.target.value;
+
+        if (inputValue.length > 0) {
+            setKeyword(inputValue);
+            getBookInfo();
+            searchKeywordArea.current.className = classes.bookSearchDisplayArea;
+        } else {
+            searchKeywordArea.current.className = classes.setHidden;
+        }
+    };
+
+    // 검색어 입력 시 api 호출
+    const getBookInfo = async (startIndex, stopIndex) => {
+        if (keyword != null && keyword !== "") {
+            const response = await searchBookInfo(searchType, keyword);
+
+            setBookInformation(response.data);
+        }
+    };
+
+    // 추가 검색 필요 시 동작 기능 구현
+    const getMoreBookInfo = async (startIndex, stopIndex) => {};
+
+    // lazy Loading 설정
+    const isItemLoaded = (index) => !!bookInformation[index];
+    const itemCount = 10;
 
     return (
         <>
@@ -155,6 +258,9 @@ export default function BookSearchForm(props) {
                                 identity: "searchType-native"
                             }}
                             sx={{ height: "inherit", marginTop: "16px" }}
+                            onChange={(element) =>
+                                setSearchType(element.target.value)
+                            }
                         >
                             {bookSearchTypes.map((item, index) => (
                                 <option key={index} value={item.value}>
@@ -164,34 +270,21 @@ export default function BookSearchForm(props) {
                         </NativeSelect>
                     </Grid>
                     <Grid item sm={8}>
-                        {/* <InputField>*/}
                         <TextField
                             fullWidth
                             variant={"standard"}
                             label={"검색어"}
                             placeholder={"검색어를 입력해주세요."}
-                            onChange={(input) => {
-                                const inputValue = input.currentTarget.value;
-
-                                setKeyword(inputValue);
-                                if (inputValue.length > 0) {
-                                    searchKeywordArea.current.className =
-                                        classes.bookSearchDisplayArea;
-                                } else {
-                                    searchKeywordArea.current.className =
-                                        classes.setHidden;
-                                }
+                            onChange={handleBookSearchArea}
+                            type={"text"}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <SearchOutlined color={"disabled"} />
+                                    </InputAdornment>
+                                )
                             }}
                         />
-                    </Grid>
-                    <Grid item sm={2} textAlign={"center"}>
-                        <Button
-                            variant={"contained"}
-                            color={"info"}
-                            sx={{ height: "inherit", marginTop: "16px" }}
-                        >
-                            검색
-                        </Button>
                     </Grid>
                 </Grid>
                 <Paper
@@ -200,15 +293,30 @@ export default function BookSearchForm(props) {
                     className={classes.setHidden}
                 >
                     {/* https://github.com/bvaughn/react-window , https://codesandbox.io/s/5wqo7z2np4?file=/src/App.js 확인 필요 */}
-                    <FixedSizeList
-                        height={500}
-                        width={"100%"}
-                        itemSize={104}
-                        itemCount={200}
-                        overscanCount={5}
-                    >
-                        {renderRow}
-                    </FixedSizeList>
+                    {bookInformation.length <= 0 ? (
+                        <Typography variant={"body2"}>
+                            조회된 데이터가 없습니다.
+                        </Typography>
+                    ) : (
+                        <InfiniteLoader
+                            isItemLoaded={isItemLoaded}
+                            itemCount={itemCount}
+                            loadMoreItems={getMoreBookInfo}
+                        >
+                            {({ onItemsRendered, ref }) => (
+                                <FixedSizeList
+                                    height={500}
+                                    width={"100%"}
+                                    itemSize={104}
+                                    itemCount={itemCount}
+                                    onItemsRendered={onItemsRendered}
+                                    ref={ref}
+                                >
+                                    {renderRow}
+                                </FixedSizeList>
+                            )}
+                        </InfiniteLoader>
+                    )}
                 </Paper>
                 <Grid
                     container
