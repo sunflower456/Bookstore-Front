@@ -30,21 +30,6 @@ export default [
         ),
         [bookAuthor.name]: Yup.string().required(
             `${bookAuthor.requiredErrorMsg}`
-        ),
-        [bookPublisher.name]: Yup.string().required(
-            `${bookPublisher.requiredErrorMsg}`
-        ),
-        [bookThumbnail.name]: Yup.string().required(
-            `${bookThumbnail.requiredErrorMsg}`
-        ),
-        [bookListPrice.name]: Yup.string().required(
-            `${bookListPrice.requiredErrorMsg}`
-        ),
-        [bookPubDate.name]: Yup.string().required(
-            `${bookPubDate.requiredErrorMsg}`
-        ),
-        [bookSummary.name]: Yup.string().required(
-            `${bookSummary.requiredErrorMsg}`
         )
     }),
     Yup.object().shape({

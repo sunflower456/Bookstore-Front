@@ -115,16 +115,6 @@ export default function PostForm(props) {
                     label={description.label}
                 />
             </Stack>
-
-            {/* 입력값 확인을 위한 임시 영역 설정 */}
-            {/* <Typography variant="caption" display="block" gutterBottom>*/}
-            {/*    Errors*/}
-            {/* </Typography>*/}
-            {/* <pre>{JSON.stringify(meta.errors, null, 2)}</pre>*/}
-            {/* <Typography variant="caption" display="block" gutterBottom>*/}
-            {/*    Values*/}
-            {/* </Typography>*/}
-            {/* <pre>{JSON.stringify(meta.values, null, 2)}</pre>*/}
         </Paper>
     );
 }

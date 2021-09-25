@@ -1,13 +1,16 @@
 import React, { useRef, useState } from "react";
 import InfiniteLoader from "react-window-infinite-loader";
 import {
+    Alert,
     Avatar,
     Box,
     Card,
     CardContent,
     CardMedia,
     Divider,
+    FormHelperText,
     Grid,
+    Input,
     InputAdornment,
     ListItem,
     ListItemButton,
@@ -20,9 +23,9 @@ import {
 } from "@material-ui/core";
 import { MenuBookTwoTone, SearchOutlined } from "@material-ui/icons";
 import { FixedSizeList } from "react-window";
+import { useFormikContext } from "formik";
 import { InputField } from "../../common/FormFields";
 import useStyles from "../styles";
-import dummyImage from "../../../static/images/herbLogo.png";
 import { searchBookInfo } from "../../../lib/api";
 
 const bookSearchTypes = [
@@ -41,9 +44,11 @@ const bookSearchTypes = [
 ];
 
 export default function BookSearchForm(props) {
+    const { values, errors, touched } = useFormikContext();
     const [keyword, setKeyword] = useState("");
     const [searchType, setSearchType] = useState("title");
     const [bookInformation, setBookInformation] = useState([]);
+    const [isInsertSuccess, setIsInsertSuccess] = useState(false);
 
     const classes = useStyles();
     const {
@@ -78,37 +83,40 @@ export default function BookSearchForm(props) {
         const isEmptyItem = !isItemLoaded(index);
 
         if (isEmptyItem) {
-            itemIsbn = "";
             itemTitle = "";
             itemAuthor = "";
             itemPublisher = "";
             itemThumbnail = "";
             itemPrice = "";
             itemPubDate = "";
-            itemSummary = "";
         } else {
-            // .replace(/(<([^>]+)>)/ig,""); : 데이터 중 <b> 등의 엘리먼트가 섞여있어 이를 제거하고자함
+            const domParser = new DOMParser();
+
             itemIsbn = bookInformation[index].bookIsbn;
-            itemTitle = bookInformation[index].bookTitle.replace(
-                /(<([^>]+)>)/gi,
-                ""
-            );
-            itemAuthor = bookInformation[index].bookAuthor.replace(
-                /(<([^>]+)>)/gi,
-                ""
-            );
-            itemPublisher = bookInformation[index].bookPublisher.replace(
-                /(<([^>]+)>)/gi,
-                ""
-            );
+            // .replace(/(<([^>]+)>)/ig,""); : 데이터 중 <b> 등의 element가 섞여있어 이를 제거하고자함
+            // html 태그로 parsing 후 innerText를 가져오는 방식으로 "&nbsp, <b/>" 같은 불순물 제거...;
+            itemTitle = domParser.parseFromString(
+                bookInformation[index].bookTitle,
+                "text/html"
+            ).documentElement.innerText;
+            itemAuthor = domParser.parseFromString(
+                bookInformation[index].bookAuthor,
+                "text/html"
+            ).documentElement.innerText;
+            itemPublisher = domParser.parseFromString(
+                bookInformation[index].bookPublisher,
+                "text/html"
+            ).documentElement.innerText;
             itemThumbnail = bookInformation[index].bookThumbnail;
             itemPrice = bookInformation[index].bookListPrice;
-            itemPrice = Number.parseInt(itemPrice, 10).toLocaleString();
-            itemPubDate = bookInformation[index].bookPubDate;
-            itemSummary = bookInformation[index].bookSummary.replace(
-                /(<([^>]+)>)/gi,
-                ""
-            );
+            itemPubDate =
+                bookInformation[index].bookPubDate == null
+                    ? ""
+                    : bookInformation[index].bookPubDate;
+            itemSummary = domParser.parseFromString(
+                bookInformation[index].bookSummary,
+                "text/html"
+            ).documentElement.innerText;
         }
 
         const displayItems = (
@@ -116,13 +124,28 @@ export default function BookSearchForm(props) {
                 <ListItem
                     style={style}
                     key={`book-${index}`}
-                    value={bookInformation[index]}
                     component={"div"}
                     disablePadding
+                    onClick={() =>
+                        setBookInfoFromSearchResult({
+                            itemIsbn,
+                            itemTitle,
+                            itemAuthor,
+                            itemPublisher,
+                            itemThumbnail,
+                            itemPrice,
+                            itemPubDate,
+                            itemSummary
+                        })
+                    }
                 >
                     <ListItemButton>
                         <ListItemText
-                            sx={{ width: "100%", maxWidth: "33vw" }}
+                            sx={{
+                                width: "100%",
+                                minWidth: "610px",
+                                maxWidth: "670px"
+                            }}
                             primary={
                                 <Card sx={{ display: "flex" }}>
                                     {itemThumbnail === "" ? (
@@ -147,7 +170,10 @@ export default function BookSearchForm(props) {
                                     <Box
                                         sx={{
                                             display: "flex",
-                                            flexDirection: "column"
+                                            flexDirection: "column",
+                                            whiteSpace: "nowrap",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis"
                                         }}
                                     >
                                         <CardContent
@@ -157,7 +183,12 @@ export default function BookSearchForm(props) {
                                         >
                                             <Typography
                                                 variant={"button"}
-                                                noWrap
+                                                sx={{
+                                                    display: "block",
+                                                    whiteSpace: "nowrap",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis"
+                                                }}
                                             >
                                                 {itemTitle}
                                             </Typography>
@@ -186,7 +217,10 @@ export default function BookSearchForm(props) {
                                                     variant={"subtitle2"}
                                                     sx={{ fontWeight: "bold" }}
                                                 >
-                                                    {`${itemPrice} 원`}
+                                                    {`${Number.parseInt(
+                                                        itemPrice,
+                                                        10
+                                                    ).toLocaleString()} 원`}
                                                 </Typography>
                                                 <Typography variant={"caption"}>
                                                     {itemPubDate}
@@ -205,9 +239,18 @@ export default function BookSearchForm(props) {
         return isItemLoaded(index) && displayItems;
     }
 
+    /* 한글 입력 시 정상적으로 검색되지 않는 문제 (IME Composition)로 해당 메세드 추가
+     * https://github.com/facebook/react/issues/3926
+     */
+    const handleComposition = (event) => {
+        if (!event.target.isComposing) {
+            handleBookSearchArea(event);
+        }
+    };
+
     // 검색어 입력 시 상세 검색 페이지가 나타나도록 설정
-    const handleBookSearchArea = (element) => {
-        const inputValue = element.target.value;
+    const handleBookSearchArea = (event) => {
+        const inputValue = event.target.value;
 
         if (inputValue.length > 0) {
             setKeyword(inputValue);
@@ -219,12 +262,34 @@ export default function BookSearchForm(props) {
     };
 
     // 검색어 입력 시 api 호출
-    const getBookInfo = async (startIndex, stopIndex) => {
+    const getBookInfo = async () => {
         if (keyword != null && keyword !== "") {
             const response = await searchBookInfo(searchType, keyword);
 
             setBookInformation(response.data);
         }
+    };
+
+    // 검색결과 클릭 시 내용 입력 설정
+    const setBookInfoFromSearchResult = (bookInfo) => {
+        // 책 정보 입력 처리
+        values.bookIsbn = bookInfo.itemIsbn;
+        values.bookTitle = bookInfo.itemTitle;
+        values.bookAuthor = bookInfo.itemAuthor;
+        values.bookPublisher = bookInfo.itemPublisher;
+        values.bookThumbnail = bookInfo.itemThumbnail;
+        values.bookListPrice = bookInfo.itemPrice;
+        values.bookPubDate = bookInfo.itemPubDate;
+        values.bookSummary = bookInfo.itemSummary;
+
+        // 입력 후 영역 숨김 처리
+        searchKeywordArea.current.className = classes.setHidden;
+
+        // 입력 완료 알림
+        displayAlertEmptyBookInfo();
+
+        // 화면 refresh를 위한 state 설정
+        setIsInsertSuccess(true);
     };
 
     // 추가 검색 필요 시 동작 기능 구현
@@ -233,6 +298,33 @@ export default function BookSearchForm(props) {
     // lazy Loading 설정
     const isItemLoaded = (index) => !!bookInformation[index];
     const itemCount = 10;
+
+    const displayAlertEmptyBookInfo = () => {
+        if (!touched.bookTitle) {
+            return "";
+        }
+
+        if (values.bookTitle === "") {
+            return (
+                <FormHelperText error={!!errors.bookTitle}>
+                    책 정보가 입력되지 않았습니다.
+                </FormHelperText>
+            );
+        }
+
+        return (
+            <Stack sx={{ width: "100%" }} spacing={2}>
+                <Alert>
+                    <Typography component={"p"} variant={"subtitle1"}>
+                        도서 정보가 입력되었습니다.
+                    </Typography>
+                    <Typography component={"p"} variant={"caption"}>
+                        제목 : {values.bookTitle}
+                    </Typography>
+                </Alert>
+            </Stack>
+        );
+    };
 
     return (
         <>
@@ -246,6 +338,7 @@ export default function BookSearchForm(props) {
             </Paper>
             <Paper className={classes.formArea} elevation={6}>
                 <Typography variant={"h6"}>도서 정보 검색</Typography>
+                {displayAlertEmptyBookInfo()}
                 <Grid container rowGap={2}>
                     <Grid item sm={2} sx={{ pr: 2 }}>
                         <NativeSelect
@@ -275,6 +368,7 @@ export default function BookSearchForm(props) {
                             variant={"standard"}
                             label={"검색어"}
                             placeholder={"검색어를 입력해주세요."}
+                            onCompositionEnd={handleComposition}
                             onChange={handleBookSearchArea}
                             type={"text"}
                             InputProps={{
@@ -318,72 +412,6 @@ export default function BookSearchForm(props) {
                         </InfiniteLoader>
                     )}
                 </Paper>
-                <Grid
-                    container
-                    direction={"row"}
-                    rowGap={3}
-                    columnGap={3}
-                    divider={<Divider orientation="vertical" flexItem />}
-                    justifyContent={"center"}
-                >
-                    <InputField
-                        name={bookIsbn.name}
-                        label={bookIsbn.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-
-                    <InputField
-                        name={bookTitle.name}
-                        label={bookTitle.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-
-                    <InputField
-                        name={bookAuthor.name}
-                        label={bookAuthor.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-
-                    <InputField
-                        name={bookPublisher.name}
-                        label={bookPublisher.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-
-                    <InputField
-                        name={bookPubDate.name}
-                        label={bookPubDate.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-
-                    <InputField
-                        name={bookListPrice.name}
-                        label={bookListPrice.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-
-                    <InputField
-                        name={bookThumbnail.name}
-                        label={bookThumbnail.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-
-                    <InputField
-                        multiline
-                        maxRows={4}
-                        name={bookSummary.name}
-                        label={bookSummary.label}
-                        disabled
-                        sx={{ display: "none" }}
-                    />
-                </Grid>
             </Paper>
         </>
     );
