@@ -12,6 +12,7 @@ import useStyles from "./styles";
 import formInitialValues from "./FormModel/formInitialValues";
 import BookSearchForm from "./Forms/BookSearchForm";
 import PostForm from "./Forms/PostForm";
+import * as api from "../../lib/api";
 
 const steps = ["책정보 입력", "판매글 입력"];
 const { formId, formField } = PostFormModel;
@@ -39,10 +40,81 @@ export default function PostRegister() {
     const isLastStep = activeStep === steps.length - 1;
 
     async function _submitForm(values, actions) {
-        alert(JSON.stringify(values, null, 2));
-        actions.setSubmitting(false);
+        if (values == null || values.length <= 0) {
+            throw new Error(
+                "판매글 등록 데이터가 없습니다. 확인 후 다시 시도해주세요."
+            );
+        }
 
-        setActiveStep(activeStep + 1);
+        // 책 정보 request 객체 생성
+        // TODO "EMPTY"로 설정한 부분은 임시처리로... 필수 체크 해제 시 제거 예정
+        const addPostReqeust = {
+            bookRequest: {
+                bookIsbn: values.bookIsbn,
+                bookTitle: values.bookTitle,
+                bookAuthor: values.bookAuthor,
+                bookPublisher:
+                    values.bookPublisher == null || values.bookPublisher === ""
+                        ? "EMPTY"
+                        : values.bookPublisher,
+                bookThumbnail:
+                    values.bookThumbnail == null || values.bookThumbnail === ""
+                        ? "EMPTY"
+                        : values.bookThumbnail,
+                bookListPrice:
+                    values.bookListPrice == null || values.bookListPrice === ""
+                        ? "EMPTY"
+                        : values.bookListPrice,
+                bookPubDate:
+                    values.bookPubDate == null || values.bookPubDate === ""
+                        ? "EMPTY"
+                        : values.bookPubDate,
+                bookSummary:
+                    values.bookSummary == null || values.bookSummary === ""
+                        ? "EMPTY"
+                        : values.bookSummary
+            },
+            title: values.title,
+            price: values.price,
+            bookStatus: values.bookStatus,
+            description: values.description
+        };
+
+        // 데이터 전송 준비
+        const formData = new FormData();
+
+        if (values.bookPhoto.length > 0) {
+            values.bookPhoto.map((photo) => formData.append("images", photo));
+        }
+
+        // 판매글 등록 request
+        formData.append(
+            "postRequest",
+            new Blob([JSON.stringify(addPostReqeust)], {
+                type: "application/json"
+            })
+        );
+
+        try {
+            await api.writePost(formData);
+
+            alert("등록이 완료되었습니다.");
+            // 상태 초기화 및 메인 페이지로 이동 처리
+            actions.setSubmitting(false);
+            setActiveStep(activeStep + 1);
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else if (e.response.status === 400) {
+                alert("잘못된 요청입니다.");
+            } else if (e.response.status === 401) {
+                alert("로그인이 필요합니다.");
+                history.push("/login");
+            } else if (e.response.status === 403) {
+                alert("접근 권한이 없습니다.");
+                history.goBack();
+            }
+        }
     }
 
     function _handleSubmit(values, actions) {
@@ -97,7 +169,8 @@ export default function PostRegister() {
                                     </Button>
                                 )}
 
-                                <LoadingButton
+                                {/* <LoadingButton*/}
+                                <Button
                                     loading={isSubmitting}
                                     type="submit"
                                     variant="contained"
@@ -105,7 +178,8 @@ export default function PostRegister() {
                                     className={classes.button}
                                 >
                                     {isLastStep ? "등록" : "다음"}
-                                </LoadingButton>
+                                </Button>
+                                {/* </LoadingButton>*/}
                             </div>
                         </Form>
                     )}

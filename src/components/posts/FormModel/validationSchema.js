@@ -36,10 +36,9 @@ export default [
         [price.name]: Yup.number()
             .required(`${price.requiredErrorMsg}`)
             .min(1, `${price.invalidErrorMsg}`),
-        [description.name]: Yup.string().max(
-            500,
-            `${description.invalidErrorMsg}`
-        ),
+        [description.name]: Yup.string()
+            .required(`${description.requiredErrorMsg}`)
+            .max(500, `${description.invalidErrorMsg}`),
         [bookStatus.name]: Yup.string().required(
             `${bookStatus.requiredErrorMsg}`
         ),

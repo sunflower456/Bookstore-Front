@@ -51,3 +51,11 @@ export const modifyPassword = (oldPassword, newPassword) =>
 export const searchBookInfo = (searchType, searchKeyword) => {
     return client.get(`/api/post/naverBookAPI?${searchType}=${searchKeyword}`);
 };
+
+/* 판매글 등록 (게시글 등록) 요청 처리 */
+export const writePost = (formData) =>
+    client.post("/api/post", formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
