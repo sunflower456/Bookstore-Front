@@ -45,6 +45,29 @@ const ListItemStyle = styled((props) => (
     }
 }));
 
+const ListItemStyleBottom = styled((props) => (
+    <ListItemButton disableGutters {...props} />
+))(({ theme }) => ({
+    ...theme.typography.body2,
+    height: 48,
+    position: "absolute",
+    textTransform: "capitalize",
+    paddingLeft: theme.spacing(5),
+    paddingRight: theme.spacing(2.5),
+    color: theme.palette.text.secondary,
+    "&:before": {
+        top: 0,
+        right: 0,
+        width: 3,
+        bottom: 0,
+        content: "''",
+        display: "none",
+        position: "absolute",
+        borderTopLeftRadius: 4,
+        borderBottomLeftRadius: 4,
+        backgroundColor: theme.palette.primary.main
+    }
+}));
 const ListItemIconStyle = styled(ListItemIcon)({
     width: 22,
     height: 22,
@@ -63,7 +86,7 @@ NavItem.propTypes = {
 function NavItem({ item, active }) {
     const theme = useTheme();
     const isActiveRoot = active(item.path);
-    const { title, path, icon, info, children } = item;
+    const { title, path, icon, info, children, bottom, index } = item;
     const [open, setOpen] = useState(isActiveRoot);
 
     const handleOpen = () => {
@@ -154,20 +177,36 @@ function NavItem({ item, active }) {
             </>
         );
     }
-
-    return (
-        <ListItemStyle
-            component={RouterLink}
-            to={path}
-            sx={{
-                ...(isActiveRoot && activeRootStyle)
-            }}
-        >
-            <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
-            <ListItemText disableTypography primary={title} />
-            {info && info}
-        </ListItemStyle>
-    );
+    if (bottom) {
+        return (
+            <ListItemStyleBottom
+                component={RouterLink}
+                to={path}
+                sx={{
+                    ...(isActiveRoot && activeRootStyle)
+                }}
+                style={{ bottom: `${465 - index * 50}px`, width: "100%" }}
+            >
+                <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
+                <ListItemText disableTypography primary={title} />
+                {info && info}
+            </ListItemStyleBottom>
+        );
+    } else {
+        return (
+            <ListItemStyle
+                component={RouterLink}
+                to={path}
+                sx={{
+                    ...(isActiveRoot && activeRootStyle)
+                }}
+            >
+                <ListItemIconStyle>{icon && icon}</ListItemIconStyle>
+                <ListItemText disableTypography primary={title} />
+                {info && info}
+            </ListItemStyle>
+        );
+    }
 }
 
 NavSection.propTypes = {
@@ -180,8 +219,8 @@ export default function NavSection({ navConfig, ...other }) {
         path ? !!matchPath({ path, end: true }, pathname) : false;
 
     return (
-        <Box {...other}>
-            <List disablePadding>
+        <Box {...other} style={{ height: "100%" }}>
+            <List disablePadding style={{ height: "100%" }}>
                 {navConfig.map((item) => (
                     <NavItem key={item.title} item={item} active={match} />
                 ))}
