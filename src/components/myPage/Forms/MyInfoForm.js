@@ -4,7 +4,12 @@ import { InputField, PhoneNumberField } from "../../common/FormFields";
 
 export default function MyInfoForm(props) {
     const {
-        formField: { name, phoneNumber, email }
+        formField: { name, phoneNumber, email },
+        information: {
+            name: currentName,
+            email: currentEmail,
+            phoneNumber: currentPhoneNumber
+        }
     } = props;
 
     return (
@@ -18,21 +23,21 @@ export default function MyInfoForm(props) {
                 fullWidth
                 name={name.name}
                 label={name.label}
-                placeholder={name.placeMsg}
-                autoComplete="memberName"
+                placeholder={currentName}
+                autoComplete="name"
             />
             <InputField
                 fullWidth
                 name={email.name}
                 label={email.label}
-                placeholder={email.placeMsg}
+                placeholder={currentEmail}
                 autoComplete="email"
             />
             <PhoneNumberField
                 fullWidth
                 name={phoneNumber.name}
                 label={phoneNumber.label}
-                placeholder={phoneNumber.placeMsg}
+                placeholder={currentPhoneNumber}
                 autoComplete="phoneNumber"
             />
         </Stack>

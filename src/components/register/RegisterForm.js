@@ -10,6 +10,7 @@ import Welcome from "./Forms/Welcome";
 import validationSchema from "./FormModel/validationSchema";
 import registerFormModel from "./FormModel/registerFormModel";
 import formInitialValues from "./FormModel/formInitialValues";
+import { userSignUp } from "../../lib/api";
 
 // 단계 설정
 const steps = ["회원정보 입력", "가입정보 확인"];
@@ -40,11 +41,22 @@ export default function RegisterForm() {
     }
 
     async function _submitForm(values, actions) {
-        await _sleep(1000);
-        alert(JSON.stringify(values, null, 2));
-        actions.setSubmitting(false);
+        const identity = values.identity;
+        const password = values.password;
+        const name = values.name;
+        const email = values.email;
+        const phoneNumber = values.phoneNumber;
 
-        setActiveStep(activeStep + 1);
+        try {
+            await userSignUp(identity, password, name, email, phoneNumber);
+
+            actions.setSubmitting(false);
+            setActiveStep(activeStep + 1);
+        } catch (e) {
+            console.log(e.response.data);
+            // eslint-disable-next-line no-alert
+            alert("서버 오류가 발생하였습니다.");
+        }
     }
 
     function _handleSubmit(values, actions) {

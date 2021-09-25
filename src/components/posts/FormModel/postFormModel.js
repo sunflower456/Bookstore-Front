@@ -16,7 +16,8 @@ export default {
         },
         description: {
             name: "description",
-            label: "부가 설명",
+            label: "부가 설명 *",
+            requiredErrorMsg: "부가설명이 입력되지 않았습니다.",
             invalidErrorMsg: "최대 500자까지 입력 가능합니다."
         },
         bookStatus: {
