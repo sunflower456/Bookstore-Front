@@ -49,7 +49,7 @@ export default function PostForm(props) {
                                 최상
                                 <Field
                                     name={bookStatus.name}
-                                    value="4"
+                                    value="BEST"
                                     as={Radio}
                                     sx={{
                                         color: palette.success.light,
@@ -63,7 +63,7 @@ export default function PostForm(props) {
                                 상
                                 <Field
                                     name={bookStatus.name}
-                                    value="3"
+                                    value="UPPER"
                                     as={Radio}
                                     sx={{
                                         color: palette.info.light,
@@ -77,7 +77,7 @@ export default function PostForm(props) {
                                 중
                                 <Field
                                     name={bookStatus.name}
-                                    value="2"
+                                    value="MIDDLE"
                                     as={Radio}
                                     sx={{
                                         color: palette.warning.light,
@@ -91,7 +91,7 @@ export default function PostForm(props) {
                                 하
                                 <Field
                                     name={bookStatus.name}
-                                    value="1"
+                                    value="LOWER"
                                     as={Radio}
                                     sx={{
                                         color: palette.error.light,

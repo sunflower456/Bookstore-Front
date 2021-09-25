@@ -300,30 +300,32 @@ export default function BookSearchForm(props) {
     const itemCount = 10;
 
     const displayAlertEmptyBookInfo = () => {
-        if (!touched.bookTitle) {
-            return "";
-        }
-
-        if (values.bookTitle === "") {
+        if (
+            values.bookTitle === "" &&
+            !!errors.bookTitle &&
+            touched.bookTitle
+        ) {
             return (
                 <FormHelperText error={!!errors.bookTitle}>
                     책 정보가 입력되지 않았습니다.
                 </FormHelperText>
             );
+        } else if (values.bookTitle !== "") {
+            return (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                    <Alert>
+                        <Typography component={"p"} variant={"subtitle1"}>
+                            도서 정보가 입력되었습니다.
+                        </Typography>
+                        <Typography component={"p"} variant={"caption"}>
+                            제목 : {values.bookTitle}
+                        </Typography>
+                    </Alert>
+                </Stack>
+            );
         }
 
-        return (
-            <Stack sx={{ width: "100%" }} spacing={2}>
-                <Alert>
-                    <Typography component={"p"} variant={"subtitle1"}>
-                        도서 정보가 입력되었습니다.
-                    </Typography>
-                    <Typography component={"p"} variant={"caption"}>
-                        제목 : {values.bookTitle}
-                    </Typography>
-                </Alert>
-            </Stack>
-        );
+        return "";
     };
 
     return (

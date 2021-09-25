@@ -24,7 +24,7 @@ function _renderStepContent(step) {
         case 1:
             return <PostForm formField={formField} />;
         case 2:
-            return <Navigate to="/products" replace />;
+            return <Navigate to="/" replace />;
         default:
             return <Navigate to="/404" replace />;
     }
