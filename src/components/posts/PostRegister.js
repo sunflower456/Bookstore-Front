@@ -170,7 +170,7 @@ export default function PostRegister() {
                                 )}
 
                                 {/* <LoadingButton*/}
-                                <Button
+                                <LoadingButton
                                     loading={isSubmitting}
                                     type="submit"
                                     variant="contained"
@@ -178,7 +178,7 @@ export default function PostRegister() {
                                     className={classes.button}
                                 >
                                     {isLastStep ? "등록" : "다음"}
-                                </Button>
+                                </LoadingButton>
                                 {/* </LoadingButton>*/}
                             </div>
                         </Form>
