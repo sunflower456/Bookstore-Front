@@ -130,7 +130,7 @@ function ImageUploadField(props) {
                 }
                 setFiles(
                     pushedAcceptedFiles.map((file) => {
-                        field.value.push(file.path);
+                        field.value.push(file);
                         return Object.assign(file, {
                             preview: URL.createObjectURL(file),
                             value: file.path

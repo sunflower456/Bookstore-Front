@@ -37,7 +37,7 @@ export default [
                             ? 0
                             : phoneNum.replace(/[-_.]/g, "").length;
                     const isMobileNum =
-                        phoneNum == null ? false : phoneNum.startsWith("010");
+                        phoneNum == null ? false : phoneNum.startsWith("01");
 
                     return (
                         isMobileNum &&
