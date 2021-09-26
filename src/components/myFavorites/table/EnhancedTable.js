@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-
 // Material-UI, React UI framework
 import { makeStyles } from "@material-ui/styles";
 import Table from "@material-ui/core/Table";
@@ -10,94 +10,11 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import {
-    CheckCircle,
-    Loyalty,
-    RemoveShoppingCart,
-    Shop
-} from "@material-ui/icons";
-import { Avatar, Link, Stack } from "@material-ui/core";
-
-/* 표기할 데이터
-- postId (행마다 고유의 key가 필요함)
-- 중고책 썸네일 (bookRequest.bookThumbnail)
-- 게시글 제목 (title)
-- 중고책 제목 (bookRequest.bookTitle)
-- 중고책 가격 (price)
-- 판매자 아이디 (postIdentity)
-- 주문 정보 상태 (postStatus)
-- 찜 상태 (?)
-* */
-function createData(
-    postId,
-    bookThumbnail,
-    title,
-    bookTitle,
-    price,
-    postIdentity,
-    postStatus,
-    postLike
-) {
-    return {
-        postId,
-        bookThumbnail,
-        title,
-        bookTitle,
-        price,
-        postIdentity,
-        postStatus,
-        postLike
-    };
-}
-
-const rows = [
-    createData(
-        1,
-        "test.jpg",
-        "테스트책 팝니다.",
-        "테스트책",
-        5000,
-        "tester1",
-        "판매중",
-        true
-    ),
-    createData(
-        2,
-        "test2.jpg",
-        "테스트책 팝니다.2",
-        "테스트책2",
-        6000,
-        "tester2",
-        "예약중",
-        true
-    ),
-    createData(
-        3,
-        "test.jpg",
-        "테스트책 팝니다.",
-        "테스트책",
-        5000,
-        "tester1",
-        "판매완료",
-        true
-    ),
-    createData(
-        4,
-        "test2.jpg",
-        "테스트책 팝니다.2",
-        "테스트책2",
-        6000,
-        "tester2",
-        "판매중",
-        true
-    )
-];
+import { Loyalty } from "@material-ui/icons";
+import { Avatar, Link } from "@material-ui/core";
+import * as api from "../../../lib/api";
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -136,7 +53,7 @@ const headRows = [
         label: "사진"
     },
     {
-        id: "title",
+        id: "postTitle",
         numeric: false,
         disablePadding: false,
         sortable: true,
@@ -150,18 +67,11 @@ const headRows = [
         label: "도서명"
     },
     {
-        id: "price",
+        id: "postPrice",
         numeric: true,
         disablePadding: false,
         sortable: true,
         label: "가격"
-    },
-    {
-        id: "postIdentity",
-        numeric: false,
-        disablePadding: false,
-        sortable: true,
-        label: "판매자"
     },
     {
         id: "postStatus",
@@ -171,7 +81,7 @@ const headRows = [
         label: "상태"
     },
     {
-        id: "postLike",
+        id: "interestId",
         numeric: false,
         disablePadding: false,
         sortable: false,
@@ -271,6 +181,30 @@ export default function EnhancedTable() {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rows, setRows] = useState([]); // 조회 목록
+
+    const navigate = useNavigate();
+
+    const getMyFavorites = async () => {
+        try {
+            const response = await api.getMyFavoritePosts();
+
+            setRows(response.data);
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                alert(e.response.message);
+            }
+        }
+    };
+
+    const delFavoriteButton = useRef();
+
+    // 목록 로딩 처리
+    useEffect(() => {
+        getMyFavorites();
+    }, [selected]);
 
     function handleRequestSort(event, property) {
         const isDesc = orderBy === property && order === "desc";
@@ -309,6 +243,15 @@ export default function EnhancedTable() {
     const emptyRows =
         rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
+    // 관심목록 삭제 처리
+    const deleteMyFavorite = (e) => {
+        const targetInterestId = e.currentTarget.value;
+
+        // console.log(targetInterestId);
+        // 삭제처리
+        api.deleteMyFavoritePost(targetInterestId);
+    };
+
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
@@ -333,7 +276,7 @@ export default function EnhancedTable() {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row, index) => {
-                                    const labelId = `${row.postId} / ${row.title}`;
+                                    const labelId = `${row.postId} / ${row.postTitle}`;
                                     const isItemSelected = isSelected(labelId);
 
                                     return (
@@ -349,7 +292,15 @@ export default function EnhancedTable() {
                                             selected={isItemSelected}
                                         >
                                             <TableCell align="center">
-                                                {row.bookThumbnail}
+                                                <Avatar
+                                                    variant={"square"}
+                                                    src={
+                                                        row.bookThumbnail ==
+                                                        null
+                                                            ? ""
+                                                            : row.bookThumbnail
+                                                    }
+                                                />
                                             </TableCell>
                                             <TableCell
                                                 align={
@@ -362,7 +313,7 @@ export default function EnhancedTable() {
                                                     href={`/products/${row.postId}`}
                                                     underline={"hover"}
                                                 >
-                                                    {row.title}
+                                                    {row.postTitle}
                                                 </Link>
                                             </TableCell>
                                             <TableCell
@@ -371,6 +322,12 @@ export default function EnhancedTable() {
                                                         ? "right"
                                                         : "left"
                                                 }
+                                                sx={{
+                                                    maxWidth: "100px",
+                                                    whiteSpace: "nowrap",
+                                                    overflow: "hidden",
+                                                    textOverflow: "ellipsis"
+                                                }}
                                             >
                                                 {row.bookTitle}
                                             </TableCell>
@@ -381,34 +338,31 @@ export default function EnhancedTable() {
                                                         : "left"
                                                 }
                                             >
-                                                {row.price}
+                                                {row.postPrice}
                                             </TableCell>
-                                            <TableCell
-                                                align={
-                                                    row.numeric
-                                                        ? "right"
-                                                        : "left"
+                                            <TableCell align={"center"}>
+                                                {
+                                                    /* eslint-disable-next-line no-nested-ternary */
+                                                    row.postStatus === "SALE"
+                                                        ? "판매중"
+                                                        : // eslint-disable-next-line no-nested-ternary
+                                                        row.postStatus ===
+                                                          "RESERVED"
+                                                        ? "거래중"
+                                                        : "판매완료"
                                                 }
-                                            >
-                                                {row.postIdentity}
                                             </TableCell>
                                             <TableCell align={"center"}>
-                                                {row.postStatus}
-                                            </TableCell>
-                                            <TableCell align={"center"}>
-                                                {row.postLike ? (
-                                                    <IconButton
-                                                        aria-label={
-                                                            "favorite-post"
-                                                        }
-                                                    >
-                                                        <Loyalty
-                                                            color={"success"}
-                                                        />
-                                                    </IconButton>
-                                                ) : (
-                                                    <></>
-                                                )}
+                                                <IconButton
+                                                    ref={delFavoriteButton}
+                                                    aria-label={"favorite-post"}
+                                                    value={row.interestId}
+                                                    onClick={deleteMyFavorite}
+                                                >
+                                                    <Loyalty
+                                                        color={"success"}
+                                                    />
+                                                </IconButton>
                                             </TableCell>
                                         </TableRow>
                                     );

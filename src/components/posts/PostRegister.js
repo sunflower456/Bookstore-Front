@@ -47,7 +47,6 @@ export default function PostRegister() {
         }
 
         // 책 정보 request 객체 생성
-        // TODO "EMPTY"로 설정한 부분은 임시처리로... 필수 체크 해제 시 제거 예정
         const addPostReqeust = {
             bookRequest: {
                 bookIsbn: values.bookIsbn,
@@ -55,23 +54,23 @@ export default function PostRegister() {
                 bookAuthor: values.bookAuthor,
                 bookPublisher:
                     values.bookPublisher == null || values.bookPublisher === ""
-                        ? "EMPTY"
+                        ? "API 미제공"
                         : values.bookPublisher,
                 bookThumbnail:
                     values.bookThumbnail == null || values.bookThumbnail === ""
-                        ? "EMPTY"
+                        ? "API 미제공"
                         : values.bookThumbnail,
                 bookListPrice:
                     values.bookListPrice == null || values.bookListPrice === ""
-                        ? "EMPTY"
+                        ? "API 미제공"
                         : values.bookListPrice,
                 bookPubDate:
                     values.bookPubDate == null || values.bookPubDate === ""
-                        ? "EMPTY"
+                        ? "API 미제공"
                         : values.bookPubDate,
                 bookSummary:
                     values.bookSummary == null || values.bookSummary === ""
-                        ? "EMPTY"
+                        ? "API 미제공"
                         : values.bookSummary
             },
             title: values.title,

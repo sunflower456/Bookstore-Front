@@ -59,3 +59,10 @@ export const writePost = (formData) =>
             "Content-Type": "multipart/form-data"
         }
     });
+
+/* 내 관심목록 조회 기능 */
+export const getMyFavoritePosts = () => client.get("/api/user/me/interests");
+
+/* 내 관심목록 삭제 (선택한 아이템 하나씩 삭제) */
+export const deleteMyFavoritePost = (interestId) =>
+    client.delete(`/api/user/me/interest/${interestId}`);
