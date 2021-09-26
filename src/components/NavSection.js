@@ -219,8 +219,8 @@ export default function NavSection({ navConfig, ...other }) {
         path ? !!matchPath({ path, end: true }, pathname) : false;
 
     return (
-        <Box {...other} style={{ height: "100%" }}>
-            <List disablePadding style={{ height: "100%" }}>
+        <Box {...other}>
+            <List disablePadding>
                 {navConfig.map((item) => (
                     <NavItem key={item.title} item={item} active={match} />
                 ))}
