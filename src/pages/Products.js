@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import { Container, Typography, Button, Stack } from "@material-ui/core";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { ArrowRight } from "@material-ui/icons";
 import Page from "../components/Page";
 import { ProductList } from "../components/_dashboard/products";
 import PRODUCTS from "../_mocks_/products";
@@ -57,7 +57,7 @@ export default function EcommerceShop() {
                     onClick={onPageChange}
                 >
                     중고책 등록&nbsp;
-                    <ArrowRightIcon />
+                    <ArrowRight />
                 </Button>
                 <Searchbar
                     onChange={handleInputChange}
