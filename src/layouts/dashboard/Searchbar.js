@@ -47,8 +47,13 @@ export default function Searchbar({ onChange, onClick }) {
     };
 
     const handleInputClickChild = () => {
-        console.log("child");
         onClick();
+    };
+
+    const handleInputKeyPress = (e) => {
+        if (e.key === "Enter") {
+            onClick();
+        }
     };
 
     return (
@@ -71,6 +76,7 @@ export default function Searchbar({ onChange, onClick }) {
                 fullWidth
                 disableUnderline
                 placeholder="검색"
+                onKeyPress={handleInputKeyPress}
                 startAdornment={
                     <InputAdornment position="start">
                         <Box
