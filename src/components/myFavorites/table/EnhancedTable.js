@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 // Material-UI, React UI framework
 import { makeStyles } from "@material-ui/styles";
@@ -12,14 +11,8 @@ import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
-import { BookmarkRemoveTwoTone, Loyalty } from "@material-ui/icons";
-import {
-    Avatar,
-    Button,
-    Link,
-    ListItemButton,
-    Tooltip
-} from "@material-ui/core";
+import { BookmarkRemoveTwoTone } from "@material-ui/icons";
+import { Avatar, Link, ListItemButton, Tooltip } from "@material-ui/core";
 import * as api from "../../../lib/api";
 
 function desc(a, b, orderBy) {
@@ -188,9 +181,7 @@ export default function EnhancedTable() {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = useState([]); // 조회 목록
-    const [unfavorite, setUnfavorite] = useState(""); // 관심목록에서 제거 처리 (상태 갱신용)
-
-    const navigate = useNavigate();
+    const [unfavourite, setUnfavourite] = useState(""); // 관심목록에서 제거 처리 (상태 갱신용)
 
     const getMyFavorites = async () => {
         try {
@@ -209,7 +200,7 @@ export default function EnhancedTable() {
     // 목록 로딩 처리
     useEffect(() => {
         getMyFavorites();
-    }, [unfavorite]);
+    }, [unfavourite]);
 
     function handleRequestSort(event, property) {
         const isDesc = orderBy === property && order === "desc";
@@ -254,9 +245,9 @@ export default function EnhancedTable() {
 
         // console.log(targetInterestId);
         // 삭제처리
-        setUnfavorite(targetInterestId);
+        setUnfavourite(targetInterestId);
         api.deleteMyFavoritePost(targetInterestId).then(() =>
-            setUnfavorite("")
+            setUnfavourite("")
         );
     };
 
