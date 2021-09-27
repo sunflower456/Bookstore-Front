@@ -12,8 +12,14 @@ import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
-import { Loyalty } from "@material-ui/icons";
-import { Avatar, Link } from "@material-ui/core";
+import { BookmarkRemoveTwoTone, Loyalty } from "@material-ui/icons";
+import {
+    Avatar,
+    Button,
+    Link,
+    ListItemButton,
+    Tooltip
+} from "@material-ui/core";
 import * as api from "../../../lib/api";
 
 function desc(a, b, orderBy) {
@@ -182,6 +188,7 @@ export default function EnhancedTable() {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [rows, setRows] = useState([]); // 조회 목록
+    const [unfavorite, setUnfavorite] = useState(""); // 관심목록에서 제거 처리 (상태 갱신용)
 
     const navigate = useNavigate();
 
@@ -194,17 +201,15 @@ export default function EnhancedTable() {
             if (e.response == null) {
                 alert(e.message);
             } else {
-                alert(e.response.message);
+                console.log(e.response.message);
             }
         }
     };
 
-    const delFavoriteButton = useRef();
-
     // 목록 로딩 처리
     useEffect(() => {
         getMyFavorites();
-    }, [selected]);
+    }, [unfavorite]);
 
     function handleRequestSort(event, property) {
         const isDesc = orderBy === property && order === "desc";
@@ -249,7 +254,10 @@ export default function EnhancedTable() {
 
         // console.log(targetInterestId);
         // 삭제처리
-        api.deleteMyFavoritePost(targetInterestId);
+        setUnfavorite(targetInterestId);
+        api.deleteMyFavoritePost(targetInterestId).then(() =>
+            setUnfavorite("")
+        );
     };
 
     return (
@@ -322,14 +330,25 @@ export default function EnhancedTable() {
                                                         ? "right"
                                                         : "left"
                                                 }
-                                                sx={{
-                                                    maxWidth: "100px",
-                                                    whiteSpace: "nowrap",
-                                                    overflow: "hidden",
-                                                    textOverflow: "ellipsis"
-                                                }}
+                                                sx={{ maxWidth: "100px" }}
                                             >
-                                                {row.bookTitle}
+                                                <Tooltip title={row.bookTitle}>
+                                                    <ListItemButton
+                                                        variant={"text"}
+                                                        sx={{
+                                                            width: "100%",
+                                                            display: "block",
+                                                            textAlign: "left",
+                                                            whiteSpace:
+                                                                "nowrap",
+                                                            overflow: "hidden",
+                                                            textOverflow:
+                                                                "ellipsis"
+                                                        }}
+                                                    >
+                                                        {row.bookTitle}
+                                                    </ListItemButton>
+                                                </Tooltip>
                                             </TableCell>
                                             <TableCell
                                                 align={
@@ -353,16 +372,25 @@ export default function EnhancedTable() {
                                                 }
                                             </TableCell>
                                             <TableCell align={"center"}>
-                                                <IconButton
-                                                    ref={delFavoriteButton}
-                                                    aria-label={"favorite-post"}
-                                                    value={row.interestId}
-                                                    onClick={deleteMyFavorite}
+                                                <Tooltip
+                                                    title={"관심목록에서 제거"}
+                                                    placement={"right"}
+                                                    arrow
                                                 >
-                                                    <Loyalty
-                                                        color={"success"}
-                                                    />
-                                                </IconButton>
+                                                    <IconButton
+                                                        aria-label={
+                                                            "favorite-post"
+                                                        }
+                                                        value={row.interestId}
+                                                        onClick={
+                                                            deleteMyFavorite
+                                                        }
+                                                    >
+                                                        <BookmarkRemoveTwoTone
+                                                            color={"success"}
+                                                        />
+                                                    </IconButton>
+                                                </Tooltip>
                                             </TableCell>
                                         </TableRow>
                                     );
