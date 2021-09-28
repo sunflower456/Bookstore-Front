@@ -40,6 +40,9 @@ export const profileUpload = (formData) =>
         }
     });
 
+/* 사용자 프로필 삭제 (delete image) */
+export const profileDelete = () => client.delete("/api/user/profile");
+
 /* 비밀번호 수정 (초기화) 처리 */
 export const modifyPassword = (oldPassword, newPassword) =>
     client.patch("/api/user/password", {
