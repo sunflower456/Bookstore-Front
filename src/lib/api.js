@@ -51,8 +51,10 @@ export const modifyPassword = (oldPassword, newPassword) =>
     });
 
 /* 네이버 책 검색 API 요청 처리 */
-export const searchBookInfo = (searchType, searchKeyword) => {
-    return client.get(`/api/post/naverBookAPI?${searchType}=${searchKeyword}`);
+export const searchBookInfo = (searchType, searchKeyword, display, start) => {
+    return client.get(
+        `/api/post/naverBookAPI?${searchType}=${searchKeyword}&display=${display}&start=${start}`
+    );
 };
 
 /* 판매글 등록 (게시글 등록) 요청 처리 */
