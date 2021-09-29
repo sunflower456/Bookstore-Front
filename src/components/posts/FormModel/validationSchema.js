@@ -42,6 +42,8 @@ export default [
         [bookStatus.name]: Yup.string().required(
             `${bookStatus.requiredErrorMsg}`
         ),
-        [bookPhoto.name]: Yup.array().max(5, `${bookPhoto.invalidErrorMsg}`)
+        [bookPhoto.name]: Yup.array()
+            .min(1, "책 사진을 1장 이상 업로드해주세요.")
+            .max(5, `${bookPhoto.invalidErrorMsg}`)
     })
 ];

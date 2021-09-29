@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     FormControl,
     FormHelperText,
     FormLabel,
+    Grid,
     Paper,
     Radio,
     RadioGroup,
@@ -23,15 +24,45 @@ export default function PostForm(props) {
         formField: { price, description, bookStatus, bookPhoto }
     } = props;
 
-    const meta = useFormikContext();
+    const {
+        values,
+        errors,
+        touched,
+        isSubmitting,
+        submitCount,
+        isValid,
+        isValidating
+    } = useFormikContext();
+
+    // 이미지 업로드 시 업로드 대상 이미지 갱신
+    useEffect(() => {
+        // 이전으로 넘어간 상태에서 다음으로 이동 시
+        // 이전 입력 화면은 통과 가능 상태 (isValid = true) 이며
+        // form 전체가 유효한 상태는 아님 (isvalidating = false)
+        if (isValid && !isValidating) {
+            values.bookPhoto = [];
+        }
+    }, [submitCount]);
 
     return (
         <Paper className={classes.formArea} elevation={6}>
             <Stack direction={"column"} spacing={2}>
+                <Grid container alignItems={"flex-start"}>
+                    <Grid item xs>
+                        <Typography variant={"h6"}>책 상태 (사진)</Typography>
+                    </Grid>
+                    <Grid item xs={3} textAlign={"right"}>
+                        {values.bookPhoto.length <= 0 && touched.bookPhoto && (
+                            <FormHelperText error={Boolean(errors.bookPhoto)}>
+                                {errors.bookPhoto}
+                            </FormHelperText>
+                        )}
+                    </Grid>
+                </Grid>
                 <div>
-                    <Typography variant={"h6"}>책 상태 (사진)</Typography>
                     <ImageUploadField name={bookPhoto.name} />
                 </div>
+
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                     <InputField
                         fullWidth
@@ -102,8 +133,8 @@ export default function PostForm(props) {
                                 />
                             </label>
                         </RadioGroup>
-                        <FormHelperText error={Boolean(meta.errors.bookStatus)}>
-                            {meta.errors.bookStatus}
+                        <FormHelperText error={Boolean(errors.bookStatus)}>
+                            {errors.bookStatus}
                         </FormHelperText>
                     </FormControl>
                 </Stack>
