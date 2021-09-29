@@ -26,9 +26,9 @@ ShopProductCard.propTypes = {
 
 export default function ShopProductCard({ product, id }) {
     const {
-        name,
-        cover,
-        price
+        bookTitle,
+        bookThumbnail,
+        bookListPrice
         // priceSale
     } = product;
 
@@ -42,7 +42,11 @@ export default function ShopProductCard({ product, id }) {
                 sx={{ pt: "100%", position: "relative" }}
                 style={{ height: "350px" }}
             >
-                <ProductImgStyle alt={name} src={cover} onClick={imageLinkTo} />
+                <ProductImgStyle
+                    alt={bookTitle}
+                    src={bookThumbnail}
+                    onClick={imageLinkTo}
+                />
             </Box>
 
             <Stack spacing={2} sx={{ p: 3 }}>
@@ -54,7 +58,7 @@ export default function ShopProductCard({ product, id }) {
                     style={{ marginBottom: "16px" }}
                 >
                     <Typography variant="subtitle1" noWrap>
-                        {name}
+                        {bookTitle}
                     </Typography>
                 </Link>
                 <Stack
@@ -64,7 +68,7 @@ export default function ShopProductCard({ product, id }) {
                     style={{ marginTop: "0px" }}
                 >
                     <Typography variant="body2" noWrap>
-                        {name}
+                        {bookTitle}
                     </Typography>
                 </Stack>
                 <Stack
@@ -89,7 +93,7 @@ export default function ShopProductCard({ product, id }) {
                     justifyContent="space-between"
                 >
                     <Typography variant="subtitle1">
-                        {fCurrency(price)}
+                        {fCurrency(bookListPrice)}
                     </Typography>
                 </Stack>
             </Stack>

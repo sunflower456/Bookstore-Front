@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import StarIcon from "@material-ui/icons/Star";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import {
@@ -21,7 +22,6 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
-import PRODUCTS from "../../_mocks_/products";
 
 // ----------------------------------------------------------------------
 
@@ -136,8 +136,31 @@ export default function ProductDetail() {
     const steps = getSteps();
     const postSteps = getPostSteps();
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
+    const [product, setProduct] = useState();
+    // store 상태 조회
+    const { accessToken, myInfo } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken,
+        myInfo: auth.myInfo
+    }));
 
-    const product = PRODUCTS[id];
+    const myHeaders = new Headers();
+
+    myHeaders.append("Authorization", `Bearer ${accessToken}`);
+
+    fetch(
+        "http://localhost:8080/api/post/naverBookAPI?title=%EC%B1%85%20%EC%A0%9C%EB%AA%A9",
+        {
+            method: "GET",
+            headers: myHeaders
+        }
+    )
+        .then((response) => response.json())
+        .then((response) => {
+            // PRODUCTS = response;
+            console.log(response);
+            setProduct(response[0]);
+            // PRODUCT_NAME.concat(PRODUCTS);
+        });
 
     // cover 수정하기
     const productImages = [
