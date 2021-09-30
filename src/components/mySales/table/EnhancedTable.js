@@ -44,7 +44,7 @@ function getSorting(order, orderBy) {
 
 const headRows = [
     {
-        id: "bookThumbnail",
+        id: "postImage",
         numeric: false,
         disablePadding: false,
         sortable: false,
