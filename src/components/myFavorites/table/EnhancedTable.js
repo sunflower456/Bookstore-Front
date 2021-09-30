@@ -45,7 +45,7 @@ function getSorting(order, orderBy) {
 
 const headRows = [
     {
-        id: "bookThumbnail",
+        id: "postImage",
         numeric: false,
         disablePadding: false,
         sortable: false,
@@ -186,8 +186,24 @@ export default function EnhancedTable() {
     const getMyFavorites = async () => {
         try {
             const response = await api.getMyFavoritePosts();
+            const data = response.data;
+            const favoriteRow = [];
 
-            setRows(response.data);
+            // data를 가공 처리한 뒤 테이블 데이터로 전달
+            data.map((item) =>
+                favoriteRow.push({
+                    interestId: item.interestId,
+                    postId: item.postsResponse.postId,
+                    postImage: item.postsResponse.postImage,
+                    postTitle: item.postsResponse.postTitle,
+                    postPrice: item.postsResponse.postPrice,
+                    bookTitle: item.postsResponse.bookTitle,
+                    postStatus: item.postsResponse.postStatus,
+                    createdDate: item.postsResponse.createdDate
+                })
+            );
+
+            setRows(favoriteRow);
         } catch (e) {
             if (e.response == null) {
                 alert(e.message);
@@ -294,10 +310,9 @@ export default function EnhancedTable() {
                                                 <Avatar
                                                     variant={"square"}
                                                     src={
-                                                        row.bookThumbnail ==
-                                                        null
+                                                        row.postImage == null
                                                             ? ""
-                                                            : row.bookThumbnail
+                                                            : row.postImage
                                                     }
                                                 />
                                             </TableCell>
@@ -351,16 +366,7 @@ export default function EnhancedTable() {
                                                 {row.postPrice}
                                             </TableCell>
                                             <TableCell align={"center"}>
-                                                {
-                                                    /* eslint-disable-next-line no-nested-ternary */
-                                                    row.postStatus === "SALE"
-                                                        ? "판매중"
-                                                        : // eslint-disable-next-line no-nested-ternary
-                                                        row.postStatus ===
-                                                          "RESERVED"
-                                                        ? "거래중"
-                                                        : "판매완료"
-                                                }
+                                                {row.postStatus}
                                             </TableCell>
                                             <TableCell align={"center"}>
                                                 <Tooltip
