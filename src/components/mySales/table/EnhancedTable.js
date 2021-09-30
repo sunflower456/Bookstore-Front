@@ -12,6 +12,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Paper from "@material-ui/core/Paper";
 import { Avatar, Link, ListItemButton, Tooltip } from "@material-ui/core";
+import * as api from "../../../lib/api";
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -175,8 +176,16 @@ export default function EnhancedTable() {
 
     const getMySalePosts = async () => {
         try {
-            // const response = await api.getMyFavoritePosts();
-            // setRows(response.data);
+            await api
+                .getMySalePosts()
+                .then((response) => setRows(response.data))
+                .catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
         } catch (e) {
             if (e.response == null) {
                 alert(e.message);
@@ -271,10 +280,9 @@ export default function EnhancedTable() {
                                                 <Avatar
                                                     variant={"square"}
                                                     src={
-                                                        row.bookThumbnail ==
-                                                        null
+                                                        row.postImage == null
                                                             ? ""
-                                                            : row.bookThumbnail
+                                                            : row.postImage
                                                     }
                                                 />
                                             </TableCell>
@@ -328,16 +336,7 @@ export default function EnhancedTable() {
                                                 {row.postPrice}
                                             </TableCell>
                                             <TableCell align={"center"}>
-                                                {
-                                                    /* eslint-disable-next-line no-nested-ternary */
-                                                    row.postStatus === "SALE"
-                                                        ? "판매중"
-                                                        : // eslint-disable-next-line no-nested-ternary
-                                                        row.postStatus ===
-                                                          "RESERVED"
-                                                        ? "거래중"
-                                                        : "판매완료"
-                                                }
+                                                {row.postStatus}
                                             </TableCell>
                                         </TableRow>
                                     );

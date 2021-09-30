@@ -71,3 +71,6 @@ export const getMyFavoritePosts = () => client.get("/api/user/me/interests");
 /* 내 관심목록 삭제 (선택한 아이템 하나씩 삭제) */
 export const deleteMyFavoritePost = (interestId) =>
     client.delete(`/api/user/me/interest/${interestId}`);
+
+/* 내 판매글 조회 기능 */
+export const getMySalePosts = () => client.get("/api/user/me/post");
