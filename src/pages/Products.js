@@ -10,7 +10,6 @@ import Searchbar from "../layouts/dashboard/Searchbar";
 // ----------------------------------------------------------------------
 
 export default function EcommerceShop() {
-    const [openFilter, setOpenFilter] = useState(false);
     const [content, setContent] = useState("");
     const [products, setProducts] = useState(null);
     // store 상태 조회
@@ -18,38 +17,13 @@ export default function EcommerceShop() {
         accessToken: auth.accessToken,
         myInfo: auth.myInfo
     }));
-
-    async function _handleSubmit() {
-        console.log("_handleSubmit parents");
-        const myHeaders = new Headers();
-
-        myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-        await fetch(
-            "http://localhost:8080/api/post/naverBookAPI?title=%EC%B1%85%20%EC%A0%9C%EB%AA%A9",
-            {
-                method: "GET",
-                headers: myHeaders
-            }
-        )
-            .then((response) => response.json())
-            .then((response) => {
-                setProducts(response);
-                console.log("products", response);
-                return response;
-            });
-    }
-    // _handleSubmit();
+    const [productList, setProductList] = useState(<ProductList />);
 
     const handleInputChange = (value) => {
         setContent({ content: value });
     };
     const handleInputClick = () => {
-        // setProducts({
-        //     products: products.filter((product) => {
-        //         return product.name.includes(content.content);
-        //     })
-        // });
+        setProductList(<ProductList content={content} />);
     };
 
     const onPageChange = () => {
@@ -84,7 +58,7 @@ export default function EcommerceShop() {
                     justifyContent="flex-end"
                     sx={{ mb: 5 }}
                 ></Stack>
-                <ProductList products={products} />
+                {productList}
             </Container>
         </Page>
     );

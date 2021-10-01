@@ -13,6 +13,8 @@ import { Grid } from "@material-ui/core";
 import ShopProductCard from "./ProductCard";
 
 const ProductList = forwardRef((props, ref) => {
+    console.log("props ", props);
+
     const [page, setPage] = useState(0);
     const [items, setItems] = useState([]);
     const [productList, setProductList] = useState(
@@ -31,6 +33,11 @@ const ProductList = forwardRef((props, ref) => {
         myInfo: auth.myInfo
     }));
 
+    const myHeaders = new Headers();
+    const baseURL = "http://localhost:8080";
+
+    myHeaders.append("Authorization", `Bearer ${accessToken}`);
+
     const updateState = (payload) => {
         return new Promise((resolve) => {
             setItems({
@@ -47,16 +54,13 @@ const ProductList = forwardRef((props, ref) => {
         });
     };
 
-    const fetchData = async () => {
+    const fetchAllData = async () => {
         console.log("parampage : ", paramPage);
-        const myHeaders = new Headers();
-
-        myHeaders.append("Authorization", `Bearer ${accessToken}`);
 
         // 초기 값일땐 items 에 result 바로 넣어줌
         if (paramPage === 0) {
             const data = await fetch(
-                `http://localhost:8080/api/post?size=${encodeURIComponent(
+                `${baseURL}/api/post?size=${encodeURIComponent(
                     paramSize
                 )}&page=${encodeURIComponent(paramPage)}`,
                 {
@@ -73,7 +77,7 @@ const ProductList = forwardRef((props, ref) => {
             return data;
         } else {
             const data = await fetch(
-                `http://localhost:8080/api/post?size=${encodeURIComponent(
+                `${baseURL}/api/post?size=${encodeURIComponent(
                     paramSize
                 )}&page=${encodeURIComponent(paramPage)}`,
                 {
@@ -90,8 +94,31 @@ const ProductList = forwardRef((props, ref) => {
         }
     };
 
+    const fetchSearchedDataByTitle = async () => {
+        const data = await fetch(
+            `${baseURL}/api/post?title=${encodeURIComponent(
+                props.content.content
+            )}&size=${paramSize}&page=0`,
+            {
+                method: "GET",
+                headers: myHeaders
+            }
+        ).then((response) => response.json());
+
+        if (data.length !== 0) {
+            await updateState(data);
+
+            return data;
+        }
+        return data;
+    };
+
     useEffect(() => {
-        fetchData();
+        console.log("useEffect props : ", props);
+        if (props.content) {
+            fetchSearchedDataByTitle();
+        }
+        console.log("after search : ", items);
 
         if (items.length !== 0 && items !== undefined) {
             console.log(items);
@@ -126,6 +153,57 @@ const ProductList = forwardRef((props, ref) => {
                     </Grid>
                 );
             }
+        } else {
+            setProductList(
+                <div>
+                    <h1>데이터가 없습니다</h1>
+                </div>
+            );
+        }
+    }, [props]);
+
+    useEffect(() => {
+        fetchAllData();
+
+        if (items.length !== 0 && items !== undefined) {
+            console.log(items);
+            if (
+                items.items &&
+                items.items.length !== 0 &&
+                items.items !== undefined
+            ) {
+                const pageCal = Math.floor(items.items.length / paramSize);
+
+                setParamPage(pageCal);
+                setProductList(
+                    <Grid container spacing={3}>
+                        {items.items.map((product, idx) => (
+                            <Grid key={idx} item xs={12} sm={6} md={3}>
+                                <ShopProductCard product={product} id={idx} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                );
+            } else {
+                const pageCal = Math.floor(items.length / paramSize);
+
+                setParamPage(pageCal);
+                setProductList(
+                    <Grid container spacing={3}>
+                        {items.map((product, idx) => (
+                            <Grid key={idx} item xs={12} sm={6} md={3}>
+                                <ShopProductCard product={product} id={idx} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                );
+            }
+        } else {
+            setProductList(
+                <div>
+                    <h1>데이터가 없습니다</h1>
+                </div>
+            );
         }
     }, [items.length]);
 
