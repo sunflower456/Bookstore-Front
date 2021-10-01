@@ -13,13 +13,18 @@ import { Grid } from "@material-ui/core";
 import ShopProductCard from "./ProductCard";
 
 const ProductList = forwardRef((props, ref) => {
-    const [page, setPage] = useState(1);
+    const [page, setPage] = useState(0);
     const [items, setItems] = useState([]);
     const [productList, setProductList] = useState(
         <div>
-            <h1>NULL</h1>
+            <h1>데이터가 없습니다</h1>
         </div>
     );
+
+    const paramSize = 12;
+    const [paramPage, setParamPage] = useState(0);
+
+    let tempItems = [];
 
     const { accessToken, myInfo } = useSelector(({ auth }) => ({
         accessToken: auth.accessToken,
@@ -34,30 +39,70 @@ const ProductList = forwardRef((props, ref) => {
         });
     };
 
+    const updateStateParam = (payload) => {
+        return new Promise((resolve) => {
+            setParamPage({
+                paramPage: payload
+            });
+        });
+    };
+
     const fetchData = async () => {
+        console.log("parampage : ", paramPage);
         const myHeaders = new Headers();
 
         myHeaders.append("Authorization", `Bearer ${accessToken}`);
 
-        const data = await fetch(
-            "http://localhost:8080/api/post/naverBookAPI?title=%EC%B1%85%20%EC%A0%9C%EB%AA%A9",
-            {
-                method: "GET",
-                headers: myHeaders
-            }
-        ).then((response) => response.json());
+        // 초기 값일땐 items 에 result 바로 넣어줌
+        if (paramPage === 0) {
+            const data = await fetch(
+                `http://localhost:8080/api/post?size=${encodeURIComponent(
+                    paramSize
+                )}&page=${encodeURIComponent(paramPage)}`,
+                {
+                    method: "GET",
+                    headers: myHeaders
+                }
+            ).then((response) => response.json());
 
-        if (data.length !== 0) {
-            await updateState(data);
+            if (data.length !== 0) {
+                await updateState(data);
+
+                return data;
+            }
+            return data;
+        } else {
+            const data = await fetch(
+                `http://localhost:8080/api/post?size=${encodeURIComponent(
+                    paramSize
+                )}&page=${encodeURIComponent(paramPage)}`,
+                {
+                    method: "GET",
+                    headers: myHeaders
+                }
+            ).then((response) => response.json());
+
+            if (data.length !== 0) {
+                tempItems = data;
+                return data;
+            }
             return data;
         }
-        return data;
     };
 
     useEffect(() => {
         fetchData();
+
         if (items.length !== 0 && items !== undefined) {
-            if (items.items) {
+            console.log(items);
+            if (
+                items.items &&
+                items.items.length !== 0 &&
+                items.items !== undefined
+            ) {
+                const pageCal = Math.floor(items.items.length / paramSize);
+
+                setParamPage(pageCal);
                 setProductList(
                     <Grid container spacing={3}>
                         {items.items.map((product, idx) => (
@@ -68,6 +113,9 @@ const ProductList = forwardRef((props, ref) => {
                     </Grid>
                 );
             } else {
+                const pageCal = Math.floor(items.length / paramSize);
+
+                setParamPage(pageCal);
                 setProductList(
                     <Grid container spacing={3}>
                         {items.map((product, idx) => (
@@ -79,13 +127,13 @@ const ProductList = forwardRef((props, ref) => {
                 );
             }
         }
-    }, [items]);
+    }, [items.length]);
 
-    useImperativeHandle(ref, () => ({
-        reload() {
-            setItems(props.products);
-        }
-    }));
+    // useImperativeHandle(ref, () => ({
+    //     reload() {
+    //         setItems(props.products);
+    //     }
+    // }));
 
     ProductList.propTypes = {
         products: PropTypes.array.isRequired
@@ -99,9 +147,9 @@ const ProductList = forwardRef((props, ref) => {
         if (Math.round(scrollTop + innerHeight) >= scrollHeight) {
             if (items.length !== 0) {
                 if (items.items) {
-                    setItems(items.items.concat(items.items));
+                    setItems(items.items.concat(tempItems));
                 } else {
-                    setItems(items.concat(items));
+                    setItems(items.concat(tempItems));
                 }
             }
             setPage((prevPage) => prevPage + 1);
@@ -114,14 +162,6 @@ const ProductList = forwardRef((props, ref) => {
             window.removeEventListener("scroll", handleScroll, false);
         };
     }, [handleScroll]);
-
-    // useEffect(() => {
-    //     if (props.products.products) {
-    //         setItems(props.products.products);
-    //     } else {
-    //         setItems(props.products);
-    //     }
-    // }, []);
 
     return <>{productList}</>;
 });

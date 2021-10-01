@@ -50,7 +50,7 @@ export const modifyPassword = (oldPassword, newPassword) =>
 /* 네이버 책 검색 API 요청 처리 */
 export const searchBookInfo = (searchType, searchKeyword) => {
     return client.get(
-        `http://localhost:8080/api/post/naverBookAPI?${searchType}=${searchKeyword}`
+        `http://localhost:8080/api/post/naverBookAPI?${searchType}=${searchKeyword}&start=1&display=20`
     );
 };
 
