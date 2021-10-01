@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import StarIcon from "@material-ui/icons/Star";
 import { makeStyles, withStyles } from "@material-ui/styles";
@@ -131,45 +131,16 @@ function QontoPostStepIcon(props) {
     );
 }
 
-export default function ProductDetail() {
+export default function ProductDetail(props) {
+    console.log(props);
     const { id } = useParams();
     const steps = getSteps();
     const postSteps = getPostSteps();
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
     const [product, setProduct] = useState();
-    // store 상태 조회
-    const { accessToken, myInfo } = useSelector(({ auth }) => ({
-        accessToken: auth.accessToken,
-        myInfo: auth.myInfo
-    }));
-
-    const myHeaders = new Headers();
-
-    myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-    fetch(
-        "http://localhost:8080/api/post/naverBookAPI?title=%EC%B1%85%20%EC%A0%9C%EB%AA%A9",
-        {
-            method: "GET",
-            headers: myHeaders
-        }
-    )
-        .then((response) => response.json())
-        .then((response) => {
-            // PRODUCTS = response;
-            console.log(response);
-            setProduct(response[0]);
-            // PRODUCT_NAME.concat(PRODUCTS);
-        });
 
     // cover 수정하기
-    const productImages = [
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover
-    ];
+    const productImages = props.product.product.images;
 
     const onChangeImage = (index) => {
         let currIndex = index;
@@ -208,7 +179,8 @@ export default function ProductDetail() {
                                     {productImages?.map((image, no) => (
                                         <div className="slideContent" key={no}>
                                             <picture>
-                                                {product.status ? (
+                                                {props.product.product
+                                                    .bookStatus ? (
                                                     <StarIcon
                                                         style={{
                                                             color: "yellow",
@@ -274,7 +246,7 @@ export default function ProductDetail() {
                         <Card style={{ width: "80%" }}>
                             <CardContent>
                                 <Avatar
-                                    src={product.cover}
+                                    // src={product.cover}
                                     style={{
                                         float: "left",
                                         marginTop: "-5px",
@@ -309,7 +281,7 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.name}
+                                        {props.product.product.title}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -325,7 +297,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.name}
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookTitle
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -341,7 +316,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        박 준
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookAuthor
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -357,7 +335,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        1293847192438719384
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookIsbn
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -373,7 +354,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        문학동네
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookPublisher
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -389,7 +373,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        요약정보
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookSummary
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -405,7 +392,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.price}
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookListPrice
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -421,7 +411,7 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.priceSale}
+                                        {props.product.product.price}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -476,7 +466,7 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        부가 설명
+                                        {props.product.product.description}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>

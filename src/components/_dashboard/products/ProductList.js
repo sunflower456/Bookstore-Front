@@ -46,14 +46,6 @@ const ProductList = forwardRef((props, ref) => {
         });
     };
 
-    const updateStateParam = (payload) => {
-        return new Promise((resolve) => {
-            setParamPage({
-                paramPage: payload
-            });
-        });
-    };
-
     const fetchAllData = async () => {
         console.log("parampage : ", paramPage);
 

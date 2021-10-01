@@ -34,7 +34,7 @@ export default function ShopProductCard({ product, id }) {
     } = product;
 
     const imageLinkTo = () => {
-        window.location.href = `/products/${id}`;
+        window.location.href = `/products/${id + 1}`;
     };
 
     return (
@@ -52,7 +52,7 @@ export default function ShopProductCard({ product, id }) {
 
             <Stack spacing={2} sx={{ p: 3 }}>
                 <Link
-                    to={`/products/${id}`}
+                    to={`/products/${id + 1}`}
                     color="inherit"
                     underline="hover"
                     component={RouterLink}
