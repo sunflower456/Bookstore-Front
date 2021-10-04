@@ -61,9 +61,7 @@ export default function PostRegister() {
                         ? "API 미제공"
                         : values.bookThumbnail,
                 bookListPrice:
-                    values.bookListPrice == null || values.bookListPrice === ""
-                        ? "API 미제공"
-                        : values.bookListPrice,
+                    values.bookListPrice == null ? 0 : values.bookListPrice,
                 bookPubDate:
                     values.bookPubDate == null || values.bookPubDate === ""
                         ? "API 미제공"
