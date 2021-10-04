@@ -12,7 +12,8 @@ import {
     Step,
     Stepper,
     StepLabel,
-    StepConnector
+    StepConnector,
+    Button
 } from "@material-ui/core";
 import clsx from "clsx";
 import Check from "@material-ui/icons/Check";
@@ -138,6 +139,16 @@ export default function ProductDetail(props) {
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
     const [product, setProduct] = useState();
 
+    const { accessToken, myInfo } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken,
+        myInfo: auth.myInfo
+    }));
+
+    console.log(
+        "props.product.product : ",
+        props.product.product.bookResponse.bookSummary
+    );
+
     // cover 수정하기
     const productImages = props.product.product.images;
 
@@ -151,6 +162,27 @@ export default function ProductDetail(props) {
             currIndex = productImages.length - 1;
         }
         setImageCurrentNo(currIndex);
+    };
+
+    const bookSummarySubstr =
+        props.product.product.bookResponse.bookSummary.substring(0, 30);
+    const bookSummary = props.product.product.bookResponse.bookSummary;
+    const [showSummary, setShowSummary] = useState(bookSummarySubstr);
+    const [isSummary, setIsSummary] = useState(true);
+    const [moreButton, setMoreButton] = useState("더보기");
+
+    const bookSummaryClick = () => {
+        if (isSummary) {
+            // 더보기 눌렀을 시에
+            setIsSummary(false);
+            setShowSummary(bookSummary);
+            setMoreButton("접기");
+        } else {
+            // 더보기를 접을 때
+            setIsSummary(true);
+            setShowSummary(bookSummarySubstr);
+            setMoreButton("더보기");
+        }
     };
 
     return (
@@ -179,23 +211,23 @@ export default function ProductDetail(props) {
                                         <div className="slideContent" key={no}>
                                             <picture>
                                                 {props.product.product
-                                                    .bookStatus ? (
-                                                        <StarIcon
-                                                            style={{
-                                                                color: "yellow",
-                                                                position:
+                                                    .myInterest ? (
+                                                    <StarIcon
+                                                        style={{
+                                                            color: "yellow",
+                                                            position:
                                                                 "absolute",
-                                                                left: "1px"
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <StarIcon
-                                                            style={{
-                                                                color: "blue",
-                                                                visibility: "hidden"
-                                                            }}
-                                                        />
-                                                    )}
+                                                            left: "1px"
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <StarIcon
+                                                        style={{
+                                                            color: "blue",
+                                                            visibility: "hidden"
+                                                        }}
+                                                    />
+                                                )}
                                                 <img
                                                     src={image}
                                                     style={{
@@ -245,7 +277,7 @@ export default function ProductDetail(props) {
                         <Card style={{ width: "80%" }}>
                             <CardContent>
                                 <Avatar
-                                    // src={product.cover}
+                                    src={myInfo.profileImage}
                                     style={{
                                         float: "left",
                                         marginTop: "-5px",
@@ -257,7 +289,7 @@ export default function ProductDetail(props) {
                                     component="p"
                                     style={{ marginTop: "3px" }}
                                 >
-                                    <b>sunflower45</b>
+                                    <b>{myInfo.identity}</b>
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -272,6 +304,7 @@ export default function ProductDetail(props) {
                                         component="th"
                                         scope="row"
                                         align="center"
+                                        style={{ width: "100px" }}
                                     >
                                         <b>제목</b>
                                     </TableCell>
@@ -367,15 +400,18 @@ export default function ProductDetail(props) {
                                     >
                                         <b>요약 정보</b>
                                     </TableCell>
-                                    <TableCell
-                                        component="th"
-                                        scope="row"
-                                        align="center"
-                                    >
-                                        {
-                                            props.product.product.bookResponse
-                                                .bookSummary
-                                        }
+                                    <TableCell component="th" align="center">
+                                        {showSummary}
+                                        {bookSummary.length > 30 && (
+                                            <span className="moreButtonWrap">
+                                                {"···"}
+                                                <Button
+                                                    onClick={bookSummaryClick}
+                                                >
+                                                    {moreButton}
+                                                </Button>
+                                            </span>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
