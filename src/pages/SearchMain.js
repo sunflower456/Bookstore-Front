@@ -12,30 +12,6 @@ import { ProductList } from "../components/_dashboard/products";
 // ----------------------------------------------------------------------
 
 export default function EcommerceShop() {
-    // store 상태 조회
-    const { accessToken, myInfo } = useSelector(({ auth }) => ({
-        accessToken: auth.accessToken,
-        myInfo: auth.myInfo
-    }));
-
-    const myHeaders = new Headers();
-
-    myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-    fetch(
-        "http://localhost:8080/api/post/naverBookAPI?title=%EC%B1%85%20%EC%A0%9C%EB%AA%A9",
-        {
-            method: "GET",
-            headers: myHeaders
-        }
-    )
-        .then((response) => response.json())
-        .then((response) => {
-            // PRODUCTS = response;
-            console.log(response);
-            // PRODUCT_NAME.concat(PRODUCTS);
-        });
-
     const [openFilter, setOpenFilter] = useState(false);
 
     const formik = useFormik({

@@ -15,7 +15,8 @@ import {
     RadioGroup,
     FormControlLabel,
     FormControl,
-    FormLabel
+    FormLabel,
+    Button
 } from "@material-ui/core";
 import clsx from "clsx";
 import Check from "@material-ui/icons/Check";
@@ -26,149 +27,39 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
 
-// ----------------------------------------------------------------------
-
-function getSteps() {
-    return ["특상", "상", "중", "하"];
-}
-
-function getPostSteps() {
-    return ["판매중", "거래중", "거래완료"];
-}
-const QontoConnector = withStyles({
-    alternativeLabel: {
-        top: 10,
-        left: "calc(-50% + 16px)",
-        right: "calc(50% + 16px)"
-    },
-    active: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    completed: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    line: {
-        borderColor: "#eaeaf0",
-        borderTopWidth: 3,
-        borderRadius: 1
-    }
-})(StepConnector);
-const useQontoStepIconStyles = makeStyles({
-    root: {
-        color: "#eaeaf0",
-        display: "flex",
-        height: 22,
-        alignItems: "center"
-    },
-    active: {
-        color: "#784af4"
-    },
-    circle: {
-        width: 8,
-        height: 8,
-        borderRadius: "50%",
-        backgroundColor: "currentColor"
-    },
-    completed: {
-        color: "#784af4",
-        zIndex: 1,
-        fontSize: 18
-    }
-});
-
-function QontoStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 특상 2: 상 3: 중 4: 하
-    if (icon === 2) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
-function QontoPostStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 판매중 2: 거래중 3:거래완료
-    if (icon === 3) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
-export default function ProductDetail() {
+export default function ProductDetail(props) {
     const { id } = useParams();
-    const steps = getSteps();
-    const postSteps = getPostSteps();
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
-    const [product, setProduct] = useState();
     // store 상태 조회
     const { accessToken, myInfo } = useSelector(({ auth }) => ({
         accessToken: auth.accessToken,
         myInfo: auth.myInfo
     }));
-    const myHeaders = new Headers();
 
-    myHeaders.append("Authorization", `Bearer ${accessToken}`);
-
-    fetch(
-        "http://localhost:8080/api/post/naverBookAPI?title=%EC%B1%85%20%EC%A0%9C%EB%AA%A9",
-        {
-            method: "GET",
-            headers: myHeaders
-        }
-    )
-        .then((response) => response.json())
-        .then((response) => {
-            setProduct(response[0]);
-        });
-
+    console.log("edit props : ", props);
     // cover 수정하기
-    const productImages = [
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover
-    ];
+    const productImages = props.product.product.images;
+
+    const bookSummarySubstr =
+        props.product.product.bookResponse.bookSummary.substring(0, 30);
+    const bookSummary = props.product.product.bookResponse.bookSummary;
+    const [showSummary, setShowSummary] = useState(bookSummarySubstr);
+    const [isSummary, setIsSummary] = useState(true);
+    const [moreButton, setMoreButton] = useState("더보기");
+
+    const bookSummaryClick = () => {
+        if (isSummary) {
+            // 더보기 눌렀을 시에
+            setIsSummary(false);
+            setShowSummary(bookSummary);
+            setMoreButton("접기");
+        } else {
+            // 더보기를 접을 때
+            setIsSummary(true);
+            setShowSummary(bookSummarySubstr);
+            setMoreButton("더보기");
+        }
+    };
 
     const onChangeImage = (index) => {
         let currIndex = index;
@@ -207,23 +98,24 @@ export default function ProductDetail() {
                                     {productImages?.map((image, no) => (
                                         <div className="slideContent" key={no}>
                                             <picture>
-                                                {product.status ? (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "yellow",
-                                                            position:
+                                                {props.product.product
+                                                    .myInterest ? (
+                                                        <StarIcon
+                                                            style={{
+                                                                color: "yellow",
+                                                                position:
                                                                 "absolute",
-                                                            left: "1px"
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "blue",
-                                                            visibility: "hidden"
-                                                        }}
-                                                    />
-                                                )}
+                                                                left: "1px"
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <StarIcon
+                                                            style={{
+                                                                color: "blue",
+                                                                visibility: "hidden"
+                                                            }}
+                                                        />
+                                                    )}
                                                 <img
                                                     src={image}
                                                     style={{
@@ -273,7 +165,7 @@ export default function ProductDetail() {
                         <Card style={{ width: "80%" }}>
                             <CardContent>
                                 <Avatar
-                                    src={product.cover}
+                                    src={myInfo.profileImage}
                                     style={{
                                         float: "left",
                                         marginTop: "-5px",
@@ -285,7 +177,7 @@ export default function ProductDetail() {
                                     component="p"
                                     style={{ marginTop: "3px" }}
                                 >
-                                    <b>sunflower45</b>
+                                    <b>{myInfo.identity}</b>
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -310,7 +202,7 @@ export default function ProductDetail() {
                                     >
                                         <Input
                                             name="title"
-                                            value={product.name}
+                                            value={props.product.product.title}
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
@@ -331,14 +223,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookTitle"
-                                            value={product.name}
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookTitle
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -354,14 +242,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookAuther"
-                                            value="박준"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookAuthor
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -377,14 +261,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookIsbn"
-                                            value="1293847192438719384"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookIsbn
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -400,14 +280,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookPublisher"
-                                            value="문학동네"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookPublisher
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -418,19 +294,18 @@ export default function ProductDetail() {
                                     >
                                         <b>요약 정보</b>
                                     </TableCell>
-                                    <TableCell
-                                        component="th"
-                                        scope="row"
-                                        align="center"
-                                    >
-                                        <Input
-                                            name="description"
-                                            value="요약정보"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                    <TableCell component="th" align="center">
+                                        {showSummary}
+                                        {bookSummary.length > 30 && (
+                                            <span className="moreButtonWrap">
+                                                {"···"}
+                                                <Button
+                                                    onClick={bookSummaryClick}
+                                                >
+                                                    {moreButton}
+                                                </Button>
+                                            </span>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -446,14 +321,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="price"
-                                            value={product.price}
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookListPrice
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -471,7 +342,7 @@ export default function ProductDetail() {
                                     >
                                         <Input
                                             name="bookListPrice"
-                                            value={product.priceSale}
+                                            value={props.product.product.price}
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
@@ -496,26 +367,29 @@ export default function ProductDetail() {
                                             <RadioGroup
                                                 row
                                                 aria-label="bookStatus"
-                                                defaultValue="2"
+                                                defaultValue={
+                                                    props.product.product
+                                                        .bookStatus
+                                                }
                                                 name="bookStatus"
                                             >
                                                 <FormControlLabel
-                                                    value="1"
+                                                    value="최상"
                                                     control={<Radio />}
-                                                    label="특상"
+                                                    label="최상"
                                                 />
                                                 <FormControlLabel
-                                                    value="2"
+                                                    value="상"
                                                     control={<Radio />}
                                                     label="상"
                                                 />
                                                 <FormControlLabel
-                                                    value="3"
+                                                    value="중"
                                                     control={<Radio />}
                                                     label="중"
                                                 />
                                                 <FormControlLabel
-                                                    value="4"
+                                                    value="하"
                                                     control={<Radio />}
                                                     label="하"
                                                 />
@@ -538,7 +412,10 @@ export default function ProductDetail() {
                                     >
                                         <Input
                                             name="bookSummary"
-                                            value="부가 설명"
+                                            value={
+                                                props.product.product
+                                                    .description
+                                            }
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
@@ -563,23 +440,26 @@ export default function ProductDetail() {
                                             <RadioGroup
                                                 row
                                                 aria-label="postStatus"
-                                                defaultValue="3"
+                                                defaultValue={
+                                                    props.product.product
+                                                        .postStatus
+                                                }
                                                 name="postStatus"
                                             >
                                                 <FormControlLabel
-                                                    value="1"
+                                                    value="판매 중"
                                                     control={<Radio />}
-                                                    label="판매중"
+                                                    label="판매 중"
                                                 />
                                                 <FormControlLabel
-                                                    value="2"
+                                                    value="예약 중"
                                                     control={<Radio />}
-                                                    label="거래중"
+                                                    label="예약 중"
                                                 />
                                                 <FormControlLabel
-                                                    value="3"
+                                                    value="판매 완료"
                                                     control={<Radio />}
-                                                    label="거래완료"
+                                                    label="판매 완료"
                                                 />
                                             </RadioGroup>
                                         </FormControl>

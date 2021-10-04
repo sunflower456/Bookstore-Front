@@ -26,112 +26,6 @@ import TableRow from "@material-ui/core/TableRow";
 
 // ----------------------------------------------------------------------
 
-function getSteps() {
-    return ["특상", "상", "중", "하"];
-}
-
-function getPostSteps() {
-    return ["판매중", "거래중", "거래완료"];
-}
-const QontoConnector = withStyles({
-    alternativeLabel: {
-        top: 10,
-        left: "calc(-50% + 16px)",
-        right: "calc(50% + 16px)"
-    },
-    active: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    completed: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    line: {
-        borderColor: "#eaeaf0",
-        borderTopWidth: 3,
-        borderRadius: 1
-    }
-})(StepConnector);
-const useQontoStepIconStyles = makeStyles({
-    root: {
-        color: "#eaeaf0",
-        display: "flex",
-        height: 22,
-        alignItems: "center"
-    },
-    active: {
-        color: "#784af4"
-    },
-    circle: {
-        width: 8,
-        height: 8,
-        borderRadius: "50%",
-        backgroundColor: "currentColor"
-    },
-    completed: {
-        color: "#784af4",
-        zIndex: 1,
-        fontSize: 18
-    }
-});
-
-function QontoStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 특상 2: 상 3: 중 4: 하
-    if (icon === 2) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
-function QontoPostStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 판매중 2: 거래중 3:거래완료
-    if (icon === 3) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
 export default function ProductDetail(props) {
     const { id } = useParams();
     const steps = getSteps();
@@ -144,10 +38,9 @@ export default function ProductDetail(props) {
         myInfo: auth.myInfo
     }));
 
-    console.log(
-        "props.product.product : ",
-        props.product.product.bookResponse.bookSummary
-    );
+    const { bookStatus, postStatus } = props.product.product;
+
+    console.log("props : ", props.product.product);
 
     // cover 수정하기
     const productImages = props.product.product.images;
@@ -164,6 +57,140 @@ export default function ProductDetail(props) {
         setImageCurrentNo(currIndex);
     };
 
+    function getSteps() {
+        return ["최상", "상", "중", "하"];
+    }
+
+    function getPostSteps() {
+        return ["판매 중", "예약 중", "거래 완료"];
+    }
+    const QontoConnector = withStyles({
+        alternativeLabel: {
+            top: 10,
+            left: "calc(-50% + 16px)",
+            right: "calc(50% + 16px)"
+        },
+        active: {
+            "& $line": {
+                borderColor: "#784af4"
+            }
+        },
+        completed: {
+            "& $line": {
+                borderColor: "#784af4"
+            }
+        },
+        line: {
+            borderColor: "#eaeaf0",
+            borderTopWidth: 3,
+            borderRadius: 1
+        }
+    })(StepConnector);
+    const useQontoStepIconStyles = makeStyles({
+        root: {
+            color: "#eaeaf0",
+            display: "flex",
+            height: 22,
+            alignItems: "center"
+        },
+        active: {
+            color: "#784af4"
+        },
+        circle: {
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            backgroundColor: "currentColor"
+        },
+        completed: {
+            color: "#784af4",
+            zIndex: 1,
+            fontSize: 18
+        }
+    });
+
+    // 책상태 가져오는 함수
+    function getStatus(status) {
+        if (status === "최상") {
+            return 1;
+        } else if (status === "상") {
+            return 2;
+        } else if (status === "중") {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+    // 책상태 가져오는 함수
+    function getPostStatus(status) {
+        if (status === "판매 중") {
+            return 1;
+        } else if (status === "예약 중") {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+
+    // 책상태 가져오는 함수
+    function QontoStepIcon(post) {
+        const classes = useQontoStepIconStyles();
+        const { active, completed, icon } = post;
+
+        const status = getStatus(bookStatus);
+
+        let _active = active;
+
+        // 1: 특상 2: 상 3: 중 4: 하
+        if (icon === status) {
+            _active = true;
+        } else {
+            _active = false;
+        }
+        return (
+            <div
+                className={clsx(classes.root, {
+                    [classes.active]: _active
+                })}
+            >
+                {completed ? (
+                    <Check className={classes.completed} />
+                ) : (
+                    <div className={classes.circle} />
+                )}
+            </div>
+        );
+    }
+
+    // 판매 상태 가져오는 함수
+    function QontoPostStepIcon(post) {
+        const classes = useQontoStepIconStyles();
+        const { active, completed, icon } = post;
+
+        const status = getPostStatus(postStatus);
+        let _active = active;
+
+        // 1: 판매중 2: 예약중 3:판매완료
+        if (icon === status) {
+            _active = true;
+        } else {
+            _active = false;
+        }
+        return (
+            <div
+                className={clsx(classes.root, {
+                    [classes.active]: _active
+                })}
+            >
+                {completed ? (
+                    <Check className={classes.completed} />
+                ) : (
+                    <div className={classes.circle} />
+                )}
+            </div>
+        );
+    }
     const bookSummarySubstr =
         props.product.product.bookResponse.bookSummary.substring(0, 30);
     const bookSummary = props.product.product.bookResponse.bookSummary;

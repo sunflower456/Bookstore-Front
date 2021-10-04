@@ -143,6 +143,7 @@ const ProductList = forwardRef((props, ref) => {
                 fetchSearchedDataByPublisher();
             }
         }
+        console.log(items);
         if (items.length !== 0 && items !== undefined) {
             if (
                 items.items &&
