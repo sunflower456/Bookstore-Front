@@ -29,12 +29,13 @@ export default function ShopProductCard({ product, id }) {
         bookTitle,
         postImage,
         postPrice,
-        postTitle
-        // priceSale
+        postTitle,
+        bookAuthor,
+        bookPublisher
     } = product;
 
     const imageLinkTo = () => {
-        window.location.href = `/products/${id + 1}`;
+        window.location.href = `/products/${id}`;
     };
 
     return (
@@ -52,7 +53,7 @@ export default function ShopProductCard({ product, id }) {
 
             <Stack spacing={2} sx={{ p: 3 }}>
                 <Link
-                    to={`/products/${id + 1}`}
+                    to={`/products/${id}`}
                     color="inherit"
                     underline="hover"
                     component={RouterLink}
@@ -78,7 +79,9 @@ export default function ShopProductCard({ product, id }) {
                     justifyContent="space-between"
                     style={{ marginTop: "0px" }}
                 >
-                    <Typography variant="body2">박준</Typography>
+                    <Typography variant="body2" noWrap>
+                        {bookAuthor}
+                    </Typography>
                 </Stack>
                 <Stack
                     direction="row"
@@ -86,16 +89,14 @@ export default function ShopProductCard({ product, id }) {
                     style={{ marginTop: "0px" }}
                     justifyContent="space-between"
                 >
-                    <Typography variant="body2">문학동네</Typography>
+                    <Typography variant="body2">{bookPublisher}</Typography>
                 </Stack>
                 <Stack
                     direction="row"
                     alignItems="center"
                     justifyContent="space-between"
                 >
-                    <Typography variant="subtitle1">
-                        {fCurrency(postPrice)}
-                    </Typography>
+                    <Typography variant="subtitle1">{postPrice}</Typography>
                 </Stack>
             </Stack>
         </Card>

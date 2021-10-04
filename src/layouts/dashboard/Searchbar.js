@@ -36,10 +36,9 @@ const SearchbarStyle = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Searchbar({ onChange, onClick }) {
-    const [age, setAge] = React.useState("");
+export default function Searchbar({ onChange, onClick, onSearchChange }) {
     const handleChange = (event) => {
-        setAge(event.target.value);
+        onSearchChange(event.target.value);
     };
 
     const handleInputChangeChild = (event) => {

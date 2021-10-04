@@ -67,10 +67,8 @@ export default function ProductDetail() {
             headers: myHeaders
         }).then((response) => response.json());
 
-        console.log("data : ", data);
         if (data) {
             await updateState(data);
-            console.log("after data : ", data);
             return data;
         }
 
@@ -78,12 +76,10 @@ export default function ProductDetail() {
     };
 
     useEffect(() => {
-        console.log("before effect : ", product);
         if (product === null || product === undefined) {
             fetchDetailData();
         }
 
-        console.log("afeter effect : ", product);
         if (product) {
             setDetail(<DetailTable product={product} />);
         }

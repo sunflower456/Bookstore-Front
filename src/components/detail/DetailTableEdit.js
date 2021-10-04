@@ -158,10 +158,7 @@ export default function ProductDetail() {
     )
         .then((response) => response.json())
         .then((response) => {
-            // PRODUCTS = response;
-            console.log(response);
             setProduct(response[0]);
-            // PRODUCT_NAME.concat(PRODUCTS);
         });
 
     // cover 수정하기

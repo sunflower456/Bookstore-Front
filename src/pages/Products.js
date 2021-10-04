@@ -12,6 +12,8 @@ import Searchbar from "../layouts/dashboard/Searchbar";
 export default function EcommerceShop() {
     const [content, setContent] = useState("");
     const [products, setProducts] = useState(null);
+    const [search, setSearch] = useState(10);
+
     // store 상태 조회
     const { accessToken, myInfo } = useSelector(({ auth }) => ({
         accessToken: auth.accessToken,
@@ -23,11 +25,15 @@ export default function EcommerceShop() {
         setContent({ content: value });
     };
     const handleInputClick = () => {
-        setProductList(<ProductList content={content} />);
+        setProductList(<ProductList content={content} search={search} />);
     };
 
     const onPageChange = () => {
         window.location.href = "/products/addPost";
+    };
+
+    const handleSearchChange = (value) => {
+        setSearch(value);
     };
 
     return (
@@ -50,6 +56,7 @@ export default function EcommerceShop() {
                 <Searchbar
                     onChange={handleInputChange}
                     onClick={handleInputClick}
+                    onSearchChange={handleSearchChange}
                 />
                 <Stack
                     direction="row"

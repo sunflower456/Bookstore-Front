@@ -132,7 +132,6 @@ function QontoPostStepIcon(props) {
 }
 
 export default function ProductDetail(props) {
-    console.log(props);
     const { id } = useParams();
     const steps = getSteps();
     const postSteps = getPostSteps();
@@ -181,22 +180,22 @@ export default function ProductDetail(props) {
                                             <picture>
                                                 {props.product.product
                                                     .bookStatus ? (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "yellow",
-                                                            position:
+                                                        <StarIcon
+                                                            style={{
+                                                                color: "yellow",
+                                                                position:
                                                                 "absolute",
-                                                            left: "1px"
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "blue",
-                                                            visibility: "hidden"
-                                                        }}
-                                                    />
-                                                )}
+                                                                left: "1px"
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <StarIcon
+                                                            style={{
+                                                                color: "blue",
+                                                                visibility: "hidden"
+                                                            }}
+                                                        />
+                                                    )}
                                                 <img
                                                     src={image}
                                                     style={{
