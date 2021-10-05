@@ -13,6 +13,8 @@ import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage";
 import MySales from "./pages/MySales";
 import Favorites from "./pages/Favorites";
+import MessengerLayout from "./layouts/MessengerLayout";
+import ChatPage from "./pages/ChatPage";
 
 // ----------------------------------------------------------------------
 
@@ -49,6 +51,11 @@ export default function Router() {
                 { path: "addPost", element: <Post /> },
                 { path: ":id", element: <Detail /> }
             ]
+        },
+        {
+            path: "/chat",
+            element: <MessengerLayout />,
+            children: [{ path: "/", element: <ChatPage /> }]
         }
 
         // { path: '*', element: <Navigate to="/404" replace /> }
