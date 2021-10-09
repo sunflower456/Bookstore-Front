@@ -29,17 +29,51 @@ export default function ProductDetail() {
     const [btnLabel, setBtnLabel] = useState("수정하기");
     const [product, setProduct] = useState();
     const { id } = useParams();
+    const [editTitle, setEditTitle] = useState();
+    const [editBookListPrice, setEditBookListPrice] = useState();
+    const [editBookStatus, setEditBookStatus] = useState();
+    const [editDescription, setEditDescription] = useState();
+    const [editPostStatus, setEditPostStatus] = useState();
 
     const onEditClick = () => {
         if (detailFlag === "read") {
             setDetailFlag("edit");
-            setDetail(<DetailTableEdit product={product} />);
+            setDetail(
+                <DetailTableEdit
+                    product={product}
+                    onChangeEdit={onChangeEdit}
+                />
+            );
             setBtnLabel("저장하기");
         } else {
             setDetailFlag("read");
             setDetail(<DetailTable product={product} />);
             setBtnLabel("수정하기");
+            console.log(editTitle);
+            console.log(editBookListPrice);
+
+            console.log(editBookStatus);
+
+            console.log(editDescription);
+
+            console.log(editTitle);
+
             alert("수정 완료!");
+        }
+    };
+
+    const onChangeEdit = (name, value) => {
+        console.log(name, value);
+        if (name === "title") {
+            setEditTitle(value);
+        } else if (name === "bookListPrice") {
+            setEditBookListPrice(value);
+        } else if (name === "bookStatus") {
+            setEditBookStatus(value);
+        } else if (name === "description") {
+            setEditDescription(value);
+        } else if (name === "postStatus") {
+            setEditPostStatus(value);
         }
     };
 

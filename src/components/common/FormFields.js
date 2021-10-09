@@ -3,6 +3,7 @@ import {
     Box,
     FormControl,
     FormHelperText,
+    Input,
     InputLabel,
     MenuItem,
     Select,
@@ -144,23 +145,14 @@ function ImageUploadField(props) {
     useEffect(
         () => () => {
             // Make sure to revoke the data uris to avoid memory leaks
-            files.forEach((file) => URL.revokeObjectURL(file.preview));
+            // files.forEach((file) => URL.revokeObjectURL(file.preview));
+            meta.value.forEach((file) => URL.revokeObjectURL(file.preview));
         },
-        [files]
+        [
+            // files,
+            meta.value
+        ]
     );
-
-    function _renderHelperText() {
-        // if (meta.touched && meta.error) {
-        if (acceptedFiles.length >= 0 && acceptedFiles.length <= 5) {
-            // 오류 발생된 이미지가 없는 경우 동작하지 않음
-            return "";
-        }
-        return (
-            <FormHelperText className={classes.customError}>
-                오류 : 최대 5장의 사진까지 업로드 가능합니다.
-            </FormHelperText>
-        );
-    }
 
     return (
         <>
@@ -172,6 +164,8 @@ function ImageUploadField(props) {
                         border: "1px dashed gray",
                         textAlign: "center"
                     }}
+                    {...field}
+                    {...rest}
                 >
                     <input {...getInputProps()} />
                     <Typography component={"p"} variant={"subtitle1"}>
@@ -210,7 +204,6 @@ function ImageUploadField(props) {
                         );
                     })}
                 </Stack>
-                {_renderHelperText()}
             </section>
         </>
     );

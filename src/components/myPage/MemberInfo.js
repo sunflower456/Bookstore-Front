@@ -9,6 +9,7 @@ import {
     Card,
     CardContent,
     CardHeader,
+    Chip,
     Divider,
     Grid,
     IconButton,
@@ -16,7 +17,12 @@ import {
     Stack,
     Typography
 } from "@material-ui/core";
-import { AddPhotoAlternateRounded, Close, Edit } from "@material-ui/icons";
+import {
+    AddPhotoAlternateRounded,
+    Cancel,
+    Close,
+    Edit
+} from "@material-ui/icons";
 import { LoadingButton } from "@material-ui/lab";
 import { Form, Formik } from "formik";
 import { useStyle } from "./styles";
@@ -24,13 +30,15 @@ import palette from "../../theme/palette";
 import ValidationSchema from "./FormModel/validationSchema";
 import RegisterFormModel from "./FormModel/registerFormModel";
 import MyInfoForm from "./Forms/MyInfoForm";
-import { profileUpload, updateMyInfo } from "../../lib/api";
+import { profileDelete, profileUpload, updateMyInfo } from "../../lib/api";
 import { checkMyInfo } from "../../modules/auth";
 import * as api from "../../lib/api";
 
 export default function MemberInfo() {
     const [isEditable, setIsEditable] = useState(false);
     const [isUploadImageFail, setIsUploadImageFail] = useState(false);
+    const [isUploadImageSuccess, setIsUploadImageSuccess] = useState(false);
+    const [isProfileIamgeDeleted, setIsProfileIamgeDeleted] = useState(false);
     const [uploadFailMessage, setUploadFailMessage] = useState("");
 
     const classes = useStyle();
@@ -50,7 +58,12 @@ export default function MemberInfo() {
     // myInfo 변경 시 최신화처리 (checkMyInfo)
     useEffect(() => {
         dispatch(checkMyInfo());
-    }, [isEditable, isUploadImageFail]);
+    }, [
+        isEditable,
+        isUploadImageFail,
+        isUploadImageSuccess,
+        isProfileIamgeDeleted
+    ]);
 
     let userId = "";
     let userName = "";
@@ -115,6 +128,11 @@ export default function MemberInfo() {
             }
 
             const files = element.target.files;
+
+            /* 업로드한 파일 없는 경우 취소 처리 */
+            if (files.length <= 0) {
+                return;
+            }
             const inputImage = files[0];
             const typeCheckRegEx = /^image/i;
 
@@ -129,8 +147,14 @@ export default function MemberInfo() {
                 throw new Error("이미지는 최대 2mb까지 업로드 가능합니다.");
             }
 
+            // 이미지 업로드 성공 상태 확인 초기화
+            setIsUploadImageSuccess(false);
             // 이미지 업로드 처리
-            onUserImageUpload(inputImage);
+            onUserImageUpload(inputImage).then(() => {
+                /* 이미지 업로드 관련 상태 변경 */
+                setIsUploadImageFail(false);
+                setIsUploadImageSuccess(true);
+            });
         } catch (e) {
             console.log(e);
             setIsUploadImageFail(true);
@@ -162,17 +186,31 @@ export default function MemberInfo() {
         formData.append("profileImage", image);
         try {
             await api.profileUpload(formData);
-            setIsUploadImageFail(false);
         } catch (e) {
+            setIsUploadImageSuccess(false);
             setIsUploadImageFail(true);
             if (e.response == null) {
                 setUploadFailMessage(e.message);
-            } else if (e.response.status === 400) {
-                setUploadFailMessage("잘못된 요청입니다.");
-            } else if (e.response.status === 401) {
-                setUploadFailMessage("로그인이 필요합니다.");
-            } else if (e.response.status === 403) {
-                setUploadFailMessage("접근 권한이 없습니다.");
+            } else {
+                setUploadFailMessage(e.response.data.message);
+            }
+        }
+    };
+
+    // 사용자 이미지 삭제 처리
+    const onUserImageDelete = async () => {
+        try {
+            setIsProfileIamgeDeleted(false);
+            await api.profileDelete();
+            setIsProfileIamgeDeleted(true);
+            // 상태 초기화
+            setIsUploadImageSuccess(false);
+            setIsUploadImageFail(false);
+        } catch (e) {
+            if (e.response == null) {
+                setUploadFailMessage(
+                    "서버 오류 : 이미지 삭제 처리에 실패하였습니다."
+                );
             } else {
                 setUploadFailMessage(e.response.data.message);
             }
@@ -203,7 +241,23 @@ export default function MemberInfo() {
             />
             <Divider variant={"middle"} />
             <CardContent>
-                <Grid container rowGap={2}>
+                <Grid container rowGap={1}>
+                    <Grid
+                        container
+                        direction={"column"}
+                        alignContent={"center"}
+                    >
+                        {!(userImage == null || userImage === "") && (
+                            <Chip
+                                deleteIcon={<Cancel />}
+                                variant={"outlined"}
+                                label={"이미지 삭제"}
+                                color={"secondary"}
+                                size={"small"}
+                                onDelete={onUserImageDelete}
+                            />
+                        )}
+                    </Grid>
                     <Grid
                         container
                         direction={"column"}
@@ -245,7 +299,9 @@ export default function MemberInfo() {
                                 src={userImage}
                             />
                         </Badge>
-                        <Typography variant={"h6"}>ID : {userId}</Typography>
+                        <Typography variant={"h6"} textAlign={"center"}>
+                            ID : {userId}
+                        </Typography>
                     </Grid>
                     {isUploadImageFail && displayErrorAlert()}
                     <React.Fragment>

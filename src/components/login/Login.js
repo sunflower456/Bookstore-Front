@@ -72,6 +72,9 @@ function Login() {
     useEffect(() => {
         if (myInfo) {
             navigate("/");
+        } else {
+            navigate("/login");
+            setLoginFail(false);
         }
     }, [myInfo, navigate]);
 

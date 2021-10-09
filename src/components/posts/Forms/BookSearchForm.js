@@ -50,6 +50,8 @@ export default function BookSearchForm(props) {
     const [bookInformation, setBookInformation] = useState([]);
     const [isInsertSuccess, setIsInsertSuccess] = useState(false);
 
+    const itemCount = 50; // 책 정보 검색 시 표기할 데이터 수
+
     const classes = useStyles();
     const {
         formField: {
@@ -254,7 +256,9 @@ export default function BookSearchForm(props) {
 
         if (inputValue.length > 0) {
             setKeyword(inputValue);
-            getBookInfo();
+            getBookInfo(1).then((data) => {
+                setBookInformation(data);
+            });
             searchKeywordArea.current.className = classes.bookSearchDisplayArea;
         } else {
             searchKeywordArea.current.className = classes.setHidden;
@@ -262,16 +266,23 @@ export default function BookSearchForm(props) {
     };
 
     // 검색어 입력 시 api 호출
-    const getBookInfo = async () => {
+    const getBookInfo = async (atStart) => {
         if (keyword != null && keyword !== "") {
-            const response = await searchBookInfo(searchType, keyword);
+            const response = await searchBookInfo(
+                searchType,
+                keyword,
+                itemCount,
+                atStart
+            );
 
-            setBookInformation(response.data);
+            return response.data;
         }
+        return [];
     };
 
     // 검색결과 클릭 시 내용 입력 설정
     const setBookInfoFromSearchResult = (bookInfo) => {
+        setIsInsertSuccess(false);
         // 책 정보 입력 처리
         values.bookIsbn = bookInfo.itemIsbn;
         values.bookTitle = bookInfo.itemTitle;
@@ -292,12 +303,19 @@ export default function BookSearchForm(props) {
         setIsInsertSuccess(true);
     };
 
-    // 추가 검색 필요 시 동작 기능 구현
-    const getMoreBookInfo = async (startIndex, stopIndex) => {};
-
     // lazy Loading 설정
     const isItemLoaded = (index) => !!bookInformation[index];
-    const itemCount = 10;
+
+    // 추가 검색 필요 시 동작 기능 구현
+    const getMoreBookInfo = async (startIndex, stopIndex) => {
+        const offset = Math.ceil(stopIndex / itemCount);
+
+        getBookInfo(offset).then((data) => {
+            bookInformation.push(data);
+
+            setBookInformation(bookInformation);
+        });
+    };
 
     const displayAlertEmptyBookInfo = () => {
         if (

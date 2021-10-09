@@ -36,6 +36,10 @@ export default function ProductDetail(props) {
         myInfo: auth.myInfo
     }));
 
+    const onChangeEdit = (e) => {
+        props.onChangeEdit(e.target.name, e.target.value);
+    };
+
     console.log("edit props : ", props);
     // cover 수정하기
     const productImages = props.product.product.images;
@@ -202,11 +206,14 @@ export default function ProductDetail(props) {
                                     >
                                         <Input
                                             name="title"
-                                            value={props.product.product.title}
+                                            defaultValue={
+                                                props.product.product.title
+                                            }
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
                                             }}
+                                            onChange={onChangeEdit}
                                         ></Input>
                                     </TableCell>
                                 </TableRow>
@@ -342,11 +349,14 @@ export default function ProductDetail(props) {
                                     >
                                         <Input
                                             name="bookListPrice"
-                                            value={props.product.product.price}
+                                            defaultValue={
+                                                props.product.product.price
+                                            }
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
                                             }}
+                                            onChange={onChangeEdit}
                                         ></Input>
                                     </TableCell>
                                 </TableRow>
@@ -372,6 +382,7 @@ export default function ProductDetail(props) {
                                                         .bookStatus
                                                 }
                                                 name="bookStatus"
+                                                onChange={onChangeEdit}
                                             >
                                                 <FormControlLabel
                                                     value="최상"
@@ -411,8 +422,8 @@ export default function ProductDetail(props) {
                                         align="center"
                                     >
                                         <Input
-                                            name="bookSummary"
-                                            value={
+                                            name="description"
+                                            defaultValue={
                                                 props.product.product
                                                     .description
                                             }
@@ -420,6 +431,7 @@ export default function ProductDetail(props) {
                                                 width: "100%",
                                                 fontSize: "0.875rem"
                                             }}
+                                            onChange={onChangeEdit}
                                         ></Input>
                                     </TableCell>
                                 </TableRow>
@@ -445,6 +457,7 @@ export default function ProductDetail(props) {
                                                         .postStatus
                                                 }
                                                 name="postStatus"
+                                                onChange={onChangeEdit}
                                             >
                                                 <FormControlLabel
                                                     value="판매 중"

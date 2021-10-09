@@ -13,6 +13,8 @@ import MyPage from "./pages/MyPage";
 import MySales from "./pages/MySales";
 import Favorites from "./pages/Favorites";
 import isLogin from "./modules/isLogin";
+import MessengerLayout from "./layouts/MessengerLayout";
+import ChatPage from "./pages/ChatPage";
 
 // ----------------------------------------------------------------------
 
@@ -67,6 +69,11 @@ export default function Router() {
                     element: isLogin() ? <Detail /> : <Navigate to="/login" />
                 }
             ]
+        },
+        {
+            path: "/chat",
+            element: <MessengerLayout />,
+            children: [{ path: "/", element: <ChatPage /> }]
         }
 
         // { path: '*', element: <Navigate to="/404" replace /> }
