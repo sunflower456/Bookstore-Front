@@ -1,5 +1,6 @@
 import faker from "faker";
 import { sample } from "lodash";
+
 // utils
 import { mockImgProduct } from "../utils/mockImages";
 
@@ -42,10 +43,9 @@ const PRODUCT_COLOR = [
     "#FFC107"
 ];
 
-// ----------------------------------------------------------------------
-
-const products = [...Array(24)].map((_, index) => {
+export const PRODUCTS = [...Array(10)].map((_, index) => {
     const setIndex = index + 1;
+    // let PRODUCTS = [];
 
     return {
         index,
@@ -73,5 +73,7 @@ const products = [...Array(24)].map((_, index) => {
         status: sample(["sale", "new", "", ""])
     };
 });
-
-export default products;
+// ----------------------------------------------------------------------
+export default function Products() {
+    return <></>;
+}
