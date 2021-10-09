@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 // Material-UI, React UI framework
@@ -10,115 +10,9 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { CheckCircle, RemoveShoppingCart, Shop } from "@material-ui/icons";
-import { Avatar, Link, Stack } from "@material-ui/core";
-
-/* 표기할 데이터
-- postId (행마다 고유의 key가 필요함)
-- 중고책 썸네일 (bookRequest.bookThumbnail)
-- 게시글 제목 (title)
-- 중고책 제목 (bookRequest.bookTitle)
-- 중고책 가격 (price)
-- 주문 정보 상태 (postStatus)
-* */
-function createData(
-    postId,
-    bookThumbnail,
-    title,
-    bookTitle,
-    price,
-    postStatus
-) {
-    return {
-        postId,
-        bookThumbnail,
-        title,
-        bookTitle,
-        price,
-        postStatus
-    };
-}
-
-const rows = [
-    createData(
-        5,
-        "test.jpg",
-        "테스트책 팝니다.(1)",
-        "테스트책",
-        5000,
-        "판매중"
-    ),
-    createData(
-        6,
-        "test2.jpg",
-        "테스트책 팝니다.(2)",
-        "테스트책2",
-        5000,
-        "판매중"
-    ),
-    createData(
-        7,
-        "test3.jpg",
-        "테스트책 팝니다.(3)",
-        "테스트책3",
-        5000,
-        "판매중"
-    ),
-    createData(
-        8,
-        "test4.jpg",
-        "테스트책 팝니다.(4)",
-        "테스트책4",
-        5000,
-        "판매중"
-    ),
-    createData(
-        9,
-        "test5.jpg",
-        "테스트책 팝니다.(5)",
-        "테스트책5",
-        5000,
-        "판매중"
-    ),
-    createData(
-        10,
-        "test6.jpg",
-        "테스트책 팝니다.(6)",
-        "테스트책6",
-        5000,
-        "판매중"
-    ),
-    createData(
-        11,
-        "test7.jpg",
-        "테스트책 팝니다.(7)",
-        "테스트책7",
-        5000,
-        "판매중"
-    ),
-    createData(
-        12,
-        "test8.jpg",
-        "테스트책 팝니다.(8)",
-        "테스트책8",
-        5000,
-        "판매중"
-    ),
-    createData(
-        13,
-        "test9.jpg",
-        "테스트책 팝니다.(9)",
-        "테스트책9",
-        5000,
-        "판매중"
-    )
-];
+import { Avatar, Link, ListItemButton, Tooltip } from "@material-ui/core";
+import * as api from "../../../lib/api";
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -150,14 +44,14 @@ function getSorting(order, orderBy) {
 
 const headRows = [
     {
-        id: "bookThumbnail",
+        id: "postImage",
         numeric: false,
         disablePadding: false,
         sortable: false,
         label: "사진"
     },
     {
-        id: "title",
+        id: "postTitle",
         numeric: false,
         disablePadding: false,
         sortable: true,
@@ -171,7 +65,7 @@ const headRows = [
         label: "도서명"
     },
     {
-        id: "price",
+        id: "postPrice",
         numeric: true,
         disablePadding: false,
         sortable: true,
@@ -278,6 +172,33 @@ export default function EnhancedTable() {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rows, setRows] = useState([]); // 조회 목록
+
+    const getMySalePosts = async () => {
+        try {
+            await api
+                .getMySalePosts()
+                .then((response) => setRows(response.data))
+                .catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                console.log(e.response.message);
+            }
+        }
+    };
+
+    // 목록 로딩 처리
+    useEffect(() => {
+        getMySalePosts();
+    }, []);
 
     function handleRequestSort(event, property) {
         const isDesc = orderBy === property && order === "desc";
@@ -340,7 +261,7 @@ export default function EnhancedTable() {
                                     page * rowsPerPage + rowsPerPage
                                 )
                                 .map((row, index) => {
-                                    const labelId = `${row.postId} / ${row.title}`;
+                                    const labelId = `${row.postId} / ${row.postTitle}`;
                                     const isItemSelected = isSelected(labelId);
 
                                     return (
@@ -356,7 +277,14 @@ export default function EnhancedTable() {
                                             selected={isItemSelected}
                                         >
                                             <TableCell align="center">
-                                                {row.bookThumbnail}
+                                                <Avatar
+                                                    variant={"square"}
+                                                    src={
+                                                        row.postImage == null
+                                                            ? ""
+                                                            : row.postImage
+                                                    }
+                                                />
                                             </TableCell>
                                             <TableCell
                                                 align={
@@ -369,7 +297,7 @@ export default function EnhancedTable() {
                                                     href={`/products/${row.postId}`}
                                                     underline={"hover"}
                                                 >
-                                                    {row.title}
+                                                    {row.postTitle}
                                                 </Link>
                                             </TableCell>
                                             <TableCell
@@ -378,8 +306,25 @@ export default function EnhancedTable() {
                                                         ? "right"
                                                         : "left"
                                                 }
+                                                sx={{ maxWidth: "100px" }}
                                             >
-                                                {row.bookTitle}
+                                                <Tooltip title={row.bookTitle}>
+                                                    <ListItemButton
+                                                        variant={"text"}
+                                                        sx={{
+                                                            width: "100%",
+                                                            display: "block",
+                                                            textAlign: "left",
+                                                            whiteSpace:
+                                                                "nowrap",
+                                                            overflow: "hidden",
+                                                            textOverflow:
+                                                                "ellipsis"
+                                                        }}
+                                                    >
+                                                        {row.bookTitle}
+                                                    </ListItemButton>
+                                                </Tooltip>
                                             </TableCell>
                                             <TableCell
                                                 align={
@@ -388,7 +333,7 @@ export default function EnhancedTable() {
                                                         : "left"
                                                 }
                                             >
-                                                {row.price}
+                                                {row.postPrice}
                                             </TableCell>
                                             <TableCell align={"center"}>
                                                 {row.postStatus}

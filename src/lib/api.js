@@ -40,6 +40,9 @@ export const profileUpload = (formData) =>
         }
     });
 
+/* 사용자 프로필 삭제 (delete image) */
+export const profileDelete = () => client.delete("/api/user/profile");
+
 /* 비밀번호 수정 (초기화) 처리 */
 export const modifyPassword = (oldPassword, newPassword) =>
     client.patch("/api/user/password", {
@@ -48,8 +51,10 @@ export const modifyPassword = (oldPassword, newPassword) =>
     });
 
 /* 네이버 책 검색 API 요청 처리 */
-export const searchBookInfo = (searchType, searchKeyword) => {
-    return client.get(`/api/post/naverBookAPI?${searchType}=${searchKeyword}`);
+export const searchBookInfo = (searchType, searchKeyword, display, start) => {
+    return client.get(
+        `/api/post/naverBookAPI?${searchType}=${searchKeyword}&display=${display}&start=${start}`
+    );
 };
 
 /* 판매글 등록 (게시글 등록) 요청 처리 */
@@ -59,3 +64,13 @@ export const writePost = (formData) =>
             "Content-Type": "multipart/form-data"
         }
     });
+
+/* 내 관심목록 조회 기능 */
+export const getMyFavoritePosts = () => client.get("/api/user/me/interests");
+
+/* 내 관심목록 삭제 (선택한 아이템 하나씩 삭제) */
+export const deleteMyFavoritePost = (interestId) =>
+    client.delete(`/api/user/me/interest/${interestId}`);
+
+/* 내 판매글 조회 기능 */
+export const getMySalePosts = () => client.get("/api/user/me/post");
