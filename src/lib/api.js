@@ -2,7 +2,7 @@ import client from "./client";
 
 /* 회원가입 요청 */
 export const userSignUp = (identity, password, name, email, phoneNumber) =>
-    client.post("http://localhost:8080/api/user/signup", {
+    client.post("/api/user/signup", {
         identity,
         password,
         name,
@@ -14,7 +14,7 @@ export const userSignUp = (identity, password, name, email, phoneNumber) =>
 export const login = (identity, password) =>
     client.post(
         // `localhost:8080/api/user/login?identity=${identity}&password=${password}`
-        "http://localhost:8080/api/user/login",
+        "/api/user/login",
         {
             identity,
             password
@@ -22,11 +22,11 @@ export const login = (identity, password) =>
     );
 
 /* 내 정보 조회 */
-export const getMyInfo = () => client.get("http://localhost:8080/api/user/me");
+export const getMyInfo = () => client.get("/api/user/me");
 
 /* 내 정보 수정(업데이트) */
 export const updateMyInfo = (name, phoneNumber, email) =>
-    client.patch("http://localhost:8080/api/user/me", {
+    client.patch("/api/user/me", {
         name,
         phoneNumber,
         email
@@ -34,7 +34,7 @@ export const updateMyInfo = (name, phoneNumber, email) =>
 
 /* 사용자 프로필 업로드 (upload image) */
 export const profileUpload = (formData) =>
-    client.patch("http://localhost:8080/api/user/profile", formData, {
+    client.patch("/api/user/profile", formData, {
         headers: {
             "Content-Type": "multipart/form-data"
         }
@@ -45,7 +45,7 @@ export const profileDelete = () => client.delete("/api/user/profile");
 
 /* 비밀번호 수정 (초기화) 처리 */
 export const modifyPassword = (oldPassword, newPassword) =>
-    client.patch("http://localhost:8080/api/user/password", {
+    client.patch("/api/user/password", {
         oldPassword,
         newPassword
     });
@@ -59,7 +59,7 @@ export const searchBookInfo = (searchType, searchKeyword, display, start) => {
 
 /* 판매글 등록 (게시글 등록) 요청 처리 */
 export const writePost = (formData) =>
-    client.post("http://localhost:8080/api/post", formData, {
+    client.post("/api/post", formData, {
         headers: {
             "Content-Type": "multipart/form-data"
         }
