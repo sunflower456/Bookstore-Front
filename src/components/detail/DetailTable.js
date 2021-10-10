@@ -239,22 +239,22 @@ export default function ProductDetail(props) {
                                             <picture>
                                                 {props.product.product
                                                     .myInterest ? (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "yellow",
-                                                            position:
+                                                        <StarIcon
+                                                            style={{
+                                                                color: "yellow",
+                                                                position:
                                                                 "absolute",
-                                                            left: "1px"
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "blue",
-                                                            visibility: "hidden"
-                                                        }}
-                                                    />
-                                                )}
+                                                                left: "1px"
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <StarIcon
+                                                            style={{
+                                                                color: "blue",
+                                                                visibility: "hidden"
+                                                            }}
+                                                        />
+                                                    )}
                                                 <img
                                                     src={image}
                                                     style={{

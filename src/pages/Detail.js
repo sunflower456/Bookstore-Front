@@ -34,6 +34,8 @@ export default function ProductDetail() {
     const [editBookStatus, setEditBookStatus] = useState();
     const [editDescription, setEditDescription] = useState();
     const [editPostStatus, setEditPostStatus] = useState();
+    const [isInterest, setIsInterest] = useState();
+    const [interestTag, setInterestTage] = useState();
 
     const onEditClick = () => {
         if (detailFlag === "read") {
@@ -94,6 +96,7 @@ export default function ProductDetail() {
     const myHeaders = new Headers();
 
     myHeaders.append("Authorization", `Bearer ${accessToken}`);
+    myHeaders.append("Content-Type", "application/json");
 
     const fetchDetailData = async () => {
         const data = await fetch(`http://localhost:8080/api/post/${id}`, {
@@ -109,6 +112,58 @@ export default function ProductDetail() {
         return product;
     };
 
+    const editInterest = async () => {
+        console.log(isInterest);
+        if (isInterest) {
+            // 관심목록에서 삭제하기
+
+            const data = await fetch(
+                "http://localhost:8080/api/user/me/interests",
+                {
+                    method: "GET",
+                    headers: myHeaders
+                }
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    response.filter(
+                        (item) => item.postsResponse.postId === `${id}`
+                    );
+                    console.log(response);
+                    if (response[0].interestId) {
+                        fetch(
+                            `http://localhost:8080/api/user/me/interest/${response[0].interestId}`,
+                            {
+                                method: "DELETE",
+                                headers: myHeaders
+                            }
+                        );
+                    }
+                });
+
+            await setIsInterest(false);
+            await setInterestTage("관심목록 추가");
+
+            return data;
+        } else {
+            // 관심목록에 추가하기
+
+            const data = await fetch(
+                "http://localhost:8080/api/user/me/interest",
+                {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: JSON.stringify({ postId: `${id}` })
+                }
+            );
+
+            await setIsInterest(true);
+            await setInterestTage("관심목록 삭제");
+
+            return data;
+        }
+    };
+
     useEffect(() => {
         if (product === null || product === undefined) {
             fetchDetailData();
@@ -116,6 +171,14 @@ export default function ProductDetail() {
 
         if (product) {
             setDetail(<DetailTable product={product} />);
+            console.log(product);
+            if (product.product.myInterest === false) {
+                setIsInterest(false);
+                setInterestTage("관심목록 추가");
+            } else {
+                setIsInterest(true);
+                setInterestTage("관심목록 삭제");
+            }
         }
     }, [product]);
 
@@ -138,7 +201,9 @@ export default function ProductDetail() {
             <br />
             <ButtonGroup variant="contained" color="primary">
                 <Button size="large">채팅하기</Button>
-                <Button size="large">관심목록 추가</Button>
+                <Button size="large" onClick={editInterest}>
+                    {interestTag}
+                </Button>
             </ButtonGroup>
         </Page>
     );

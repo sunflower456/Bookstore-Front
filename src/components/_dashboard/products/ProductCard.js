@@ -5,7 +5,6 @@ import { Link as RouterLink } from "react-router-dom";
 import { Box, Card, Link, Typography, Stack } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 // utils
-import { fCurrency } from "../../../utils/formatNumber";
 
 // ----------------------------------------------------------------------
 
