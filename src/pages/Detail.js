@@ -37,6 +37,12 @@ export default function ProductDetail() {
     const [isInterest, setIsInterest] = useState();
     const [interestTag, setInterestTage] = useState();
 
+    const [image, setImage] = useState();
+
+    const [curImages, setCurImages] = useState();
+    const [delImages, setDelImages] = useState([]);
+    const formData = new FormData();
+
     const onEditClick = () => {
         if (detailFlag === "read") {
             setDetailFlag("edit");
@@ -44,6 +50,8 @@ export default function ProductDetail() {
                 <DetailTableEdit
                     product={product}
                     onChangeEdit={onChangeEdit}
+                    onChangeImageFile={onChangeImageFile}
+                    deleteImages={deleteImages}
                 />
             );
             setBtnLabel("저장하기");
@@ -51,14 +59,7 @@ export default function ProductDetail() {
             setDetailFlag("read");
             setDetail(<DetailTable product={product} />);
             setBtnLabel("수정하기");
-            console.log(editTitle);
-            console.log(editBookListPrice);
-
-            console.log(editBookStatus);
-
-            console.log(editDescription);
-
-            console.log(editTitle);
+            editDetailPost();
 
             alert("수정 완료!");
         }
@@ -97,6 +98,50 @@ export default function ProductDetail() {
 
     myHeaders.append("Authorization", `Bearer ${accessToken}`);
     myHeaders.append("Content-Type", "application/json");
+
+    const myHeaders2 = new Headers();
+
+    myHeaders2.append("Authorization", `Bearer ${accessToken}`);
+    myHeaders.append("Content-Type", "multipart/form-data");
+
+    const onChangeImageFile = (e) => {
+        setImage(e[0]);
+    };
+    const deleteImages = (no) => {
+        const deleteImgUrls = curImages[no];
+
+        setDelImages({ deleteImgUrls: [deleteImgUrls] });
+        console.log(deleteImgUrls);
+    };
+
+    // post 수정
+    const editDetailPost = async () => {
+        console.log(delImages);
+        const postUpdateRequest = {
+            title: editTitle,
+            price: editBookListPrice,
+            description: editDescription,
+            bookStatus: "UPPER",
+            deleteImgUrls: delImages.deleteImgUrls
+        };
+
+        formData.append(
+            "postUpdateRequest",
+            new Blob([JSON.stringify(postUpdateRequest)], {
+                type: "application/json"
+            })
+        );
+        formData.append("images", image);
+
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}, ${pair[1]}`);
+        }
+        const data = await fetch(`http://localhost:8080/api/post/${id}`, {
+            method: "PATCH",
+            headers: myHeaders2,
+            body: formData
+        });
+    };
 
     const fetchDetailData = async () => {
         const data = await fetch(`http://localhost:8080/api/post/${id}`, {
@@ -172,6 +217,10 @@ export default function ProductDetail() {
         if (product) {
             setDetail(<DetailTable product={product} />);
             console.log(product);
+
+            if (product.product.images.length !== 0) {
+                setCurImages(product.product.images);
+            }
             if (product.product.myInterest === false) {
                 setIsInterest(false);
                 setInterestTage("관심목록 추가");
