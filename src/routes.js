@@ -39,7 +39,7 @@ export default function Router() {
             element: <DashboardLayout />,
             children: [
                 {
-                    path: "/",
+                    path: "",
                     element: isLogin() ? <MyPage /> : <Navigate to="/login" />
                 },
                 {
@@ -73,7 +73,7 @@ export default function Router() {
         {
             path: "/chat",
             element: <MessengerLayout />,
-            children: [{ path: "/", element: <ChatPage /> }]
+            children: [{ path: "", element: <ChatPage /> }]
         }
 
         // { path: '*', element: <Navigate to="/404" replace /> }
