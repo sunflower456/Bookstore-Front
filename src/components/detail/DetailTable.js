@@ -241,19 +241,15 @@ export default function ProductDetail(props) {
                                                     .myInterest ? (
                                                         <StarIcon
                                                             style={{
-                                                                color: "yellow",
                                                                 position:
                                                                 "absolute",
-                                                                left: "1px"
+                                                                top: "45px",
+                                                                left: "10px",
+                                                                color: "yellow"
                                                             }}
                                                         />
                                                     ) : (
-                                                        <StarIcon
-                                                            style={{
-                                                                color: "blue",
-                                                                visibility: "hidden"
-                                                            }}
-                                                        />
+                                                    <div></div>
                                                     )}
                                                 <img
                                                     src={image}

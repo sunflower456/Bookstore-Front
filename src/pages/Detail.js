@@ -42,7 +42,7 @@ export default function ProductDetail() {
     const [curImages, setCurImages] = useState();
     const [delImages, setDelImages] = useState([]);
     const formData = new FormData();
-
+    let temp = [];
     const onEditClick = () => {
         if (detailFlag === "read") {
             setDetailFlag("edit");
@@ -72,7 +72,15 @@ export default function ProductDetail() {
         } else if (name === "bookListPrice") {
             setEditBookListPrice(value);
         } else if (name === "bookStatus") {
-            setEditBookStatus(value);
+            if (value === "최상") {
+                setEditBookStatus("BEST");
+            } else if (value === "상") {
+                setEditBookStatus("UPPER");
+            } else if (value === "중") {
+                setEditBookStatus("MIDDLE");
+            } else {
+                setEditBookStatus("LOWER");
+            }
         } else if (name === "description") {
             setEditDescription(value);
         } else if (name === "postStatus") {
@@ -102,27 +110,26 @@ export default function ProductDetail() {
     const myHeaders2 = new Headers();
 
     myHeaders2.append("Authorization", `Bearer ${accessToken}`);
-    myHeaders.append("Content-Type", "multipart/form-data");
+    // myHeaders2.append("Content-Type", "multipart/form-data");
 
     const onChangeImageFile = (e) => {
         setImage(e[0]);
     };
-    const deleteImages = (no) => {
-        const deleteImgUrls = curImages[no];
 
-        setDelImages({ deleteImgUrls: [deleteImgUrls] });
-        console.log(deleteImgUrls);
+    const deleteImages = (no) => {
+        temp = temp.concat(curImages[no]);
+        setDelImages(temp);
     };
 
     // post 수정
     const editDetailPost = async () => {
-        console.log(delImages);
+        console.log("delImages : ", delImages);
         const postUpdateRequest = {
             title: editTitle,
             price: editBookListPrice,
             description: editDescription,
-            bookStatus: "UPPER",
-            deleteImgUrls: delImages.deleteImgUrls
+            bookStatus: editBookStatus,
+            deleteImgUrls: delImages
         };
 
         formData.append(
@@ -158,7 +165,6 @@ export default function ProductDetail() {
     };
 
     const editInterest = async () => {
-        console.log(isInterest);
         if (isInterest) {
             // 관심목록에서 삭제하기
 
@@ -216,7 +222,10 @@ export default function ProductDetail() {
 
         if (product) {
             setDetail(<DetailTable product={product} />);
-            console.log(product);
+            setEditTitle(product.product.title);
+            setEditBookListPrice(product.product.price);
+            setEditBookStatus(product.product.postStatus);
+            setEditDescription(product.product.description);
 
             if (product.product.images.length !== 0) {
                 setCurImages(product.product.images);
