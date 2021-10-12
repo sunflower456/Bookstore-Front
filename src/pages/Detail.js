@@ -57,10 +57,8 @@ export default function ProductDetail() {
             setBtnLabel("저장하기");
         } else {
             setDetailFlag("read");
-            setDetail(<DetailTable product={product} />);
             setBtnLabel("수정하기");
             editDetailPost();
-
             alert("수정 완료!");
         }
     };
@@ -110,7 +108,6 @@ export default function ProductDetail() {
     const myHeaders2 = new Headers();
 
     myHeaders2.append("Authorization", `Bearer ${accessToken}`);
-    // myHeaders2.append("Content-Type", "multipart/form-data");
 
     const onChangeImageFile = (e) => {
         setImage(e[0]);
@@ -123,7 +120,8 @@ export default function ProductDetail() {
 
     // post 수정
     const editDetailPost = async () => {
-        console.log("delImages : ", delImages);
+        console.log("bookStatus : ", editBookStatus);
+        console.log("postStatus : ", editPostStatus);
         const postUpdateRequest = {
             title: editTitle,
             price: editBookListPrice,
@@ -148,6 +146,9 @@ export default function ProductDetail() {
             headers: myHeaders2,
             body: formData
         });
+
+        fetchDetailData();
+        await setDetail(<DetailTable product={product} />);
     };
 
     const fetchDetailData = async () => {
@@ -224,7 +225,15 @@ export default function ProductDetail() {
             setDetail(<DetailTable product={product} />);
             setEditTitle(product.product.title);
             setEditBookListPrice(product.product.price);
-            setEditBookStatus(product.product.postStatus);
+            if (product.product.bookStatus === "상") {
+                setEditBookStatus("UPPER");
+            } else if (product.product.bookStatus === "중") {
+                setEditBookStatus("MIDDLE");
+            } else if (product.product.bookStatus === "하") {
+                setEditBookStatus("LOWER");
+            } else if (product.product.bookStatus === "최상") {
+                setEditBookStatus("BEST");
+            }
             setEditDescription(product.product.description);
 
             if (product.product.images.length !== 0) {

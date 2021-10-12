@@ -117,7 +117,6 @@ SelectField.propTypes = {
 };
 
 function ImageUploadField(props) {
-    console.log(props);
     const { errorText, ...rest } = props;
     const [field, meta] = useField(props);
     const classes = useStyles();
