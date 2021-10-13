@@ -37,9 +37,7 @@ export default function ProductDetail() {
     const [editPostStatus, setEditPostStatus] = useState();
     const [isInterest, setIsInterest] = useState();
     const [interestTag, setInterestTage] = useState();
-
     const [image, setImage] = useState();
-
     const [curImages, setCurImages] = useState();
     const [delImages, setDelImages] = useState([]);
     const formData = new FormData();
@@ -87,12 +85,6 @@ export default function ProductDetail() {
         }
     };
 
-    // store 상태 조회
-    const { accessToken, myInfo } = useSelector(({ auth }) => ({
-        accessToken: auth.accessToken,
-        myInfo: auth.myInfo
-    }));
-
     const updateState = (payload) => {
         return new Promise((resolve) => {
             setProduct({
@@ -112,8 +104,6 @@ export default function ProductDetail() {
 
     // post 수정
     const editDetailPost = async () => {
-        console.log("bookStatus : ", editBookStatus);
-        console.log("postStatus : ", editPostStatus);
         const postUpdateRequest = {
             title: editTitle,
             price: editBookListPrice,
@@ -186,7 +176,6 @@ export default function ProductDetail() {
                         response.data.filter(
                             (item) => item.postsResponse.postId === `${id}`
                         );
-                        console.log(response);
                         if (response.data[0].interestId) {
                             api.deleteMyFavoritePost(
                                 response.data[0].interestId

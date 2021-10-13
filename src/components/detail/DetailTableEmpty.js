@@ -1,4 +1,4 @@
-import { Paper, StepConnector } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
 
 // ----------------------------------------------------------------------
 

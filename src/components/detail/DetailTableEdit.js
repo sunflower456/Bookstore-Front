@@ -1,26 +1,19 @@
-import { useParams } from "react-router";
-import { useEffect, useState } from "react";
-import StarIcon from "@material-ui/icons/Star";
-import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, withStyles } from "@material-ui/styles";
-import Dropzone, { useDropzone } from "react-dropzone";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import Dropzone from "react-dropzone";
 import {
     Paper,
     Typography,
     Avatar,
     Card,
     CardContent,
-    StepConnector,
     Input,
     Radio,
     RadioGroup,
     FormControlLabel,
     FormControl,
-    FormLabel,
     Button
 } from "@material-ui/core";
-import clsx from "clsx";
-import Check from "@material-ui/icons/Check";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -30,8 +23,6 @@ import TableRow from "@material-ui/core/TableRow";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 export default function ProductDetail(props) {
-    const { id } = useParams();
-    const [imageCurrentNo, setImageCurrentNo] = useState(0);
     // store 상태 조회
     const { accessToken, myInfo } = useSelector(({ auth }) => ({
         accessToken: auth.accessToken,

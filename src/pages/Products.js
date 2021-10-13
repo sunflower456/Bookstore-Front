@@ -1,17 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Container, Typography, Button, Stack } from "@material-ui/core";
 import { ArrowRight } from "@material-ui/icons";
 import Page from "../components/Page";
 import { ProductList } from "../components/_dashboard/products";
-// import PRODUCTS from "../_mocks_/products";
 import Searchbar from "../layouts/dashboard/Searchbar";
 
 // ----------------------------------------------------------------------
 
 export default function EcommerceShop() {
     const [content, setContent] = useState("");
-    const [products, setProducts] = useState(null);
     const [search, setSearch] = useState(10);
 
     // store 상태 조회
