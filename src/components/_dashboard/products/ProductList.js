@@ -1,16 +1,11 @@
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-import React, {
-    useState,
-    useEffect,
-    useCallback,
-    forwardRef,
-    useImperativeHandle
-} from "react";
+import React, { useState, useEffect, useCallback, forwardRef } from "react";
 
 import { Grid } from "@material-ui/core";
-
 import ShopProductCard from "./ProductCard";
+
+import * as api from "../../../lib/api";
 
 const ProductList = forwardRef((props, ref) => {
     const [page, setPage] = useState(0);
@@ -47,87 +42,122 @@ const ProductList = forwardRef((props, ref) => {
     const fetchAllData = async () => {
         // 초기 값일땐 items 에 result 바로 넣어줌
         if (paramPage === 0) {
-            const data = await fetch(
-                `${baseURL}/api/post?size=${encodeURIComponent(
-                    paramSize
-                )}&page=${encodeURIComponent(paramPage)}`,
-                {
-                    method: "GET",
-                    headers: myHeaders
+            try {
+                const data = await api
+                    .getAllPosts(paramSize, paramPage)
+                    .catch((err) => {
+                        if (err.response == null) {
+                            alert(err.message);
+                        } else {
+                            console.log(err.response.message);
+                        }
+                    });
+
+                if (data.data.length !== 0) {
+                    await updateState(data.data);
+
+                    return data.data;
                 }
-            ).then((response) => response.json());
-
-            if (data.length !== 0) {
-                await updateState(data);
-
-                return data;
+                return data.data;
+            } catch (e) {
+                if (e.response == null) {
+                    alert(e.message);
+                } else {
+                    console.log(e.response.message);
+                }
             }
-            return data;
         } else {
-            const data = await fetch(
-                `${baseURL}/api/post?size=${encodeURIComponent(
-                    paramSize
-                )}&page=${encodeURIComponent(paramPage)}`,
-                {
-                    method: "GET",
-                    headers: myHeaders
-                }
-            ).then((response) => response.json());
+            try {
+                const data = await api
+                    .getAllPosts(paramSize, paramPage)
+                    .catch((err) => {
+                        if (err.response == null) {
+                            alert(err.message);
+                        } else {
+                            console.log(err.response.message);
+                        }
+                    });
 
-            if (data.length !== 0) {
-                tempItems = data;
-                return data;
+                if (data.data.length !== 0) {
+                    tempItems = data.data;
+                    return data.data;
+                }
+                return data.data;
+            } catch (e) {
+                if (e.response == null) {
+                    alert(e.message);
+                } else {
+                    console.log(e.response.message);
+                }
             }
-            return data;
         }
+        return null;
     };
 
     // title로 검색할 때
     const fetchSearchedDataByTitle = async () => {
-        const data = await fetch(
-            `${baseURL}/api/post?title=${encodeURIComponent(
-                props.content.content
-            )}&size=${paramSize}&page=0`,
-            {
-                method: "GET",
-                headers: myHeaders
+        try {
+            await api
+                .getAllPostsByTitle(paramSize, props.content.content)
+                .then((response) => setItems(response.data))
+                .catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                console.log(e.response.message);
             }
-        ).then((response) => response.json());
-
-        await setItems(data);
-        return data;
+        }
     };
 
     // author 로 검색할 때
     const fetchSearchedDataByAuthor = async () => {
-        const data = await fetch(
-            `${baseURL}/api/post?author=${encodeURIComponent(
-                props.content.content
-            )}&size=${paramSize}&page=0`,
-            {
-                method: "GET",
-                headers: myHeaders
+        try {
+            await api
+                .getAllPostsByAuthor(paramSize, props.content.content)
+                .then((response) => setItems(response.data))
+                .catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                console.log(e.response.message);
             }
-        ).then((response) => response.json());
-
-        await setItems(data);
-        return data;
+        }
     };
 
     // publisher로 검색할 때
     const fetchSearchedDataByPublisher = async () => {
-        const data = await fetch(
-            `${baseURL}/api/post?publisher=${encodeURIComponent(
-                props.content.content
-            )}&size=${paramSize}&page=0`,
-            {
-                method: "GET",
-                headers: myHeaders
+        try {
+            await api
+                .getAllPostsByPublisher(paramSize, props.content.content)
+                .then((response) => setItems(response.data))
+                .catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                console.log(e.response.message);
             }
-        ).then((response) => response.json());
-
-        await setItems(data);
-        return data;
+        }
     };
 
     useEffect(() => {

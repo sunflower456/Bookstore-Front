@@ -1,13 +1,14 @@
 import { styled } from "@material-ui/styles";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Button, ButtonGroup, Typography, Card } from "@material-ui/core";
 import Page from "../components/Page";
 import "./ImagesSlide.scss";
 import DetailTable from "../components/detail/DetailTable";
 import DetailTableEdit from "../components/detail/DetailTableEdit";
 import DetailTableEmpty from "../components/detail/DetailTableEmpty";
+import * as api from "../lib/api";
 
 // ----------------------------------------------------------------------
 
@@ -100,15 +101,6 @@ export default function ProductDetail() {
         });
     };
 
-    const myHeaders = new Headers();
-
-    myHeaders.append("Authorization", `Bearer ${accessToken}`);
-    myHeaders.append("Content-Type", "application/json");
-
-    const myHeaders2 = new Headers();
-
-    myHeaders2.append("Authorization", `Bearer ${accessToken}`);
-
     const onChangeImageFile = (e) => {
         setImage(e[0]);
     };
@@ -141,78 +133,104 @@ export default function ProductDetail() {
         for (const pair of formData.entries()) {
             console.log(`${pair[0]}, ${pair[1]}`);
         }
-        const data = await fetch(`http://localhost:8080/api/post/${id}`, {
-            method: "PATCH",
-            headers: myHeaders2,
-            body: formData
-        });
 
-        fetchDetailData();
-        await setDetail(<DetailTable product={product} />);
+        try {
+            await api.postUpdate(id, formData).catch((err) => {
+                if (err.response == null) {
+                    alert(err.message);
+                } else {
+                    console.log(err.response.message);
+                }
+            });
+
+            fetchDetailData();
+            await setDetail(<DetailTable product={product} />);
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                console.log(e.response.message);
+            }
+        }
     };
 
     const fetchDetailData = async () => {
-        const data = await fetch(`http://localhost:8080/api/post/${id}`, {
-            method: "GET",
-            headers: myHeaders
-        }).then((response) => response.json());
-
-        if (data) {
-            await updateState(data);
-            return data;
+        try {
+            await api
+                .getDetailPost(id)
+                .then((response) => updateState(response.data))
+                .catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                console.log(e.response.message);
+            }
         }
-
-        return product;
     };
 
     const editInterest = async () => {
         if (isInterest) {
             // 관심목록에서 삭제하기
 
-            const data = await fetch(
-                "http://localhost:8080/api/user/me/interests",
-                {
-                    method: "GET",
-                    headers: myHeaders
-                }
-            )
-                .then((response) => response.json())
-                .then((response) => {
-                    response.filter(
-                        (item) => item.postsResponse.postId === `${id}`
-                    );
-                    console.log(response);
-                    if (response[0].interestId) {
-                        fetch(
-                            `http://localhost:8080/api/user/me/interest/${response[0].interestId}`,
-                            {
-                                method: "DELETE",
-                                headers: myHeaders
-                            }
+            try {
+                await api
+                    .getMyFavoritePosts()
+                    .then((response) => {
+                        response.data.filter(
+                            (item) => item.postsResponse.postId === `${id}`
                         );
-                    }
-                });
+                        console.log(response);
+                        if (response.data[0].interestId) {
+                            api.deleteMyFavoritePost(
+                                response.data[0].interestId
+                            );
+                        }
+                    })
+                    .catch((err) => {
+                        if (err.response == null) {
+                            alert(err.message);
+                        } else {
+                            console.log(err.response.message);
+                        }
+                    });
 
-            await setIsInterest(false);
-            await setInterestTage("관심목록 추가");
-
-            return data;
+                await setIsInterest(false);
+                await setInterestTage("관심목록 추가");
+            } catch (e) {
+                if (e.response == null) {
+                    alert(e.message);
+                } else {
+                    console.log(e.response.message);
+                }
+            }
         } else {
             // 관심목록에 추가하기
 
-            const data = await fetch(
-                "http://localhost:8080/api/user/me/interest",
-                {
-                    method: "POST",
-                    headers: myHeaders,
-                    body: JSON.stringify({ postId: `${id}` })
+            try {
+                await api.addMyFavoritePost(id).catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
+
+                await setIsInterest(true);
+                await setInterestTage("관심목록 삭제");
+            } catch (e) {
+                if (e.response == null) {
+                    alert(e.message);
+                } else {
+                    console.log(e.response.message);
                 }
-            );
-
-            await setIsInterest(true);
-            await setInterestTage("관심목록 삭제");
-
-            return data;
+            }
         }
     };
 
