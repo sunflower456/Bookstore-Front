@@ -1,32 +1,24 @@
-import { useState, ChangeEvent } from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-    Box,
-    Typography,
-    FormControlLabel,
-    Switch,
-    Tabs,
-    Tab,
-    TextField,
-    IconButton,
-    InputAdornment,
     Avatar,
+    Box,
+    InputAdornment,
+    lighten,
     List,
-    Button,
-    Tooltip,
-    Divider,
-    AvatarGroup,
-    ListItemButton,
     ListItemAvatar,
+    ListItemButton,
     ListItemText,
-    lighten
+    Tab,
+    Tabs,
+    TextField,
+    Typography
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import { CheckTwoTone, AlarmTwoTone } from "@material-ui/icons";
-import SettingsTwoToneIcon from "@material-ui/icons/SettingsTwoTone";
 import SearchTwoToneIcon from "@material-ui/icons/SearchTwoTone";
-import { formatDistance, subMinutes, subHours } from "date-fns";
 import Label from "../Label";
+import { setTargetChatRoomId } from "../../modules/chat";
+import { stompClient } from "../../lib/client";
 
 const AvatarSuccess = styled(Avatar)(
     ({ theme }) => `
@@ -50,6 +42,8 @@ const MeetingBox = styled(Box)(
 
 const RootWrapper = styled(Box)(
     ({ theme }) => `
+        width: auto;
+        height: 140vh;
         padding: ${theme.spacing(2.5)};
   `
 );
@@ -91,23 +85,85 @@ const TabsContainerWrapper = styled(Box)(
   `
 );
 
-function SidebarContent() {
-    const user = {
-        name: "Catherine Pike",
-        avatar: "/static/images/avatars/1.jpg",
-        jobtitle: "Software Developer"
-    };
-
+function SidebarContent(prop) {
     const [currentTab, setCurrentTab] = useState("all");
+    const [currentChatRoom, setCurrentChatRoom] = useState(null);
+    const { userInfo, chatList } = prop;
+
+    // store dispatch 사용
+    const dispatch = useDispatch();
+
+    // store 상태 조회
+    const { chatRoom } = useSelector(({ chat }) => ({
+        chatRoom: chat.chatRoom
+    }));
+
+    let name = "";
+    let avatar = "";
+    let email = "";
+
+    if (userInfo != null) {
+        name = userInfo.name;
+        avatar = userInfo.profileImage;
+        email = userInfo.email;
+    }
+
+    const user = {
+        name,
+        avatar,
+        email
+    };
 
     const tabs = [
         { value: "all", label: "전체" },
-        { value: "unread", label: "미확인" }
+        { value: "sales", label: "판매글" },
+        { value: "purchases", label: "구매요청" }
     ];
 
     const handleTabsChange = (event, value) => {
         setCurrentTab(value);
     };
+
+    const onClickChatRoom = (roomInfo) => {
+        if (roomInfo == null) {
+            throw new Error("채팅방 정보가 확인되지 않음.");
+        }
+
+        const selectedChatRoom = {
+            roomId: roomInfo.roomId,
+            postTitle: roomInfo.postTitle,
+            opponentIdentity: roomInfo.opponentIdentity,
+            opponentProfile: roomInfo.opponentProfile,
+            opponentLeave: roomInfo.opponentLeave
+        };
+
+        try {
+            setCurrentChatRoom(selectedChatRoom);
+            dispatch(setTargetChatRoomId(selectedChatRoom));
+        } catch (e) {
+            console.log(`채팅방 선택 오류: ${e}`);
+        }
+    };
+
+    useEffect(() => {
+        stompClient.connect(
+            {},
+            (connect) => {
+                if (chatRoom != null) {
+                    const destination = `/sub/chat/room/${chatRoom.roomId}`;
+
+                    stompClient.subscribe(destination, (message) => {
+                        console.log(message);
+                    });
+                }
+
+                console.log(`STOMP 접속 : ${connect}`);
+            },
+            (error) => {
+                console.log(`STOMP 접속 오류 : ${error}`);
+            }
+        );
+    }, [currentChatRoom]);
 
     return (
         <RootWrapper>
@@ -124,12 +180,12 @@ function SidebarContent() {
                                 {user.name}
                             </Typography>
                             <Typography variant="subtitle1" noWrap>
-                                {user.jobtitle}
+                                {user.email}
                             </Typography>
                         </Box>
-                        <IconButton sx={{ p: 1 }} size="small" color="primary">
-                            <SettingsTwoToneIcon fontSize="small" />
-                        </IconButton>
+                        {/* <IconButton sx={{ p: 1 }} size="small" color="primary">*/}
+                        {/*    <SettingsTwoToneIcon fontSize="small" />*/}
+                        {/* </IconButton>*/}
                     </Box>
                 </Box>
             </Box>
@@ -174,136 +230,67 @@ function SidebarContent() {
             <Box mt={2}>
                 {currentTab === "all" && (
                     <List disablePadding component="div">
-                        <ListItemWrapper selected>
-                            <ListItemAvatar>
-                                <Avatar src="/static/images/avatars/1.jpg" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                sx={{ mr: 1 }}
-                                primaryTypographyProps={{
-                                    color: "textPrimary",
-                                    variant: "h5",
-                                    noWrap: true
-                                }}
-                                secondaryTypographyProps={{
-                                    color: "textSecondary",
-                                    noWrap: true
-                                }}
-                                primary="Zain Baptista"
-                                secondary="Hey there, how are you today? Is it ok if I call you?"
-                            />
-                            <Label color="primary">
-                                <b>2</b>
-                            </Label>
-                        </ListItemWrapper>
-                        <ListItemWrapper>
-                            <ListItemAvatar>
-                                <Avatar src="/static/images/avatars/2.jpg" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                sx={{ mr: 1 }}
-                                primaryTypographyProps={{
-                                    color: "textPrimary",
-                                    variant: "h5",
-                                    noWrap: true
-                                }}
-                                secondaryTypographyProps={{
-                                    color: "textSecondary",
-                                    noWrap: true
-                                }}
-                                primary="Kierra Herwitz"
-                                secondary="Hi! Did you manage to send me those documents"
-                            />
-                        </ListItemWrapper>
-                        <ListItemWrapper>
-                            <ListItemAvatar>
-                                <Avatar src="/static/images/avatars/1.jpg" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                sx={{ mr: 1 }}
-                                primaryTypographyProps={{
-                                    color: "textPrimary",
-                                    variant: "h5",
-                                    noWrap: true
-                                }}
-                                secondaryTypographyProps={{
-                                    color: "textSecondary",
-                                    noWrap: true
-                                }}
-                                primary="Craig Vaccaro"
-                                secondary="Ola, I still haven't received the program schedule"
-                            />
-                        </ListItemWrapper>
-                        <ListItemWrapper>
-                            <ListItemAvatar>
-                                <Avatar src="/static/images/avatars/4.jpg" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                sx={{ mr: 1 }}
-                                primaryTypographyProps={{
-                                    color: "textPrimary",
-                                    variant: "h5",
-                                    noWrap: true
-                                }}
-                                secondaryTypographyProps={{
-                                    color: "textSecondary",
-                                    noWrap: true
-                                }}
-                                primary="Adison Press"
-                                secondary="I recently did some buying on Amazon and now I'm stuck"
-                            />
-                            <Label color="primary">
-                                <b>8</b>
-                            </Label>
-                        </ListItemWrapper>
+                        {chatList.map((value, index) => (
+                            <ListItemWrapper
+                                key={value.roomId}
+                                onClick={() => onClickChatRoom(value)}
+                            >
+                                <ListItemAvatar>
+                                    <Avatar src={value.postBookThumbnail} />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    sx={{ mr: 1 }}
+                                    primaryTypographyProps={{
+                                        color: "textPrimary",
+                                        variant: "h5",
+                                        noWrap: true
+                                    }}
+                                    secondaryTypographyProps={{
+                                        color: "textSecondary",
+                                        noWrap: true
+                                    }}
+                                    primary={value.postTitle}
+                                    secondary={`${value.opponentIdentity} 님과의 채팅방`}
+                                />
+                                <Label color="primary">
+                                    <b>2</b>
+                                </Label>
+                            </ListItemWrapper>
+                        ))}
                     </List>
                 )}
-                {currentTab === "unread" && (
+                {currentTab === "sales"}
+                {currentTab === "purchases" && (
                     <List disablePadding component="div">
-                        <ListItemWrapper>
-                            <ListItemAvatar>
-                                <Avatar src="/static/images/avatars/1.jpg" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                sx={{ mr: 1 }}
-                                primaryTypographyProps={{
-                                    color: "textPrimary",
-                                    variant: "h5",
-                                    noWrap: true
-                                }}
-                                secondaryTypographyProps={{
-                                    color: "textSecondary",
-                                    noWrap: true
-                                }}
-                                primary="Zain Baptista"
-                                secondary="Hey there, how are you today? Is it ok if I call you?"
-                            />
-                            <Label color="primary">
-                                <b>2</b>
-                            </Label>
-                        </ListItemWrapper>
-                        <ListItemWrapper>
-                            <ListItemAvatar>
-                                <Avatar src="/static/images/avatars/4.jpg" />
-                            </ListItemAvatar>
-                            <ListItemText
-                                sx={{ mr: 1 }}
-                                primaryTypographyProps={{
-                                    color: "textPrimary",
-                                    variant: "h5",
-                                    noWrap: true
-                                }}
-                                secondaryTypographyProps={{
-                                    color: "textSecondary",
-                                    noWrap: true
-                                }}
-                                primary="Adison Press"
-                                secondary="I recently did some buying on Amazon and now I'm stuck"
-                            />
-                            <Label color="primary">
-                                <b>8</b>
-                            </Label>
-                        </ListItemWrapper>
+                        {chatList
+                            .filter((value) => value.opponentIdentity === name)
+                            .map((value, index) => (
+                                <ListItemWrapper
+                                    key={value.roomId}
+                                    onClick={() => onClickChatRoom(value)}
+                                >
+                                    <ListItemAvatar>
+                                        <Avatar src={value.postBookThumbnail} />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        sx={{ mr: 1 }}
+                                        primaryTypographyProps={{
+                                            color: "textPrimary",
+                                            variant: "h5",
+                                            noWrap: true
+                                        }}
+                                        secondaryTypographyProps={{
+                                            color: "textSecondary",
+                                            noWrap: true
+                                        }}
+                                        primary={value.postTitle}
+                                        secondary={`${value.opponentIdentity} 님과의 채팅방`}
+                                    />
+                                    <Label color="primary">
+                                        <b>2</b>
+                                    </Label>
+                                </ListItemWrapper>
+                            ))}
                     </List>
                 )}
             </Box>

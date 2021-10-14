@@ -1,4 +1,13 @@
-import { Box, Avatar, Typography, Card, Divider } from "@material-ui/core";
+import {
+    Box,
+    Avatar,
+    Typography,
+    Card,
+    Divider,
+    Hidden,
+    TextField,
+    Button
+} from "@material-ui/core";
 
 import { styled } from "@material-ui/core/styles";
 import {
@@ -9,7 +18,22 @@ import {
     subMinutes
 } from "date-fns";
 import { ko } from "date-fns/locale";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import SendTwoToneIcon from "@material-ui/icons/SendTwoTone";
+import { HourglassEmpty, TextsmsTwoTone } from "@material-ui/icons";
 import ScheduleTwoToneIcon from "@material-ui/icons/ScheduleTwoTone";
+import { stompClient } from "../../lib/client";
+
+const AvatarSuccess = styled(Avatar)(
+    ({ theme }) => `
+          color: ${theme.palette.success.main};
+          width: ${theme.spacing(8)};
+          height: ${theme.spacing(8)};
+          margin-left: auto;
+          margin-right: auto;
+    `
+);
 
 const DividerWrapper = styled(Divider)(
     ({ theme }) => `
@@ -46,20 +70,107 @@ const CardWrapperSecondary = styled(Card)(
 `
 );
 
-function ChatContent() {
-    const user = {
-        name: "Catherine Pike",
-        avatar: "/static/images/avatars/1.jpg"
+const ChatBottomBar = styled(Box)(({ theme }) => ({
+    padding: theme.spacing(3)
+}));
+
+function ChatContent(props) {
+    const { userInfo } = props;
+    const [message, setMessage] = useState(""); // 작성된 메시지
+    const [contents, setContents] = useState([]); // subscribe로 전달받는 메시지 포함 content
+
+    const inputMessageBox = useRef();
+    // store 상태 조회
+    const { chatRoom } = useSelector(({ chat }) => ({
+        chatRoom: chat.chatRoom
+    }));
+
+    const chatUser = {
+        name: "",
+        avatar: ""
     };
 
-    return (
-        <Box p={3}>
+    if (userInfo != null) {
+        chatUser.name = userInfo.name;
+        chatUser.avatar = userInfo.profileImage;
+    }
+
+    const opponentUser =
+        chatRoom == null
+            ? {
+                  name: "상대 유저 ID",
+                  avatar: ""
+              }
+            : {
+                  name: chatRoom.opponentIdentity,
+                  avatar: chatRoom.opponentProfile
+              };
+
+    const onMessageReceive = (data) => {
+        const newMessage = JSON.parse(data.body);
+
+        addMessage(newMessage);
+    };
+
+    const handleInputEnter = (event) => {
+        if (event.keyCode === 13) {
+            // enter 입력 시
+            handleEnter();
+        }
+    };
+
+    const handleEnter = () => {
+        if (chatRoom != null) {
+            const messageQuery = {
+                roomId: chatRoom.roomId,
+                senderId: 1,
+                senderIdentity: userInfo.identity,
+                content: message
+            };
+
+            stompClient.send(
+                "/pub/chat/message",
+                {},
+                JSON.stringify(messageQuery)
+            );
+            setMessage("");
+            inputMessageBox.current.value = "";
+        }
+    };
+
+    const addMessage = (inputMessage) => {
+        setContents((prev) => [...prev, inputMessage]);
+    };
+
+    useEffect(() => {
+        if (chatRoom != null) {
+            const destination = `/sub/chat/room/${chatRoom.roomId}`;
+
+            stompClient.subscribe(destination, onMessageReceive);
+        }
+    }, [chatRoom, contents]);
+
+    return chatRoom == null ? (
+        <Box pb={3} sx={{ height: "78vh" }}>
+            <Divider sx={{ mb: 3 }} />
+            <AvatarSuccess>
+                <TextsmsTwoTone />
+            </AvatarSuccess>
+            <Typography sx={{ mt: 2, textAlign: "center" }} variant="subtitle2">
+                채팅방 목록에서 접속할 채팅방을 선택해주세요.
+            </Typography>
+            <Divider sx={{ mt: 3 }} />
+        </Box>
+    ) : (
+        <>
+            {contents.map((messageContent, index) => (
+                <p key={index}>{messageContent.content}</p>
+            ))}
             <DividerWrapper>
                 {format(subDays(new Date(), 3), "yyyy.MM.dd", {
                     locale: ko
                 })}
             </DividerWrapper>
-
             <Box
                 display="flex"
                 alignItems="flex-start"
@@ -97,7 +208,6 @@ function ChatContent() {
                     </Typography>
                 </Box>
             </Box>
-
             <Box
                 display="flex"
                 alignItems="flex-start"
@@ -132,8 +242,8 @@ function ChatContent() {
                 <Avatar
                     variant="rounded"
                     sx={{ width: 50, height: 50 }}
-                    alt={user.name}
-                    src={user.avatar}
+                    alt={opponentUser.name}
+                    src={opponentUser.avatar}
                 />
             </Box>
             <DividerWrapper>
@@ -141,7 +251,6 @@ function ChatContent() {
                     locale: ko
                 })}
             </DividerWrapper>
-
             <Box
                 display="flex"
                 alignItems="flex-start"
@@ -176,8 +285,8 @@ function ChatContent() {
                 <Avatar
                     variant="rounded"
                     sx={{ width: 50, height: 50 }}
-                    alt={user.name}
-                    src={user.avatar}
+                    alt={opponentUser.name}
+                    src={opponentUser.avatar}
                 />
             </Box>
             <DividerWrapper>오늘</DividerWrapper>
@@ -256,11 +365,37 @@ function ChatContent() {
                 <Avatar
                     variant="rounded"
                     sx={{ width: 50, height: 50 }}
-                    alt={user.name}
-                    src={user.avatar}
+                    alt={opponentUser.name}
+                    src={opponentUser.avatar}
                 />
             </Box>
-        </Box>
+            <ChatBottomBar>
+                <Card sx={{ display: "flex", alignItems: "center", p: 2 }}>
+                    <Hidden mdDown>
+                        <Avatar alt={chatUser.name} src={chatUser.avatar} />
+                        <DividerWrapper orientation="vertical" flexItem />
+                    </Hidden>
+                    <Box sx={{ flex: 1, mr: 2 }}>
+                        <TextField
+                            inputRef={inputMessageBox}
+                            hiddenLabel
+                            fullWidth
+                            placeholder="메시지 입력..."
+                            onChange={(event) => setMessage(event.target.value)}
+                            onKeyDown={handleInputEnter}
+                        />
+                    </Box>
+                    <DividerWrapper orientation="vertical" flexItem />
+                    <Button
+                        startIcon={<SendTwoToneIcon />}
+                        variant="contained"
+                        onClick={handleEnter}
+                    >
+                        전송
+                    </Button>
+                </Card>
+            </ChatBottomBar>
+        </>
     );
 }
 
