@@ -74,3 +74,6 @@ export const deleteMyFavoritePost = (interestId) =>
 
 /* 내 판매글 조회 기능 */
 export const getMySalePosts = () => client.get("/api/user/me/post");
+
+/* 채팅방 목록 조회 */
+export const getMyPostChatRoomList = () => client.get("/api/chat/room");
