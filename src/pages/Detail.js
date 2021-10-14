@@ -37,7 +37,7 @@ export default function ProductDetail() {
     const [editPostStatus, setEditPostStatus] = useState();
     const [isInterest, setIsInterest] = useState();
     const [interestTag, setInterestTage] = useState();
-    const [image, setImage] = useState();
+    const [images, setImages] = useState([]);
     const [curImages, setCurImages] = useState();
     const [delImages, setDelImages] = useState([]);
     const formData = new FormData();
@@ -94,7 +94,7 @@ export default function ProductDetail() {
     };
 
     const onChangeImageFile = (e) => {
-        setImage(e[0]);
+        setImages(e);
     };
 
     const deleteImages = (no) => {
@@ -118,7 +118,7 @@ export default function ProductDetail() {
                 type: "application/json"
             })
         );
-        formData.append("images", image);
+        images.forEach((file) => formData.append("images", file));
 
         for (const pair of formData.entries()) {
             console.log(`${pair[0]}, ${pair[1]}`);
@@ -135,6 +135,8 @@ export default function ProductDetail() {
 
             fetchDetailData();
             await setDetail(<DetailTable product={product} />);
+            await setDelImages([]);
+            await setImages([]);
         } catch (e) {
             if (e.response == null) {
                 alert(e.message);

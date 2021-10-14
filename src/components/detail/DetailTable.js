@@ -1,4 +1,3 @@
-import { useParams } from "react-router";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import StarIcon from "@material-ui/icons/Star";
@@ -237,18 +236,18 @@ export default function ProductDetail(props) {
                                             <picture>
                                                 {props.product.product
                                                     .myInterest ? (
-                                                        <StarIcon
-                                                            style={{
-                                                                position:
+                                                    <StarIcon
+                                                        style={{
+                                                            position:
                                                                 "absolute",
-                                                                top: "45px",
-                                                                left: "10px",
-                                                                color: "yellow"
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                    <div></div>
-                                                    )}
+                                                            top: "45px",
+                                                            left: "10px",
+                                                            color: "yellow"
+                                                        }}
+                                                    />
+                                                ) : (
+                                                        <div></div>
+                                                )}
                                                 <img
                                                     src={image}
                                                     style={{

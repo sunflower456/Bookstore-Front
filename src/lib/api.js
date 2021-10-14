@@ -110,7 +110,11 @@ export const getAllPostsByPublisher = (paramSize, publisher) => {
 
 /* 게시글 수정 기능  */
 export const postUpdate = (id, formData) =>
-    client.patch(`/api/post/${id}`, formData);
+    client.patch(`/api/post/${id}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
 
 /* 게시글 상세 조회 기능 */
 export const getDetailPost = (id) => {
@@ -123,4 +127,8 @@ export const getDetailPost = (id) => {
 
 /* 관심 목록 추가 기능 */
 export const addMyFavoritePost = (id) =>
-    client.post("/api/user/me/interest", JSON.stringify({ postId: id }));
+    client.post("/api/user/me/interest", JSON.stringify({ postId: id }), {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });

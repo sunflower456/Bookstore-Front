@@ -45,6 +45,7 @@ export default function ProductDetail(props) {
     const [showSummary, setShowSummary] = useState(bookSummarySubstr);
     const [isSummary, setIsSummary] = useState(true);
     const [moreButton, setMoreButton] = useState("더보기");
+    const maxImageLength = 5; // 최대 이미지 갯수
 
     const bookSummaryClick = () => {
         if (isSummary) {
@@ -62,10 +63,15 @@ export default function ProductDetail(props) {
 
     const [fileNames, setFileNames] = useState([]);
     const handleDrop = (acceptedFiles) => {
-        setFileNames(acceptedFiles.map((file) => file.name));
-        console.log(acceptedFiles);
-
-        props.onChangeImageFile(acceptedFiles);
+        if (
+            acceptedFiles.length + props.product.product.images.length >
+            maxImageLength
+        ) {
+            alert("최대 업로드 가능한 이미지 수는 5개 입니다.");
+        } else {
+            setFileNames(acceptedFiles.map((file) => file.name));
+            props.onChangeImageFile(acceptedFiles);
+        }
     };
 
     const deleteImages = (no) => {
