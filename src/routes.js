@@ -1,4 +1,4 @@
-import { useRoutes, Route, Navigate } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 // layouts
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 import DashboardLayout from "./layouts/dashboard";

@@ -1,35 +1,28 @@
-import { useParams } from "react-router";
 import { useState } from "react";
-import StarIcon from "@material-ui/icons/Star";
-import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, withStyles } from "@material-ui/styles";
+import { useSelector } from "react-redux";
+import Dropzone from "react-dropzone";
 import {
     Paper,
     Typography,
     Avatar,
     Card,
     CardContent,
-    StepConnector,
     Input,
     Radio,
     RadioGroup,
     FormControlLabel,
     FormControl,
-    FormLabel,
     Button
 } from "@material-ui/core";
-import clsx from "clsx";
-import Check from "@material-ui/icons/Check";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 export default function ProductDetail(props) {
-    const { id } = useParams();
-    const [imageCurrentNo, setImageCurrentNo] = useState(0);
     // store 상태 조회
     const { accessToken, myInfo } = useSelector(({ auth }) => ({
         accessToken: auth.accessToken,
@@ -42,7 +35,9 @@ export default function ProductDetail(props) {
 
     console.log("edit props : ", props);
     // cover 수정하기
-    const productImages = props.product.product.images;
+    const [productImages, setProductImages] = useState(
+        props.product.product.images
+    );
 
     const bookSummarySubstr =
         props.product.product.bookResponse.bookSummary.substring(0, 30);
@@ -50,6 +45,7 @@ export default function ProductDetail(props) {
     const [showSummary, setShowSummary] = useState(bookSummarySubstr);
     const [isSummary, setIsSummary] = useState(true);
     const [moreButton, setMoreButton] = useState("더보기");
+    const maxImageLength = 5; // 최대 이미지 갯수
 
     const bookSummaryClick = () => {
         if (isSummary) {
@@ -65,16 +61,22 @@ export default function ProductDetail(props) {
         }
     };
 
-    const onChangeImage = (index) => {
-        let currIndex = index;
+    const [fileNames, setFileNames] = useState([]);
+    const handleDrop = (acceptedFiles) => {
+        if (
+            acceptedFiles.length + props.product.product.images.length >
+            maxImageLength
+        ) {
+            alert("최대 업로드 가능한 이미지 수는 5개 입니다.");
+        } else {
+            setFileNames(acceptedFiles.map((file) => file.name));
+            props.onChangeImageFile(acceptedFiles);
+        }
+    };
 
-        if (productImages.length <= currIndex) {
-            currIndex = 0;
-        }
-        if (index < 0) {
-            currIndex = productImages.length - 1;
-        }
-        setImageCurrentNo(currIndex);
+    const deleteImages = (no) => {
+        setProductImages(productImages.filter((img, imgId) => imgId !== no));
+        props.deleteImages(no);
     };
 
     return (
@@ -82,85 +84,66 @@ export default function ProductDetail(props) {
             <Grid container>
                 <Grid item xs={4}>
                     <Paper>
-                        <div className="imageSlide">
-                            <div className="navBox">
-                                <span>{imageCurrentNo + 1}</span>
-                                <span>/</span>
-                                <span>
-                                    {productImages && productImages.length}
-                                </span>
-                            </div>
-                            <div className="slideBox">
-                                <div
-                                    className="slideList"
-                                    style={{
-                                        transform: `translate3d(${
-                                            imageCurrentNo * -500
-                                        }px, 0px, 0px)`
-                                    }}
-                                >
-                                    {productImages?.map((image, no) => (
-                                        <div className="slideContent" key={no}>
-                                            <picture>
-                                                {props.product.product
-                                                    .myInterest ? (
-                                                        <StarIcon
-                                                            style={{
-                                                                color: "yellow",
-                                                                position:
-                                                                "absolute",
-                                                                left: "1px"
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <StarIcon
-                                                            style={{
-                                                                color: "blue",
-                                                                visibility: "hidden"
-                                                            }}
-                                                        />
-                                                    )}
-                                                <img
-                                                    src={image}
-                                                    style={{
-                                                        width: "50%"
-                                                    }}
-                                                />
-                                            </picture>
-                                        </div>
+                        <div
+                            className="changeImages"
+                            style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                border: "3px dashed #eeeeee",
+                                backgroundColor: "#fafafa",
+                                color: "#bdbdbd",
+                                marginBottom: "20px"
+                            }}
+                        >
+                            <Dropzone onDrop={handleDrop}>
+                                {({ getRootProps, getInputProps }) => (
+                                    <div
+                                        {...getRootProps({
+                                            className: "dropzone"
+                                        })}
+                                    >
+                                        <input {...getInputProps()} />
+                                        <p>
+                                            추가할 이미지를 drag and drop 하세요
+                                        </p>
+                                    </div>
+                                )}
+                            </Dropzone>
+                            <div>
+                                <strong>Files:</strong>
+                                <ul>
+                                    {fileNames.map((fileName) => (
+                                        <li key={fileName}>{fileName}</li>
                                     ))}
-                                </div>
-
-                                <div
-                                    className="buttonPrev"
-                                    onClick={() =>
-                                        onChangeImage(imageCurrentNo - 1)
-                                    }
-                                >
-                                    <i className="fas fa-chevron-left"></i>
-                                </div>
-                                <div
-                                    className="buttonNext"
-                                    onClick={() =>
-                                        onChangeImage(imageCurrentNo + 1)
-                                    }
-                                >
-                                    <i className="fas fa-chevron-right"></i>
-                                </div>
+                                </ul>
                             </div>
+                        </div>
+                        <div className="imageSlide">
                             <div
                                 className="paginationBox"
                                 style={{ width: "50%" }}
                             >
                                 {productImages.map((image, no) => (
-                                    <div
-                                        key={no}
-                                        onClick={() => {
-                                            onChangeImage(no);
-                                        }}
-                                    >
+                                    <div key={no}>
+                                        <div
+                                            style={{
+                                                top: "170px",
+                                                left: "35px"
+                                            }}
+                                        >
+                                            <DeleteForeverIcon
+                                                onClick={() => {
+                                                    deleteImages(no);
+                                                }}
+                                            />
+                                        </div>
                                         <picture>
-                                            <img src={image} />
+                                            <img
+                                                src={image}
+                                                style={{
+                                                    position: "relative"
+                                                }}
+                                            />
                                         </picture>
                                     </div>
                                 ))}

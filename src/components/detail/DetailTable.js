@@ -1,6 +1,5 @@
-import { useParams } from "react-router";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import StarIcon from "@material-ui/icons/Star";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import {
@@ -27,11 +26,9 @@ import TableRow from "@material-ui/core/TableRow";
 // ----------------------------------------------------------------------
 
 export default function ProductDetail(props) {
-    const { id } = useParams();
     const steps = getSteps();
     const postSteps = getPostSteps();
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
-    const [product, setProduct] = useState();
 
     const { accessToken, myInfo } = useSelector(({ auth }) => ({
         accessToken: auth.accessToken,
@@ -241,19 +238,15 @@ export default function ProductDetail(props) {
                                                     .myInterest ? (
                                                     <StarIcon
                                                         style={{
-                                                            color: "yellow",
                                                             position:
                                                                 "absolute",
-                                                            left: "1px"
+                                                            top: "45px",
+                                                            left: "10px",
+                                                            color: "yellow"
                                                         }}
                                                     />
                                                 ) : (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "blue",
-                                                            visibility: "hidden"
-                                                        }}
-                                                    />
+                                                        <div></div>
                                                 )}
                                                 <img
                                                     src={image}
