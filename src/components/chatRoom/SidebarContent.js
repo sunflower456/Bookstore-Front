@@ -1,24 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     Avatar,
     Box,
-    InputAdornment,
+    Divider,
     lighten,
     List,
     ListItemAvatar,
     ListItemButton,
     ListItemText,
+    Paper,
     Tab,
     Tabs,
-    TextField,
     Typography
 } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import SearchTwoToneIcon from "@material-ui/icons/SearchTwoTone";
 import Label from "../Label";
-import { setTargetChatRoomId } from "../../modules/chat";
-import { stompClient } from "../../lib/client";
+import { setTargetChatRoom } from "../../modules/chat";
 
 const AvatarSuccess = styled(Avatar)(
     ({ theme }) => `
@@ -115,9 +113,9 @@ function SidebarContent(prop) {
     };
 
     const tabs = [
-        { value: "all", label: "전체" },
-        { value: "sales", label: "판매글" },
-        { value: "purchases", label: "구매요청" }
+        { value: "all", label: "전체" }
+        // { value: "sales", label: "판매글" },
+        // { value: "purchases", label: "구매요청" }
     ];
 
     const handleTabsChange = (event, value) => {
@@ -138,75 +136,48 @@ function SidebarContent(prop) {
         };
 
         try {
-            setCurrentChatRoom(selectedChatRoom);
-            dispatch(setTargetChatRoomId(selectedChatRoom));
+            if (setCurrentChatRoom.roomId !== selectedChatRoom.roomId) {
+                setCurrentChatRoom(selectedChatRoom);
+                dispatch(setTargetChatRoom(selectedChatRoom));
+            }
         } catch (e) {
             console.log(`채팅방 선택 오류: ${e}`);
         }
     };
 
-    useEffect(() => {
-        stompClient.connect(
-            {},
-            (connect) => {
-                if (chatRoom != null) {
-                    const destination = `/sub/chat/room/${chatRoom.roomId}`;
-
-                    stompClient.subscribe(destination, (message) => {
-                        console.log(message);
-                    });
-                }
-
-                console.log(`STOMP 접속 : ${connect}`);
-            },
-            (error) => {
-                console.log(`STOMP 접속 오류 : ${error}`);
-            }
-        );
-    }, [currentChatRoom]);
-
     return (
         <RootWrapper>
-            <Box display="flex" alignItems="flex-start">
-                <Avatar alt={user.name} src={user.avatar} />
-                <Box sx={{ ml: 1.5, flex: 1 }}>
-                    <Box
-                        display="flex"
-                        alignItems="flex-start"
-                        justifyContent="space-between"
-                    >
-                        <Box>
-                            <Typography variant="h5" noWrap>
-                                {user.name}
-                            </Typography>
-                            <Typography variant="subtitle1" noWrap>
-                                {user.email}
-                            </Typography>
+            <Paper
+                variant={"elevation"}
+                elevation={6}
+                sx={{ height: "4em", pt: 1, pl: 1, mt: 4, mb: 4 }}
+            >
+                <Box display="flex" alignItems="flex-start">
+                    <Avatar alt={user.name} src={user.avatar} />
+                    <Box sx={{ ml: 1.5, flex: 1 }}>
+                        <Box
+                            display="flex"
+                            alignItems="flex-start"
+                            justifyContent="space-between"
+                        >
+                            <Box>
+                                <Typography variant="h5" noWrap>
+                                    {user.name}
+                                </Typography>
+                                <Typography variant="subtitle1" noWrap>
+                                    {user.email}
+                                </Typography>
+                            </Box>
                         </Box>
-                        {/* <IconButton sx={{ p: 1 }} size="small" color="primary">*/}
-                        {/*    <SettingsTwoToneIcon fontSize="small" />*/}
-                        {/* </IconButton>*/}
                     </Box>
                 </Box>
-            </Box>
+            </Paper>
 
-            <TextField
-                sx={{ mt: 2, mb: 1 }}
-                size="small"
-                fullWidth
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchTwoToneIcon />
-                        </InputAdornment>
-                    )
-                }}
-                placeholder="ID 검색..."
-            />
-
-            <Typography sx={{ mb: 1, mt: 2 }} variant="h3">
-                채팅목록
-            </Typography>
+            <Divider variant={"middle"}>
+                <Typography sx={{ mb: 1, mt: 2 }} variant="h3">
+                    채팅목록
+                </Typography>
+            </Divider>
 
             <TabsContainerWrapper>
                 <Tabs

@@ -6,10 +6,13 @@ import {
     Divider,
     Hidden,
     TextField,
-    Button
+    Button,
+    List
 } from "@material-ui/core";
 
 import { styled } from "@material-ui/core/styles";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 import {
     formatDistance,
     format,
@@ -21,9 +24,10 @@ import { ko } from "date-fns/locale";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import SendTwoToneIcon from "@material-ui/icons/SendTwoTone";
-import { HourglassEmpty, TextsmsTwoTone } from "@material-ui/icons";
 import ScheduleTwoToneIcon from "@material-ui/icons/ScheduleTwoTone";
-import { stompClient } from "../../lib/client";
+import { HourglassEmpty, TextsmsTwoTone } from "@material-ui/icons";
+import * as api from "../../lib/api";
+import Scrollbar from "../Scrollbar";
 
 const AvatarSuccess = styled(Avatar)(
     ({ theme }) => `
@@ -74,23 +78,30 @@ const ChatBottomBar = styled(Box)(({ theme }) => ({
     padding: theme.spacing(3)
 }));
 
+// eslint-disable-next-line prefer-const
+let stompClient = null;
+
 function ChatContent(props) {
     const { userInfo } = props;
     const [message, setMessage] = useState(""); // 작성된 메시지
     const [contents, setContents] = useState([]); // subscribe로 전달받는 메시지 포함 content
+    const [isMyMessageEntered, setIsMyMessageEntered] = useState(false);
 
     const inputMessageBox = useRef();
+    const messageArea = useRef();
     // store 상태 조회
     const { chatRoom } = useSelector(({ chat }) => ({
         chatRoom: chat.chatRoom
     }));
 
     const chatUser = {
+        id: "",
         name: "",
         avatar: ""
     };
 
     if (userInfo != null) {
+        chatUser.id = userInfo.userId;
         chatUser.name = userInfo.name;
         chatUser.avatar = userInfo.profileImage;
     }
@@ -106,15 +117,15 @@ function ChatContent(props) {
                   avatar: chatRoom.opponentProfile
               };
 
-    const onMessageReceive = (data) => {
-        const newMessage = JSON.parse(data.body);
+    const onMessageReceive = (payload) => {
+        const newMessage = JSON.parse(payload.body);
 
         addMessage(newMessage);
     };
 
     const handleInputEnter = (event) => {
         if (event.keyCode === 13) {
-            // enter 입력 시
+            // enter 입력 시 전송 처리
             handleEnter();
         }
     };
@@ -123,7 +134,7 @@ function ChatContent(props) {
         if (chatRoom != null) {
             const messageQuery = {
                 roomId: chatRoom.roomId,
-                senderId: 1,
+                senderId: chatUser.id,
                 senderIdentity: userInfo.identity,
                 content: message
             };
@@ -134,7 +145,8 @@ function ChatContent(props) {
                 JSON.stringify(messageQuery)
             );
             setMessage("");
-            inputMessageBox.current.value = "";
+            inputMessageBox.current.value = ""; // 입력영역 초기화
+            setIsMyMessageEntered(true); // 내 메시지 입력 시 스크롤 하단 이동용
         }
     };
 
@@ -142,46 +154,76 @@ function ChatContent(props) {
         setContents((prev) => [...prev, inputMessage]);
     };
 
+    const onConnected = () => {
+        const destination = `/sub/chat/room/${chatRoom.roomId}`;
+
+        stompClient.subscribe(destination, onMessageReceive);
+        console.log("접속!");
+    };
+
+    // 이전 메시지 가져오기 및 최초 설정
+    const getBeforeChatContents = async (page, size) => {
+        const targetPage = page == null ? 0 : page;
+        const targetSize = size == null ? 50 : size;
+
+        await api
+            .getBeforeChats(chatRoom.roomId, targetPage, targetSize)
+            .then((response) => setContents(response.data))
+            .catch((reason) =>
+                console.log(`이전 메시지 불러오기 에러 : ${reason}`)
+            );
+    };
+
     useEffect(() => {
         if (chatRoom != null) {
-            const destination = `/sub/chat/room/${chatRoom.roomId}`;
+            if (stompClient == null) {
+                /* stomp client 생성 */
+                const webSocketSourceUrl = "http://localhost:9090/ws";
+                const sockJS = new SockJS(webSocketSourceUrl);
 
-            stompClient.subscribe(destination, onMessageReceive);
+                stompClient = Stomp.over(sockJS);
+
+                stompClient.heartbeat.outgoing = 20000;
+                stompClient.heartbeat.incoming = 0;
+                stompClient.reconnect_delay = 3000;
+                stompClient.debug((debugMessage) => {
+                    console.log(`stompMessage : ${debugMessage}`);
+                });
+
+                setIsMyMessageEntered(true); // 최초 스크롤 최하단 설정용
+            }
+            // console.log(`접속 상태 : ${stompClient.connected}`);
+
+            if (!stompClient.connected) {
+                // 최초 접속 시 이전 메시지 가져오기
+                getBeforeChatContents();
+                // 접속과 구독 설정
+                stompClient.connect({}, onConnected);
+            }
+
+            if (isMyMessageEntered) {
+                messageArea.current.scrollTop =
+                    messageArea.current.scrollHeight; // 스크롤 최하단으로 이동
+                setIsMyMessageEntered(false); // 초기화
+            }
         }
     }, [chatRoom, contents]);
 
-    return chatRoom == null ? (
-        <Box pb={3} sx={{ height: "78vh" }}>
-            <Divider sx={{ mb: 3 }} />
-            <AvatarSuccess>
-                <TextsmsTwoTone />
-            </AvatarSuccess>
-            <Typography sx={{ mt: 2, textAlign: "center" }} variant="subtitle2">
-                채팅방 목록에서 접속할 채팅방을 선택해주세요.
-            </Typography>
-            <Divider sx={{ mt: 3 }} />
-        </Box>
-    ) : (
-        <>
-            {contents.map((messageContent, index) => (
-                <p key={index}>{messageContent.content}</p>
-            ))}
-            <DividerWrapper>
-                {format(subDays(new Date(), 3), "yyyy.MM.dd", {
-                    locale: ko
-                })}
-            </DividerWrapper>
+    const renderOpponentChat = (messageContent, index) => {
+        return (
             <Box
+                key={`${messageContent.senderId}_${index}`}
                 display="flex"
                 alignItems="flex-start"
                 justifyContent="flex-start"
                 py={3}
+                pl={2}
             >
                 <Avatar
                     variant="rounded"
                     sx={{ width: 50, height: 50 }}
-                    alt="Zain Baptista"
-                    src="/static/images/avatars/2.jpg"
+                    alt={messageContent.senderIdentity}
+                    src={opponentUser.avatar}
                 />
                 <Box
                     display="flex"
@@ -191,28 +233,46 @@ function ChatContent(props) {
                     ml={2}
                 >
                     <CardWrapperSecondary>
-                        Hi. Can you send me the missing invoices asap?
+                        {messageContent.content}
                     </CardWrapperSecondary>
                     <Typography
                         variant="subtitle1"
-                        sx={{ pt: 1, display: "flex", alignItems: "center" }}
+                        sx={{
+                            pt: 1,
+                            display: "flex",
+                            alignItems: "center"
+                        }}
                     >
                         <ScheduleTwoToneIcon
                             sx={{ mr: 0.5 }}
                             fontSize="small"
                         />
-                        {formatDistance(subHours(new Date(), 115), new Date(), {
-                            addSuffix: true,
-                            locale: ko
-                        })}
+                        {messageContent.createdDate == null
+                            ? "알수없음"
+                            : formatDistance(
+                                  new Date(messageContent.createdDate),
+                                  new Date(),
+                                  {
+                                      includeSeconds: true,
+                                      addSuffix: true,
+                                      locale: ko
+                                  }
+                              )}
                     </Typography>
                 </Box>
             </Box>
+        );
+    };
+
+    const renderMyChat = (messageContent, index) => {
+        return (
             <Box
+                key={`${messageContent.senderId}_${index}`}
                 display="flex"
                 alignItems="flex-start"
                 justifyContent="flex-end"
                 py={3}
+                pr={2}
             >
                 <Box
                     display="flex"
@@ -222,8 +282,7 @@ function ChatContent(props) {
                     mr={2}
                 >
                     <CardWrapperPrimary>
-                        Yes, I&#39;ll email them right now. I&#39;ll let you
-                        know once the remaining invoices are done.
+                        {messageContent.content}
                     </CardWrapperPrimary>
                     <Typography
                         variant="subtitle1"
@@ -233,149 +292,71 @@ function ChatContent(props) {
                             sx={{ mr: 0.5 }}
                             fontSize="small"
                         />
-                        {formatDistance(subHours(new Date(), 125), new Date(), {
-                            addSuffix: true,
-                            locale: ko
-                        })}
+                        {messageContent.createdDate == null
+                            ? "알수없음"
+                            : formatDistance(
+                                  new Date(messageContent.createdDate),
+                                  new Date(),
+                                  {
+                                      includeSeconds: true,
+                                      addSuffix: true,
+                                      locale: ko
+                                  }
+                              )}
                     </Typography>
                 </Box>
                 <Avatar
                     variant="rounded"
                     sx={{ width: 50, height: 50 }}
-                    alt={opponentUser.name}
-                    src={opponentUser.avatar}
+                    alt={messageContent.senderIdentity}
+                    src={chatUser.avatar}
                 />
             </Box>
-            <DividerWrapper>
-                {format(subDays(new Date(), 5), "yyyy.MM.dd", {
-                    locale: ko
+        );
+    };
+
+    return chatRoom == null ? (
+        <Box pb={3} sx={{ height: "80vh" }}>
+            <Divider sx={{ mb: 3 }} />
+            <AvatarSuccess>
+                <TextsmsTwoTone />
+            </AvatarSuccess>
+            <Typography sx={{ mt: 2, textAlign: "center" }} variant="subtitle2">
+                채팅목록에서 접속할 채팅방을 선택해주세요.
+            </Typography>
+            <Divider sx={{ mt: 3 }} />
+        </Box>
+    ) : (
+        <>
+            <List
+                ref={messageArea}
+                sx={{
+                    width: "100%",
+                    height: "78vh",
+                    maxHeight: "80%",
+                    position: "relative",
+                    overflow: "auto"
+                }}
+            >
+                {contents.map((messageContent, index) => {
+                    const isMyChat = messageContent.senderId === chatUser.id;
+
+                    return isMyChat
+                        ? renderMyChat(messageContent, index)
+                        : renderOpponentChat(messageContent, index);
                 })}
-            </DividerWrapper>
-            <Box
-                display="flex"
-                alignItems="flex-start"
-                justifyContent="flex-end"
-                py={3}
-            >
-                <Box
-                    display="flex"
-                    alignItems="flex-end"
-                    flexDirection="column"
-                    justifyContent="flex-end"
-                    mr={2}
-                >
-                    <CardWrapperPrimary>Hey! Are you there?</CardWrapperPrimary>
-                    <CardWrapperPrimary sx={{ mt: 2 }}>
-                        Heeeelloooo????
-                    </CardWrapperPrimary>
-                    <Typography
-                        variant="subtitle1"
-                        sx={{ pt: 1, display: "flex", alignItems: "center" }}
-                    >
-                        <ScheduleTwoToneIcon
-                            sx={{ mr: 0.5 }}
-                            fontSize="small"
-                        />
-                        {formatDistance(subHours(new Date(), 60), new Date(), {
-                            addSuffix: true,
-                            locale: ko
-                        })}
-                    </Typography>
-                </Box>
-                <Avatar
-                    variant="rounded"
-                    sx={{ width: 50, height: 50 }}
-                    alt={opponentUser.name}
-                    src={opponentUser.avatar}
-                />
-            </Box>
-            <DividerWrapper>오늘</DividerWrapper>
-            <Box
-                display="flex"
-                alignItems="flex-start"
-                justifyContent="flex-start"
-                py={3}
-            >
-                <Avatar
-                    variant="rounded"
-                    sx={{ width: 50, height: 50 }}
-                    alt="Zain Baptista"
-                    src="/static/images/avatars/2.jpg"
-                />
-                <Box
-                    display="flex"
-                    alignItems="flex-start"
-                    flexDirection="column"
-                    justifyContent="flex-start"
-                    ml={2}
-                >
-                    <CardWrapperSecondary>Hey there!</CardWrapperSecondary>
-                    <CardWrapperSecondary sx={{ mt: 1 }}>
-                        How are you? Is it ok if I call you?
-                    </CardWrapperSecondary>
-                    <Typography
-                        variant="subtitle1"
-                        sx={{ pt: 1, display: "flex", alignItems: "center" }}
-                    >
-                        <ScheduleTwoToneIcon
-                            sx={{ mr: 0.5 }}
-                            fontSize="small"
-                        />
-                        {formatDistance(subMinutes(new Date(), 6), new Date(), {
-                            addSuffix: true,
-                            locale: ko
-                        })}
-                    </Typography>
-                </Box>
-            </Box>
-            <Box
-                display="flex"
-                alignItems="flex-start"
-                justifyContent="flex-end"
-                py={3}
-            >
-                <Box
-                    display="flex"
-                    alignItems="flex-end"
-                    flexDirection="column"
-                    justifyContent="flex-end"
-                    mr={2}
-                >
-                    <CardWrapperPrimary>
-                        Hello, I just got my Amazon order shipped and I’m very
-                        happy about that.
-                    </CardWrapperPrimary>
-                    <CardWrapperPrimary sx={{ mt: 1 }}>
-                        Can you confirm?
-                    </CardWrapperPrimary>
-                    <Typography
-                        variant="subtitle1"
-                        sx={{ pt: 1, display: "flex", alignItems: "center" }}
-                    >
-                        <ScheduleTwoToneIcon
-                            sx={{ mr: 0.5 }}
-                            fontSize="small"
-                        />
-                        {formatDistance(subMinutes(new Date(), 8), new Date(), {
-                            addSuffix: true,
-                            locale: ko
-                        })}
-                    </Typography>
-                </Box>
-                <Avatar
-                    variant="rounded"
-                    sx={{ width: 50, height: 50 }}
-                    alt={opponentUser.name}
-                    src={opponentUser.avatar}
-                />
-            </Box>
+            </List>
             <ChatBottomBar>
                 <Card sx={{ display: "flex", alignItems: "center", p: 2 }}>
                     <Hidden mdDown>
-                        <Avatar alt={chatUser.name} src={chatUser.avatar} />
+                        <Avatar
+                            alt={chatUser.name}
+                            src={chatUser.avatar}
+                            sx={{ mr: 1 }}
+                        />
                         <DividerWrapper orientation="vertical" flexItem />
                     </Hidden>
-                    <Box sx={{ flex: 1, mr: 2 }}>
+                    <Box sx={{ flex: 1, ml: 2, mr: 2 }}>
                         <TextField
                             inputRef={inputMessageBox}
                             hiddenLabel
@@ -390,6 +371,7 @@ function ChatContent(props) {
                         startIcon={<SendTwoToneIcon />}
                         variant="contained"
                         onClick={handleEnter}
+                        sx={{ ml: 1 }}
                     >
                         전송
                     </Button>

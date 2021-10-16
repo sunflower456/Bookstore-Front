@@ -9,7 +9,6 @@ import Scrollbar from "../components/Scrollbar";
 import SidebarContent from "../components/chatRoom/SidebarContent";
 import TopBarContent from "../components/chatRoom/TopBarContent";
 import ChatContent from "../components/chatRoom/ChatContent";
-import BottomBarContent from "../components/chatRoom/BottomBarContent";
 import { checkMyInfo } from "../modules/auth";
 import { getMyPostChatRoomList } from "../lib/api";
 // images
@@ -19,13 +18,14 @@ import { getMyPostChatRoomList } from "../lib/api";
 const RootStyle = styled(Page)(({ theme }) => ({
     display: "flex",
     // minHeight: "100%",
-    height: "120vh",
+    height: "100%",
+    maxHeight: "100vh",
     alignItems: "center"
 }));
 
 const Sidebar = styled(Box)(({ theme }) => ({
     width: "300px",
-    height: "78vh",
+    height: "80vh",
     background: theme.palette.background.paper,
     borderRight: `${theme.palette.grey.A200} solid 1px`
 }));
@@ -48,10 +48,6 @@ const ChatMain = styled(Box)(() => ({
     flex: 1
 }));
 
-const ChatBottomBar = styled(Box)(({ theme }) => ({
-    padding: theme.spacing(3)
-}));
-
 // const pageStyle = makeStyles((theme) => ({}));
 
 // ----------------------------------------------------------------------
@@ -59,8 +55,6 @@ const ChatBottomBar = styled(Box)(({ theme }) => ({
 export default function ChatPage() {
     const [chatList, setChatList] = useState([]);
     // const classes = pageStyle();
-
-    const chatArea = useRef();
 
     // store dispatch 사용
     const dispatch = useDispatch();
@@ -70,8 +64,12 @@ export default function ChatPage() {
         myInfo: auth.myInfo
     }));
 
+    // store 상태 조회 - 선택 채팅방 정보
+    const { chatRoom } = useSelector(({ chat }) => ({
+        chatRoom: chat.chatRoom
+    }));
+
     // myInfo 변경 시 최신화처리 (checkMyInfo)
-    // 스크롤 최하단으로 내림
     useEffect(() => {
         dispatch(checkMyInfo()); // 내 정보 확인
         getMyChatList(); // 채팅목록 전체 가져오기
@@ -106,9 +104,7 @@ export default function ChatPage() {
                     <TopBarContent />
                 </ChatTopBar>
                 <ChatMain>
-                    <Scrollbar ref={chatArea} sx={{ height: "100%" }}>
-                        <ChatContent userInfo={myInfo} />
-                    </Scrollbar>
+                    <ChatContent userInfo={myInfo} />
                 </ChatMain>
             </ChatWindow>
         </RootStyle>

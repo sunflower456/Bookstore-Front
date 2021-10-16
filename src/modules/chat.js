@@ -9,7 +9,7 @@ const CHECK_TARGET_CHATROOM = "chat/CHECK_TARGET_CHATROOM";
 
 /* action constructor */
 // 채팅방 id 세팅
-export const setTargetChatRoomId = createAction(
+export const setTargetChatRoom = createAction(
     SET_TARGET_CHATROOM,
     (chatRoom) => chatRoom
 );
@@ -21,9 +21,9 @@ export const setTargetChatRoomId = createAction(
 // 채팅방 목록에서 선택한 채팅방 설정
 function* checkTargetChatRoomSaga(action) {
     try {
-        const selectedRoomId = action.payload == null ? "" : action.payload;
+        const selectedRoom = action.payload == null ? "" : action.payload;
 
-        yield put(setTargetChatRoomId(selectedRoomId));
+        yield put(setTargetChatRoom(selectedRoom));
     } catch (e) {
         console.log(`checkMyInfoSaga 에러 : ${e}`);
     }
