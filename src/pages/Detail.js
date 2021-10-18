@@ -81,7 +81,13 @@ export default function ProductDetail() {
         } else if (name === "description") {
             setEditDescription(value);
         } else if (name === "postStatus") {
-            setEditPostStatus(value);
+            if (value === "판매 중") {
+                setEditPostStatus("SALE");
+            } else if (value === "예약 중") {
+                setEditPostStatus("RESERVED");
+            } else if (value === "판매 완료") {
+                setEditPostStatus("SOLD_OUT");
+            }
         }
     };
 
@@ -132,7 +138,13 @@ export default function ProductDetail() {
                     console.log(err.response.message);
                 }
             });
-
+            await api.editPostStatus(id, editPostStatus).catch((err) => {
+                if (err.response == null) {
+                    alert(err.message);
+                } else {
+                    console.log(err.response.message);
+                }
+            });
             fetchDetailData();
             await setDetail(<DetailTable product={product} />);
             await setDelImages([]);

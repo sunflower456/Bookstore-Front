@@ -132,3 +132,9 @@ export const addMyFavoritePost = (id) =>
             "Content-Type": "application/json"
         }
     });
+
+/* 게시글 상태 변경 기능 */
+export const editPostStatus = (postId, postStatus) =>
+    client.patch(`/api/post/postStatus/${postId}`, {
+        postStatus
+    });

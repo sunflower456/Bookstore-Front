@@ -75,8 +75,14 @@ export default function ProductDetail(props) {
     };
 
     const deleteImages = (no) => {
-        setProductImages(productImages.filter((img, imgId) => imgId !== no));
-        props.deleteImages(no);
+        if (no === 0) {
+            alert("첫번째 이미지는 삭제할 수 없습니다.");
+        } else {
+            setProductImages(
+                productImages.filter((img, imgId) => imgId !== no)
+            );
+            props.deleteImages(no);
+        }
     };
 
     return (
@@ -331,6 +337,7 @@ export default function ProductDetail(props) {
                                         align="center"
                                     >
                                         <Input
+                                            type="number"
                                             name="bookListPrice"
                                             defaultValue={
                                                 props.product.product.price
