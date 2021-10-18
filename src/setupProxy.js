@@ -14,15 +14,14 @@ module.exports = (app) => {
         })
     );
     app.use(
-        // createProxyMiddleware("/api/message", {
-        createProxyMiddleware("/api/chat/room/*/messages", {
-            target: "http://localhost:9090",
+        createProxyMiddleware("/api/room", {
+            target: "http://localhost:8080",
             changeOrigin: true
         })
     );
     app.use(
-        createProxyMiddleware("/api/chat", {
-            target: "http://localhost:8080",
+        createProxyMiddleware("/api/message", {
+            target: "http://localhost:8081",
             changeOrigin: true
         })
     );

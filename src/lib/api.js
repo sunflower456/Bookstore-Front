@@ -76,11 +76,11 @@ export const deleteMyFavoritePost = (interestId) =>
 export const getMySalePosts = () => client.get("/api/user/me/post");
 
 /* 채팅방 목록 조회 */
-export const getMyPostChatRoomList = () => client.get("/api/chat/room");
+export const getMyPostChatRoomList = () => client.get("/api/room");
 
 /* 채팅방 삭제(나가기) 처리 */
 export const setLeaveChatRoom = (roomId) =>
-    client.delete(`/api/chat/room/${roomId}`);
+    client.delete(`/api/room/${roomId}`);
 
 /* 대상 채팅방의 이전 메시지 조회 */
 export const getBeforeChats = (roomId, page, size) => {
@@ -88,6 +88,6 @@ export const getBeforeChats = (roomId, page, size) => {
     const targetSize = size == null ? 50 : size;
 
     return client.get(
-        `/api/chat/room/${roomId}/messages?page=${targetPage}&size=${targetSize}`
+        `/api/message/${roomId}?page=${targetPage}&size=${targetSize}`
     );
 };

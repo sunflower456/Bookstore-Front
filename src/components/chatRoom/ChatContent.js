@@ -168,7 +168,11 @@ function ChatContent(props) {
 
         await api
             .getBeforeChats(chatRoom.roomId, targetPage, targetSize)
-            .then((response) => setContents(response.data))
+            .then((response) => {
+                const chatData = response.data;
+
+                setContents([...chatData].reverse()); // 가장 최근 데이터가 index 0이므로 배열을 거꾸로 처리
+            })
             .catch((reason) =>
                 console.log(`이전 메시지 불러오기 에러 : ${reason}`)
             );
@@ -178,7 +182,7 @@ function ChatContent(props) {
         if (chatRoom != null) {
             if (stompClient == null) {
                 /* stomp client 생성 */
-                const webSocketSourceUrl = "http://localhost:9090/ws";
+                const webSocketSourceUrl = "http://localhost:8081/ws";
                 const sockJS = new SockJS(webSocketSourceUrl);
 
                 stompClient = Stomp.over(sockJS);

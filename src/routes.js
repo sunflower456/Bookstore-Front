@@ -29,7 +29,6 @@ export default function Router() {
             path: "/",
             element: <LogoOnlyLayout />,
             children: [
-                { path: "404", element: <NotFound /> },
                 { path: "login", element: <Login /> },
                 { path: "register", element: <Register /> }
             ]
@@ -56,8 +55,8 @@ export default function Router() {
             path: "/chat",
             element: <MessengerLayout />,
             children: [{ path: "/", element: <ChatPage /> }]
-        }
+        },
 
-        // { path: '*', element: <Navigate to="/404" replace /> }
+        { path: "*", element: <NotFound /> }
     ]);
 }
