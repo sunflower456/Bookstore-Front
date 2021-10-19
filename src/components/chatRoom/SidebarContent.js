@@ -223,9 +223,6 @@ function SidebarContent(prop) {
                                     primary={value.postTitle}
                                     secondary={`${value.opponentIdentity} 님과의 채팅방`}
                                 />
-                                <Label color="primary">
-                                    <b>2</b>
-                                </Label>
                             </ListItemWrapper>
                         ))}
                     </List>
@@ -257,9 +254,6 @@ function SidebarContent(prop) {
                                         primary={value.postTitle}
                                         secondary={`${value.opponentIdentity} 님과의 채팅방`}
                                     />
-                                    <Label color="primary">
-                                        <b>2</b>
-                                    </Label>
                                 </ListItemWrapper>
                             ))}
                     </List>
