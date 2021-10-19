@@ -72,8 +72,6 @@ export default function Router() {
         {
             path: "/chat",
             element: <MessengerLayout />,
-            children: [{ path: "/", element: <ChatPage /> }]
-        },
             children: [{ path: "", element: <ChatPage /> }]
         },
 
