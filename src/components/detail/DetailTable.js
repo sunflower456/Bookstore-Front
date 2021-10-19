@@ -309,7 +309,9 @@ export default function ProductDetail(props) {
                                     component="p"
                                     style={{ marginTop: "3px" }}
                                 >
-                                    <b>{myInfo.identity}</b>
+                                    <b>
+                                        {props.product.product.sellerIdentity}
+                                    </b>
                                 </Typography>
                             </CardContent>
                         </Card>

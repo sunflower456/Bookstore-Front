@@ -42,7 +42,19 @@ export default function ProductDetail() {
     const [delImages, setDelImages] = useState([]);
     const formData = new FormData();
     let temp = [];
+
+    const { accessToken, myInfo } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken,
+        myInfo: auth.myInfo
+    }));
+
     const onEditClick = () => {
+        console.log(myInfo);
+        console.log(product);
+        if (myInfo.userId !== product.product.sellerId) {
+            alert("본인 게시글만 수정할 수 있습니다.");
+            return;
+        }
         if (detailFlag === "read") {
             setDetailFlag("edit");
             setDetail(
@@ -81,13 +93,7 @@ export default function ProductDetail() {
         } else if (name === "description") {
             setEditDescription(value);
         } else if (name === "postStatus") {
-            if (value === "판매 중") {
-                setEditPostStatus("SALE");
-            } else if (value === "예약 중") {
-                setEditPostStatus("RESERVED");
-            } else if (value === "판매 완료") {
-                setEditPostStatus("SOLD_OUT");
-            }
+            setEditPostStatus(value);
         }
     };
 
@@ -138,13 +144,7 @@ export default function ProductDetail() {
                     console.log(err.response.message);
                 }
             });
-            await api.editPostStatus(id, editPostStatus).catch((err) => {
-                if (err.response == null) {
-                    alert(err.message);
-                } else {
-                    console.log(err.response.message);
-                }
-            });
+
             fetchDetailData();
             await setDetail(<DetailTable product={product} />);
             await setDelImages([]);
@@ -170,6 +170,34 @@ export default function ProductDetail() {
                         console.log(err.response.message);
                     }
                 });
+        } catch (e) {
+            if (e.response == null) {
+                alert(e.message);
+            } else {
+                console.log(e.response.message);
+            }
+        }
+    };
+
+    const createChat = async () => {
+        try {
+            console.log(product);
+            console.log(myInfo);
+            if (product.product.sellerId === myInfo.userId) {
+                alert("본인 게시글에서는 채팅을 접속할 수 없습니다.");
+                return;
+            } else {
+                await api
+                    .openChat(id, product.product.sellerId)
+                    .catch((err) => {
+                        if (err.response == null) {
+                            alert(err.message);
+                        } else {
+                            console.log(err.response.message);
+                        }
+                    });
+                window.location.href = "/chat";
+            }
         } catch (e) {
             if (e.response == null) {
                 alert(e.message);
@@ -288,7 +316,9 @@ export default function ProductDetail() {
             <br />
             <br />
             <ButtonGroup variant="contained" color="primary">
-                <Button size="large">채팅하기</Button>
+                <Button size="large" onClick={createChat}>
+                    채팅하기
+                </Button>
                 <Button size="large" onClick={editInterest}>
                     {interestTag}
                 </Button>

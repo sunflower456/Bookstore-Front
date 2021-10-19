@@ -154,3 +154,10 @@ export const editPostStatus = (postId, postStatus) =>
     client.patch(`/api/post/postStatus/${postId}`, {
         postStatus
     });
+
+/* 채팅방 개설 기능  */
+export const openChat = (postId, sellerId) =>
+    client.post("/api/room", {
+        postId,
+        sellerId
+    });

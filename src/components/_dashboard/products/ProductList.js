@@ -123,7 +123,7 @@ const ProductList = forwardRef((props) => {
                 fetchSearchedDataByPublisher();
             }
         }
-    });
+    }, [props]);
 
     useEffect(() => {
         fetchAllData();
