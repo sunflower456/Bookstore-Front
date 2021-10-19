@@ -85,10 +85,12 @@ function ChatContent(props) {
     const { userInfo } = props;
     const [message, setMessage] = useState(""); // 작성된 메시지
     const [contents, setContents] = useState([]); // subscribe로 전달받는 메시지 포함 content
-    const [isMyMessageEntered, setIsMyMessageEntered] = useState(false);
+    const [isMyMessageEntered, setIsMyMessageEntered] = useState(false); // 메시지 입력 상태를 구분하여 스크롤을 최하단으로 옮기는 로직을 구현
+    const [currentChatRoomId, setCurrentChatRoomId] = useState(null); // 채팅방 변경 시 상태 변경 용도
 
     const inputMessageBox = useRef();
     const messageArea = useRef();
+
     // store 상태 조회
     const { chatRoom } = useSelector(({ chat }) => ({
         chatRoom: chat.chatRoom
@@ -180,7 +182,10 @@ function ChatContent(props) {
 
     useEffect(() => {
         if (chatRoom != null) {
-            if (stompClient == null) {
+            /* 채팅방을 바꾸면 stompClient를 새로 만들어줘야 하는것 같다.
+             * 새로 만들지 않으면 접속이 되지 않는 증상이 있음.
+             * */
+            if (stompClient == null || chatRoom.roomId !== currentChatRoomId) {
                 /* stomp client 생성 */
                 const webSocketSourceUrl = "http://localhost:8081/ws";
                 const sockJS = new SockJS(webSocketSourceUrl);
@@ -196,13 +201,18 @@ function ChatContent(props) {
 
                 setIsMyMessageEntered(true); // 최초 스크롤 최하단 설정용
             }
-            // console.log(`접속 상태 : ${stompClient.connected}`);
 
-            if (!stompClient.connected) {
+            /* stompClient가 접속 상태이거나 다른 채팅방으로 변경된 경우 동작 처리*/
+            if (
+                !stompClient.connected ||
+                chatRoom.roomId !== currentChatRoomId
+            ) {
                 // 최초 접속 시 이전 메시지 가져오기
                 getBeforeChatContents();
                 // 접속과 구독 설정
                 stompClient.connect({}, onConnected);
+
+                setCurrentChatRoomId(chatRoom.roomId);
             }
 
             if (isMyMessageEntered) {
