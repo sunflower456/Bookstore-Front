@@ -15,7 +15,7 @@ const HeaderStyle = styled(Box)(({ theme }) => ({
     top: 0,
     left: 0,
     lineHeight: 0,
-    width: "100%",
+    width: "auto",
     position: "absolute",
     padding: theme.spacing(3, 3, 0),
     [theme.breakpoints.up("sm")]: {
