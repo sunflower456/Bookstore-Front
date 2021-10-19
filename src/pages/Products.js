@@ -1,45 +1,37 @@
 import { useState } from "react";
-import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 import { Container, Typography, Button, Stack } from "@material-ui/core";
 import { ArrowRight } from "@material-ui/icons";
 import Page from "../components/Page";
 import { ProductList } from "../components/_dashboard/products";
-import PRODUCTS from "../_mocks_/products";
 import Searchbar from "../layouts/dashboard/Searchbar";
 
 // ----------------------------------------------------------------------
 
 export default function EcommerceShop() {
-    const [openFilter, setOpenFilter] = useState(false);
     const [content, setContent] = useState("");
-    const [products, setProducts] = useState(PRODUCTS);
+    const [search, setSearch] = useState(10);
 
-    const formik = useFormik({
-        initialValues: {
-            gender: "",
-            category: "",
-            colors: "",
-            priceRange: "",
-            rating: ""
-        },
-        onSubmit: () => {
-            setOpenFilter(false);
-        }
-    });
+    // store 상태 조회
+    const { accessToken, myInfo } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken,
+        myInfo: auth.myInfo
+    }));
+    const [productList, setProductList] = useState(<ProductList />);
 
     const handleInputChange = (value) => {
         setContent({ content: value });
     };
     const handleInputClick = () => {
-        setProducts({
-            products: PRODUCTS.filter((product) => {
-                return product.name.includes(content.content);
-            })
-        });
+        setProductList(<ProductList content={content} search={search} />);
     };
 
     const onPageChange = () => {
         window.location.href = "/products/addPost";
+    };
+
+    const handleSearchChange = (value) => {
+        setSearch(value);
     };
 
     return (
@@ -62,6 +54,7 @@ export default function EcommerceShop() {
                 <Searchbar
                     onChange={handleInputChange}
                     onClick={handleInputClick}
+                    onSearchChange={handleSearchChange}
                 />
                 <Stack
                     direction="row"
@@ -70,7 +63,7 @@ export default function EcommerceShop() {
                     justifyContent="flex-end"
                     sx={{ mb: 5 }}
                 ></Stack>
-                <ProductList products={products} />
+                {productList}
             </Container>
         </Page>
     );

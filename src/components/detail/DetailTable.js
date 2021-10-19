@@ -1,5 +1,5 @@
-import { useParams } from "react-router";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import StarIcon from "@material-ui/icons/Star";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import {
@@ -11,7 +11,8 @@ import {
     Step,
     Stepper,
     StepLabel,
-    StepConnector
+    StepConnector,
+    Button
 } from "@material-ui/core";
 import clsx from "clsx";
 import Check from "@material-ui/icons/Check";
@@ -21,132 +22,25 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
-import PRODUCTS from "../../_mocks_/products";
 
 // ----------------------------------------------------------------------
 
-function getSteps() {
-    return ["특상", "상", "중", "하"];
-}
-
-function getPostSteps() {
-    return ["판매중", "거래중", "거래완료"];
-}
-const QontoConnector = withStyles({
-    alternativeLabel: {
-        top: 10,
-        left: "calc(-50% + 16px)",
-        right: "calc(50% + 16px)"
-    },
-    active: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    completed: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    line: {
-        borderColor: "#eaeaf0",
-        borderTopWidth: 3,
-        borderRadius: 1
-    }
-})(StepConnector);
-const useQontoStepIconStyles = makeStyles({
-    root: {
-        color: "#eaeaf0",
-        display: "flex",
-        height: 22,
-        alignItems: "center"
-    },
-    active: {
-        color: "#784af4"
-    },
-    circle: {
-        width: 8,
-        height: 8,
-        borderRadius: "50%",
-        backgroundColor: "currentColor"
-    },
-    completed: {
-        color: "#784af4",
-        zIndex: 1,
-        fontSize: 18
-    }
-});
-
-function QontoStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 특상 2: 상 3: 중 4: 하
-    if (icon === 2) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
-function QontoPostStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 판매중 2: 거래중 3:거래완료
-    if (icon === 3) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
-export default function ProductDetail() {
-    const { id } = useParams();
+export default function ProductDetail(props) {
     const steps = getSteps();
     const postSteps = getPostSteps();
     const [imageCurrentNo, setImageCurrentNo] = useState(0);
 
-    const product = PRODUCTS[id];
+    const { accessToken, myInfo } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken,
+        myInfo: auth.myInfo
+    }));
+
+    const { bookStatus, postStatus } = props.product.product;
+
+    console.log("props : ", props.product.product);
 
     // cover 수정하기
-    const productImages = [
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover
-    ];
+    const productImages = props.product.product.images;
 
     const onChangeImage = (index) => {
         let currIndex = index;
@@ -158,6 +52,161 @@ export default function ProductDetail() {
             currIndex = productImages.length - 1;
         }
         setImageCurrentNo(currIndex);
+    };
+
+    function getSteps() {
+        return ["최상", "상", "중", "하"];
+    }
+
+    function getPostSteps() {
+        return ["판매 중", "예약 중", "거래 완료"];
+    }
+    const QontoConnector = withStyles({
+        alternativeLabel: {
+            top: 10,
+            left: "calc(-50% + 16px)",
+            right: "calc(50% + 16px)"
+        },
+        active: {
+            "& $line": {
+                borderColor: "#784af4"
+            }
+        },
+        completed: {
+            "& $line": {
+                borderColor: "#784af4"
+            }
+        },
+        line: {
+            borderColor: "#eaeaf0",
+            borderTopWidth: 3,
+            borderRadius: 1
+        }
+    })(StepConnector);
+    const useQontoStepIconStyles = makeStyles({
+        root: {
+            color: "#eaeaf0",
+            display: "flex",
+            height: 22,
+            alignItems: "center"
+        },
+        active: {
+            color: "#784af4"
+        },
+        circle: {
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            backgroundColor: "currentColor"
+        },
+        completed: {
+            color: "#784af4",
+            zIndex: 1,
+            fontSize: 18
+        }
+    });
+
+    // 책상태 가져오는 함수
+    function getStatus(status) {
+        if (status === "최상") {
+            return 1;
+        } else if (status === "상") {
+            return 2;
+        } else if (status === "중") {
+            return 3;
+        } else {
+            return 4;
+        }
+    }
+
+    // 책상태 가져오는 함수
+    function getPostStatus(status) {
+        if (status === "판매 중") {
+            return 1;
+        } else if (status === "예약 중") {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+
+    // 책상태 가져오는 함수
+    function QontoStepIcon(post) {
+        const classes = useQontoStepIconStyles();
+        const { active, completed, icon } = post;
+
+        const status = getStatus(bookStatus);
+
+        let _active = active;
+
+        // 1: 특상 2: 상 3: 중 4: 하
+        if (icon === status) {
+            _active = true;
+        } else {
+            _active = false;
+        }
+        return (
+            <div
+                className={clsx(classes.root, {
+                    [classes.active]: _active
+                })}
+            >
+                {completed ? (
+                    <Check className={classes.completed} />
+                ) : (
+                    <div className={classes.circle} />
+                )}
+            </div>
+        );
+    }
+
+    // 판매 상태 가져오는 함수
+    function QontoPostStepIcon(post) {
+        const classes = useQontoStepIconStyles();
+        const { active, completed, icon } = post;
+
+        const status = getPostStatus(postStatus);
+        let _active = active;
+
+        // 1: 판매중 2: 예약중 3:판매완료
+        if (icon === status) {
+            _active = true;
+        } else {
+            _active = false;
+        }
+        return (
+            <div
+                className={clsx(classes.root, {
+                    [classes.active]: _active
+                })}
+            >
+                {completed ? (
+                    <Check className={classes.completed} />
+                ) : (
+                    <div className={classes.circle} />
+                )}
+            </div>
+        );
+    }
+    const bookSummarySubstr =
+        props.product.product.bookResponse.bookSummary.substring(0, 30);
+    const bookSummary = props.product.product.bookResponse.bookSummary;
+    const [showSummary, setShowSummary] = useState(bookSummarySubstr);
+    const [isSummary, setIsSummary] = useState(true);
+    const [moreButton, setMoreButton] = useState("더보기");
+
+    const bookSummaryClick = () => {
+        if (isSummary) {
+            // 더보기 눌렀을 시에
+            setIsSummary(false);
+            setShowSummary(bookSummary);
+            setMoreButton("접기");
+        } else {
+            // 더보기를 접을 때
+            setIsSummary(true);
+            setShowSummary(bookSummarySubstr);
+            setMoreButton("더보기");
+        }
     };
 
     return (
@@ -185,22 +234,19 @@ export default function ProductDetail() {
                                     {productImages?.map((image, no) => (
                                         <div className="slideContent" key={no}>
                                             <picture>
-                                                {product.status ? (
+                                                {props.product.product
+                                                    .myInterest ? (
                                                     <StarIcon
                                                         style={{
-                                                            color: "yellow",
                                                             position:
                                                                 "absolute",
-                                                            left: "1px"
+                                                            top: "45px",
+                                                            left: "10px",
+                                                            color: "yellow"
                                                         }}
                                                     />
                                                 ) : (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "blue",
-                                                            visibility: "hidden"
-                                                        }}
-                                                    />
+                                                        <div></div>
                                                 )}
                                                 <img
                                                     src={image}
@@ -251,7 +297,7 @@ export default function ProductDetail() {
                         <Card style={{ width: "80%" }}>
                             <CardContent>
                                 <Avatar
-                                    src={product.cover}
+                                    src={myInfo.profileImage}
                                     style={{
                                         float: "left",
                                         marginTop: "-5px",
@@ -263,7 +309,7 @@ export default function ProductDetail() {
                                     component="p"
                                     style={{ marginTop: "3px" }}
                                 >
-                                    <b>sunflower45</b>
+                                    <b>{myInfo.identity}</b>
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -278,6 +324,7 @@ export default function ProductDetail() {
                                         component="th"
                                         scope="row"
                                         align="center"
+                                        style={{ width: "100px" }}
                                     >
                                         <b>제목</b>
                                     </TableCell>
@@ -286,7 +333,7 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.name}
+                                        {props.product.product.title}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -302,7 +349,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.name}
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookTitle
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -318,7 +368,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        박 준
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookAuthor
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -334,7 +387,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        1293847192438719384
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookIsbn
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -350,7 +406,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        문학동네
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookPublisher
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -361,12 +420,18 @@ export default function ProductDetail() {
                                     >
                                         <b>요약 정보</b>
                                     </TableCell>
-                                    <TableCell
-                                        component="th"
-                                        scope="row"
-                                        align="center"
-                                    >
-                                        요약정보
+                                    <TableCell component="th" align="center">
+                                        {showSummary}
+                                        {bookSummary.length > 30 && (
+                                            <span className="moreButtonWrap">
+                                                {"···"}
+                                                <Button
+                                                    onClick={bookSummaryClick}
+                                                >
+                                                    {moreButton}
+                                                </Button>
+                                            </span>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -382,7 +447,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.price}
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookListPrice
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -398,7 +466,7 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        {product.priceSale}
+                                        {props.product.product.price}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -453,7 +521,7 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        부가 설명
+                                        {props.product.product.description}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>

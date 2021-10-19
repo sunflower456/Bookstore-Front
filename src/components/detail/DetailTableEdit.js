@@ -1,169 +1,82 @@
-import { useParams } from "react-router";
 import { useState } from "react";
-import StarIcon from "@material-ui/icons/Star";
-import { makeStyles, withStyles } from "@material-ui/styles";
+import { useSelector } from "react-redux";
+import Dropzone from "react-dropzone";
 import {
     Paper,
     Typography,
     Avatar,
     Card,
     CardContent,
-    Step,
-    Stepper,
-    StepLabel,
-    StepConnector,
     Input,
     Radio,
     RadioGroup,
     FormControlLabel,
     FormControl,
-    FormLabel
+    Button
 } from "@material-ui/core";
-import clsx from "clsx";
-import Check from "@material-ui/icons/Check";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableRow from "@material-ui/core/TableRow";
-import PRODUCTS from "../../_mocks_/products";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
-// ----------------------------------------------------------------------
+export default function ProductDetail(props) {
+    // store 상태 조회
+    const { accessToken, myInfo } = useSelector(({ auth }) => ({
+        accessToken: auth.accessToken,
+        myInfo: auth.myInfo
+    }));
 
-function getSteps() {
-    return ["특상", "상", "중", "하"];
-}
+    const onChangeEdit = (e) => {
+        props.onChangeEdit(e.target.name, e.target.value);
+    };
 
-function getPostSteps() {
-    return ["판매중", "거래중", "거래완료"];
-}
-const QontoConnector = withStyles({
-    alternativeLabel: {
-        top: 10,
-        left: "calc(-50% + 16px)",
-        right: "calc(50% + 16px)"
-    },
-    active: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    completed: {
-        "& $line": {
-            borderColor: "#784af4"
-        }
-    },
-    line: {
-        borderColor: "#eaeaf0",
-        borderTopWidth: 3,
-        borderRadius: 1
-    }
-})(StepConnector);
-const useQontoStepIconStyles = makeStyles({
-    root: {
-        color: "#eaeaf0",
-        display: "flex",
-        height: 22,
-        alignItems: "center"
-    },
-    active: {
-        color: "#784af4"
-    },
-    circle: {
-        width: 8,
-        height: 8,
-        borderRadius: "50%",
-        backgroundColor: "currentColor"
-    },
-    completed: {
-        color: "#784af4",
-        zIndex: 1,
-        fontSize: 18
-    }
-});
-
-function QontoStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 특상 2: 상 3: 중 4: 하
-    if (icon === 2) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
-function QontoPostStepIcon(props) {
-    const classes = useQontoStepIconStyles();
-    const { active, completed, icon } = props;
-
-    let _active = active;
-
-    // 1: 판매중 2: 거래중 3:거래완료
-    if (icon === 3) {
-        _active = true;
-    } else {
-        _active = false;
-    }
-    return (
-        <div
-            className={clsx(classes.root, {
-                [classes.active]: _active
-            })}
-        >
-            {completed ? (
-                <Check className={classes.completed} />
-            ) : (
-                <div className={classes.circle} />
-            )}
-        </div>
-    );
-}
-
-export default function ProductDetail() {
-    const { id } = useParams();
-    const steps = getSteps();
-    const postSteps = getPostSteps();
-    const [imageCurrentNo, setImageCurrentNo] = useState(0);
-
-    const product = PRODUCTS[id];
-
+    console.log("edit props : ", props);
     // cover 수정하기
-    const productImages = [
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover,
-        product.cover
-    ];
+    const [productImages, setProductImages] = useState(
+        props.product.product.images
+    );
 
-    const onChangeImage = (index) => {
-        let currIndex = index;
+    const bookSummarySubstr =
+        props.product.product.bookResponse.bookSummary.substring(0, 30);
+    const bookSummary = props.product.product.bookResponse.bookSummary;
+    const [showSummary, setShowSummary] = useState(bookSummarySubstr);
+    const [isSummary, setIsSummary] = useState(true);
+    const [moreButton, setMoreButton] = useState("더보기");
+    const maxImageLength = 5; // 최대 이미지 갯수
 
-        if (productImages.length <= currIndex) {
-            currIndex = 0;
+    const bookSummaryClick = () => {
+        if (isSummary) {
+            // 더보기 눌렀을 시에
+            setIsSummary(false);
+            setShowSummary(bookSummary);
+            setMoreButton("접기");
+        } else {
+            // 더보기를 접을 때
+            setIsSummary(true);
+            setShowSummary(bookSummarySubstr);
+            setMoreButton("더보기");
         }
-        if (index < 0) {
-            currIndex = productImages.length - 1;
+    };
+
+    const [fileNames, setFileNames] = useState([]);
+    const handleDrop = (acceptedFiles) => {
+        if (
+            acceptedFiles.length + props.product.product.images.length >
+            maxImageLength
+        ) {
+            alert("최대 업로드 가능한 이미지 수는 5개 입니다.");
+        } else {
+            setFileNames(acceptedFiles.map((file) => file.name));
+            props.onChangeImageFile(acceptedFiles);
         }
-        setImageCurrentNo(currIndex);
+    };
+
+    const deleteImages = (no) => {
+        setProductImages(productImages.filter((img, imgId) => imgId !== no));
+        props.deleteImages(no);
     };
 
     return (
@@ -171,84 +84,66 @@ export default function ProductDetail() {
             <Grid container>
                 <Grid item xs={4}>
                     <Paper>
-                        <div className="imageSlide">
-                            <div className="navBox">
-                                <span>{imageCurrentNo + 1}</span>
-                                <span>/</span>
-                                <span>
-                                    {productImages && productImages.length}
-                                </span>
-                            </div>
-                            <div className="slideBox">
-                                <div
-                                    className="slideList"
-                                    style={{
-                                        transform: `translate3d(${
-                                            imageCurrentNo * -500
-                                        }px, 0px, 0px)`
-                                    }}
-                                >
-                                    {productImages?.map((image, no) => (
-                                        <div className="slideContent" key={no}>
-                                            <picture>
-                                                {product.status ? (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "yellow",
-                                                            position:
-                                                                "absolute",
-                                                            left: "1px"
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <StarIcon
-                                                        style={{
-                                                            color: "blue",
-                                                            visibility: "hidden"
-                                                        }}
-                                                    />
-                                                )}
-                                                <img
-                                                    src={image}
-                                                    style={{
-                                                        width: "50%"
-                                                    }}
-                                                />
-                                            </picture>
-                                        </div>
+                        <div
+                            className="changeImages"
+                            style={{
+                                textAlign: "center",
+                                padding: "20px",
+                                border: "3px dashed #eeeeee",
+                                backgroundColor: "#fafafa",
+                                color: "#bdbdbd",
+                                marginBottom: "20px"
+                            }}
+                        >
+                            <Dropzone onDrop={handleDrop}>
+                                {({ getRootProps, getInputProps }) => (
+                                    <div
+                                        {...getRootProps({
+                                            className: "dropzone"
+                                        })}
+                                    >
+                                        <input {...getInputProps()} />
+                                        <p>
+                                            추가할 이미지를 drag and drop 하세요
+                                        </p>
+                                    </div>
+                                )}
+                            </Dropzone>
+                            <div>
+                                <strong>Files:</strong>
+                                <ul>
+                                    {fileNames.map((fileName) => (
+                                        <li key={fileName}>{fileName}</li>
                                     ))}
-                                </div>
-
-                                <div
-                                    className="buttonPrev"
-                                    onClick={() =>
-                                        onChangeImage(imageCurrentNo - 1)
-                                    }
-                                >
-                                    <i className="fas fa-chevron-left"></i>
-                                </div>
-                                <div
-                                    className="buttonNext"
-                                    onClick={() =>
-                                        onChangeImage(imageCurrentNo + 1)
-                                    }
-                                >
-                                    <i className="fas fa-chevron-right"></i>
-                                </div>
+                                </ul>
                             </div>
+                        </div>
+                        <div className="imageSlide">
                             <div
                                 className="paginationBox"
                                 style={{ width: "50%" }}
                             >
                                 {productImages.map((image, no) => (
-                                    <div
-                                        key={no}
-                                        onClick={() => {
-                                            onChangeImage(no);
-                                        }}
-                                    >
+                                    <div key={no}>
+                                        <div
+                                            style={{
+                                                top: "170px",
+                                                left: "35px"
+                                            }}
+                                        >
+                                            <DeleteForeverIcon
+                                                onClick={() => {
+                                                    deleteImages(no);
+                                                }}
+                                            />
+                                        </div>
                                         <picture>
-                                            <img src={image} />
+                                            <img
+                                                src={image}
+                                                style={{
+                                                    position: "relative"
+                                                }}
+                                            />
                                         </picture>
                                     </div>
                                 ))}
@@ -257,7 +152,7 @@ export default function ProductDetail() {
                         <Card style={{ width: "80%" }}>
                             <CardContent>
                                 <Avatar
-                                    src={product.cover}
+                                    src={myInfo.profileImage}
                                     style={{
                                         float: "left",
                                         marginTop: "-5px",
@@ -269,7 +164,7 @@ export default function ProductDetail() {
                                     component="p"
                                     style={{ marginTop: "3px" }}
                                 >
-                                    <b>sunflower45</b>
+                                    <b>{myInfo.identity}</b>
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -294,11 +189,14 @@ export default function ProductDetail() {
                                     >
                                         <Input
                                             name="title"
-                                            value={product.name}
+                                            defaultValue={
+                                                props.product.product.title
+                                            }
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
                                             }}
+                                            onChange={onChangeEdit}
                                         ></Input>
                                     </TableCell>
                                 </TableRow>
@@ -315,14 +213,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookTitle"
-                                            value={product.name}
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookTitle
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -338,14 +232,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookAuther"
-                                            value="박준"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookAuthor
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -361,14 +251,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookIsbn"
-                                            value="1293847192438719384"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookIsbn
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -384,14 +270,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="bookPublisher"
-                                            value="문학동네"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookPublisher
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -402,19 +284,18 @@ export default function ProductDetail() {
                                     >
                                         <b>요약 정보</b>
                                     </TableCell>
-                                    <TableCell
-                                        component="th"
-                                        scope="row"
-                                        align="center"
-                                    >
-                                        <Input
-                                            name="description"
-                                            value="요약정보"
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                    <TableCell component="th" align="center">
+                                        {showSummary}
+                                        {bookSummary.length > 30 && (
+                                            <span className="moreButtonWrap">
+                                                {"···"}
+                                                <Button
+                                                    onClick={bookSummaryClick}
+                                                >
+                                                    {moreButton}
+                                                </Button>
+                                            </span>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -430,14 +311,10 @@ export default function ProductDetail() {
                                         scope="row"
                                         align="center"
                                     >
-                                        <Input
-                                            name="price"
-                                            value={product.price}
-                                            style={{
-                                                width: "100%",
-                                                fontSize: "0.875rem"
-                                            }}
-                                        ></Input>
+                                        {
+                                            props.product.product.bookResponse
+                                                .bookListPrice
+                                        }
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -455,11 +332,14 @@ export default function ProductDetail() {
                                     >
                                         <Input
                                             name="bookListPrice"
-                                            value={product.priceSale}
+                                            defaultValue={
+                                                props.product.product.price
+                                            }
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
                                             }}
+                                            onChange={onChangeEdit}
                                         ></Input>
                                     </TableCell>
                                 </TableRow>
@@ -480,26 +360,30 @@ export default function ProductDetail() {
                                             <RadioGroup
                                                 row
                                                 aria-label="bookStatus"
-                                                defaultValue="2"
+                                                defaultValue={
+                                                    props.product.product
+                                                        .bookStatus
+                                                }
                                                 name="bookStatus"
+                                                onChange={onChangeEdit}
                                             >
                                                 <FormControlLabel
-                                                    value="1"
+                                                    value="최상"
                                                     control={<Radio />}
-                                                    label="특상"
+                                                    label="최상"
                                                 />
                                                 <FormControlLabel
-                                                    value="2"
+                                                    value="상"
                                                     control={<Radio />}
                                                     label="상"
                                                 />
                                                 <FormControlLabel
-                                                    value="3"
+                                                    value="중"
                                                     control={<Radio />}
                                                     label="중"
                                                 />
                                                 <FormControlLabel
-                                                    value="4"
+                                                    value="하"
                                                     control={<Radio />}
                                                     label="하"
                                                 />
@@ -521,12 +405,16 @@ export default function ProductDetail() {
                                         align="center"
                                     >
                                         <Input
-                                            name="bookSummary"
-                                            value="부가 설명"
+                                            name="description"
+                                            defaultValue={
+                                                props.product.product
+                                                    .description
+                                            }
                                             style={{
                                                 width: "100%",
                                                 fontSize: "0.875rem"
                                             }}
+                                            onChange={onChangeEdit}
                                         ></Input>
                                     </TableCell>
                                 </TableRow>
@@ -547,23 +435,27 @@ export default function ProductDetail() {
                                             <RadioGroup
                                                 row
                                                 aria-label="postStatus"
-                                                defaultValue="3"
+                                                defaultValue={
+                                                    props.product.product
+                                                        .postStatus
+                                                }
                                                 name="postStatus"
+                                                onChange={onChangeEdit}
                                             >
                                                 <FormControlLabel
-                                                    value="1"
+                                                    value="판매 중"
                                                     control={<Radio />}
-                                                    label="판매중"
+                                                    label="판매 중"
                                                 />
                                                 <FormControlLabel
-                                                    value="2"
+                                                    value="예약 중"
                                                     control={<Radio />}
-                                                    label="거래중"
+                                                    label="예약 중"
                                                 />
                                                 <FormControlLabel
-                                                    value="3"
+                                                    value="판매 완료"
                                                     control={<Radio />}
-                                                    label="거래완료"
+                                                    label="판매 완료"
                                                 />
                                             </RadioGroup>
                                         </FormControl>

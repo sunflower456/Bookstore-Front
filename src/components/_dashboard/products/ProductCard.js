@@ -5,7 +5,6 @@ import { Link as RouterLink } from "react-router-dom";
 import { Box, Card, Link, Typography, Stack } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 // utils
-import { fCurrency } from "../../../utils/formatNumber";
 
 // ----------------------------------------------------------------------
 
@@ -26,10 +25,12 @@ ShopProductCard.propTypes = {
 
 export default function ShopProductCard({ product, id }) {
     const {
-        name,
-        cover,
-        price
-        // priceSale
+        bookTitle,
+        postImage,
+        postPrice,
+        postTitle,
+        bookAuthor,
+        bookPublisher
     } = product;
 
     const imageLinkTo = () => {
@@ -42,7 +43,11 @@ export default function ShopProductCard({ product, id }) {
                 sx={{ pt: "100%", position: "relative" }}
                 style={{ height: "350px" }}
             >
-                <ProductImgStyle alt={name} src={cover} onClick={imageLinkTo} />
+                <ProductImgStyle
+                    alt={bookTitle}
+                    src={postImage}
+                    onClick={imageLinkTo}
+                />
             </Box>
 
             <Stack spacing={2} sx={{ p: 3 }}>
@@ -54,7 +59,7 @@ export default function ShopProductCard({ product, id }) {
                     style={{ marginBottom: "16px" }}
                 >
                     <Typography variant="subtitle1" noWrap>
-                        {name}
+                        {bookTitle}
                     </Typography>
                 </Link>
                 <Stack
@@ -64,7 +69,7 @@ export default function ShopProductCard({ product, id }) {
                     style={{ marginTop: "0px" }}
                 >
                     <Typography variant="body2" noWrap>
-                        {name}
+                        {postTitle}
                     </Typography>
                 </Stack>
                 <Stack
@@ -73,7 +78,9 @@ export default function ShopProductCard({ product, id }) {
                     justifyContent="space-between"
                     style={{ marginTop: "0px" }}
                 >
-                    <Typography variant="body2">박준</Typography>
+                    <Typography variant="body2" noWrap>
+                        {bookAuthor}
+                    </Typography>
                 </Stack>
                 <Stack
                     direction="row"
@@ -81,16 +88,14 @@ export default function ShopProductCard({ product, id }) {
                     style={{ marginTop: "0px" }}
                     justifyContent="space-between"
                 >
-                    <Typography variant="body2">문학동네</Typography>
+                    <Typography variant="body2">{bookPublisher}</Typography>
                 </Stack>
                 <Stack
                     direction="row"
                     alignItems="center"
                     justifyContent="space-between"
                 >
-                    <Typography variant="subtitle1">
-                        {fCurrency(price)}
-                    </Typography>
+                    <Typography variant="subtitle1">{postPrice}</Typography>
                 </Stack>
             </Stack>
         </Card>

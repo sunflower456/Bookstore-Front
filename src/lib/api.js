@@ -91,3 +91,60 @@ export const getBeforeChats = (roomId, page, size) => {
         `/api/message/${roomId}?page=${targetPage}&size=${targetSize}`
     );
 };
+/* 전체 판매글 조회 기능 */
+export const getAllPosts = (paramSize, paramPage) =>
+    client.get(
+        `/api/post?size=${encodeURIComponent(
+            paramSize
+        )}&page=${encodeURIComponent(paramPage)}`
+    );
+
+/* 전체 판매글 title로 조회 기능 */
+export const getAllPostsByTitle = (paramSize, title) => {
+    return client.get(
+        `/api/post?title=${encodeURIComponent(title)}&size=${paramSize}&page=0`
+    );
+};
+
+/* 전체 판매글 저자로 조회 기능 */
+export const getAllPostsByAuthor = (paramSize, author) => {
+    return client.get(
+        `/api/post?author=${encodeURIComponent(
+            author
+        )}&size=${paramSize}&page=0`
+    );
+};
+
+/* 전체 판매글 출판사로 조회 기능 */
+export const getAllPostsByPublisher = (paramSize, publisher) => {
+    return client.get(
+        `/api/post?publisher=${encodeURIComponent(
+            publisher
+        )}&size=${paramSize}&page=0`
+    );
+};
+
+/* 게시글 수정 기능  */
+export const postUpdate = (id, formData) =>
+    client.patch(`/api/post/${id}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
+
+/* 게시글 상세 조회 기능 */
+export const getDetailPost = (id) => {
+    return client.get(`/api/post/${id}`, {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+};
+
+/* 관심 목록 추가 기능 */
+export const addMyFavoritePost = (id) =>
+    client.post("/api/user/me/interest", JSON.stringify({ postId: id }), {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });

@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom";
+import { useRoutes, Navigate } from "react-router-dom";
 // layouts
 import LogoOnlyLayout from "./layouts/LogoOnlyLayout";
 import DashboardLayout from "./layouts/dashboard";
@@ -7,12 +7,12 @@ import NotFound from "./pages/Page404";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import Register from "./pages/Register";
-import SearchMain from "./pages/SearchMain";
 import Post from "./pages/Post";
 import Detail from "./pages/Detail";
 import MyPage from "./pages/MyPage";
 import MySales from "./pages/MySales";
 import Favorites from "./pages/Favorites";
+import isLogin from "./modules/isLogin";
 import MessengerLayout from "./layouts/MessengerLayout";
 import ChatPage from "./pages/ChatPage";
 
@@ -37,24 +37,44 @@ export default function Router() {
             path: "/mypage",
             element: <DashboardLayout />,
             children: [
-                { path: "/", element: <MyPage /> },
-                { path: "sales", element: <MySales /> },
-                { path: "favorites", element: <Favorites /> }
+                {
+                    path: "",
+                    element: isLogin() ? <MyPage /> : <Navigate to="/login" />
+                },
+                {
+                    path: "sales",
+                    element: isLogin() ? <MySales /> : <Navigate to="/login" />
+                },
+                {
+                    path: "favorites",
+                    element: isLogin() ? (
+                        <Favorites />
+                    ) : (
+                        <Navigate to="/login" />
+                    )
+                }
             ]
         },
         {
             path: "/products",
             element: <DashboardLayout />,
             children: [
-                { path: "search", element: <SearchMain /> },
-                { path: "addPost", element: <Post /> },
-                { path: ":id", element: <Detail /> }
+                {
+                    path: "addPost",
+                    element: isLogin() ? <Post /> : <Navigate to="/login" />
+                },
+                {
+                    path: ":id",
+                    element: isLogin() ? <Detail /> : <Navigate to="/login" />
+                }
             ]
         },
         {
             path: "/chat",
             element: <MessengerLayout />,
             children: [{ path: "/", element: <ChatPage /> }]
+        },
+            children: [{ path: "", element: <ChatPage /> }]
         },
 
         { path: "*", element: <NotFound /> }
