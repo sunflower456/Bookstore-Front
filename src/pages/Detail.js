@@ -93,7 +93,13 @@ export default function ProductDetail() {
         } else if (name === "description") {
             setEditDescription(value);
         } else if (name === "postStatus") {
-            setEditPostStatus(value);
+            if (value === "판매 중") {
+                setEditPostStatus("SALE");
+            } else if (value === "예약 중") {
+                setEditPostStatus("RESERVED");
+            } else if (value === "판매 완료") {
+                setEditPostStatus("SOLD_OUT");
+            }
         }
     };
 
@@ -144,6 +150,15 @@ export default function ProductDetail() {
                     console.log(err.response.message);
                 }
             });
+            if (editPostStatus) {
+                await api.editPostStatus(id, editPostStatus).catch((err) => {
+                    if (err.response == null) {
+                        alert(err.message);
+                    } else {
+                        console.log(err.response.message);
+                    }
+                });
+            }
 
             fetchDetailData();
             await setDetail(<DetailTable product={product} />);
@@ -181,8 +196,6 @@ export default function ProductDetail() {
 
     const createChat = async () => {
         try {
-            console.log(product);
-            console.log(myInfo);
             if (product.product.sellerId === myInfo.userId) {
                 alert("본인 게시글에서는 채팅을 접속할 수 없습니다.");
                 return;
